@@ -7,7 +7,6 @@
 <meta name="description" content="Ipso Facto, restaurant français traditionnel au cœur du quartier historique d'Épinal. Cuisine de saison, produits frais et cuisson basse température par le chef Mathias. 4,9★ sur Google." />
 <meta name="theme-color" content="#6e1e2b" />
 
-<!-- Open Graph -->
 <meta property="og:type" content="restaurant" />
 <meta property="og:title" content="Ipso Facto — Restaurant français traditionnel · Épinal" />
 <meta property="og:description" content="Cuisine française de saison, produits frais et sauces travaillées. Au cœur de la Cité des Images, à Épinal." />
@@ -19,7 +18,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 
-<!-- Structured data -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -27,16 +25,9 @@
   "name": "Ipso Facto",
   "servesCuisine": "Française",
   "priceRange": "€€",
-  "url": "",
   "telephone": "+33329311144",
   "email": "ipsofacto.resto@gmail.com",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "17 rue de la Maix",
-    "postalCode": "88000",
-    "addressLocality": "Épinal",
-    "addressCountry": "FR"
-  },
+  "address": { "@type": "PostalAddress", "streetAddress": "17 rue de la Maix", "postalCode": "88000", "addressLocality": "Épinal", "addressCountry": "FR" },
   "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "bestRating": "5" },
   "openingHours": ["Mo 12:00-14:00", "Tu-Sa 12:00-14:00,19:00-23:00"]
 }
@@ -61,11 +52,18 @@
       <a href="#producteurs">Producteurs</a>
       <a href="#privatisation">Privatisation</a>
       <a href="#galerie">Galerie</a>
+      <a href="#avis">Avis</a>
       <a href="#infos">Infos</a>
-      <a class="btn btn-reserve nav-reserve" href="tel:+33329311144">Réserver</a>
+      <button class="btn btn-reserve nav-reserve" data-reserve>Réserver</button>
     </nav>
 
-    <a class="btn btn-reserve header-reserve" href="tel:+33329311144">Réserver</a>
+    <div class="header-right">
+      <span class="status-pill" id="statusPillHeader" hidden>
+        <span class="status-dot"></span><span class="status-text"></span>
+      </span>
+      <button class="btn btn-reserve header-reserve" data-reserve>Réserver</button>
+    </div>
+
     <button class="nav-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mainNav">
       <span></span><span></span><span></span>
     </button>
@@ -76,24 +74,23 @@
 
 <!-- ============ HERO ============ -->
 <section class="hero" id="accueil">
-  <div class="hero-media" role="img" aria-label="Plat signature du restaurant Ipso Facto"></div>
+  <div class="hero-media" id="heroMedia" role="img" aria-label="Plat signature du restaurant Ipso Facto"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <p class="eyebrow eyebrow-light">Bienvenue à Épinal</p>
     <h1 class="hero-title">Ipso&nbsp;Facto</h1>
     <p class="hero-tagline">Cuisine française de saison, produits frais et sauces travaillées, au cœur de la Cité des Images.</p>
     <div class="hero-cta">
-      <a class="btn btn-solid" href="tel:+33329311144">Réserver une table</a>
+      <button class="btn btn-solid" data-reserve>Réserver une table</button>
       <a class="btn btn-outline-light" href="#carte">Voir la carte</a>
     </div>
     <p class="hero-rating">
       <span class="stars" aria-hidden="true">★★★★★</span>
-      <strong>4,9</strong> sur Google · Ouvert depuis février 2024
+      <strong>4,9</strong> sur Google
+      <span class="status-inline" id="statusHero"></span>
     </p>
   </div>
-  <a class="hero-scroll" href="#maison" aria-label="Descendre">
-    <span></span>
-  </a>
+  <a class="hero-scroll" href="#maison" aria-label="Descendre"><span></span></a>
 </section>
 
 <!-- ============ L'ESPRIT DE LA MAISON ============ -->
@@ -120,10 +117,16 @@
     </div>
     <div class="maison-media reveal">
       <img src="images/room-1.webp" alt="Salle du restaurant Ipso Facto, ambiance bistrot contemporain" loading="lazy" width="1020" height="1020" />
-      <div class="maison-badge">
-        <span class="great">Bistrot<br>contemporain</span>
-      </div>
+      <div class="maison-badge"><span class="great">Bistrot<br>contemporain</span></div>
     </div>
+  </div>
+
+  <!-- Stats counters -->
+  <div class="wrap stats-band reveal" id="stats">
+    <div class="stat"><span class="stat-num" data-target="4.9" data-decimals="1">0</span><span class="stat-label">Note Google</span></div>
+    <div class="stat"><span class="stat-num" data-target="7" data-suffix="">0</span><span class="stat-label">Producteurs locaux</span></div>
+    <div class="stat"><span class="stat-num" data-target="100" data-suffix="%">0</span><span class="stat-label">Fait maison</span></div>
+    <div class="stat"><span class="stat-num" data-static="2024">2024</span><span class="stat-label">Ouvert depuis</span></div>
   </div>
 </section>
 
@@ -133,90 +136,109 @@
     <div class="section-head reveal">
       <p class="eyebrow">La carte</p>
       <h2>Ce que l'on aime cuisiner</h2>
-      <p class="section-intro">La carte évolue à chaque saison. Voici un aperçu — les plats signature et une sélection du moment.</p>
+      <p class="section-intro">La carte évolue à chaque saison. Explorez nos entrées, plats et desserts — cliquez sur un plat pour le découvrir.</p>
       <a class="btn btn-outline" href="carte-ipso-facto.pdf" target="_blank" rel="noopener" download>
         <span class="dl-ico" aria-hidden="true">↓</span> Télécharger la carte (PDF)
       </a>
     </div>
 
-    <!-- Signature -->
-    <div class="signatures">
-      <article class="sig-card reveal">
-        <div class="sig-img"><img src="images/dish-lamb.webp" alt="Cassolette de rognons et ris de veau aux morilles" loading="lazy" width="765" height="1020" /></div>
-        <div class="sig-body">
-          <span class="sig-tag">Signature</span>
-          <h3>Cassolette de rognons &amp; ris de veau aux morilles</h3>
-          <p>Purée 50/50 ou frites maison. Le plat qui a fait la maison, généreux et canaille.</p>
-          <span class="sig-price">29&nbsp;€</span>
-        </div>
-      </article>
-      <article class="sig-card reveal">
-        <div class="sig-img"><img src="images/hero-signature.webp" alt="Tournedos Rossini et sa réduction au Brandy" loading="lazy" width="823" height="1020" /></div>
-        <div class="sig-body">
-          <span class="sig-tag">Signature</span>
-          <h3>Tournedos Rossini, réduction au Brandy</h3>
-          <p>Bœuf dans le filet, foie gras poêlé, pommes paille et réduction au Brandy.</p>
-          <span class="sig-price">29&nbsp;€</span>
-        </div>
-      </article>
-    </div>
-
-    <!-- Menu -->
-    <div class="menu-grid reveal">
-      <div class="menu-col">
-        <h3 class="menu-col-title">Nos entrées</h3>
-        <ul class="dish-list">
-          <li><div class="dish-line"><span class="dish-name">Le Foie Gras en terrine</span><span class="dish-dots"></span><span class="dish-price">21&nbsp;€</span></div><p class="dish-desc">« Au Crillon des Vosges », rhubarbe pochée, pain spécial</p></li>
-          <li><div class="dish-line"><span class="dish-name">Les Ravioles de betteraves</span><span class="dish-dots"></span><span class="dish-price">18&nbsp;€</span></div><p class="dish-desc">Mousse de chèvre &amp; ricotta, framboises, noisettes</p></li>
-          <li><div class="dish-line"><span class="dish-name">Le Tartare de thon rouge</span><span class="dish-dots"></span><span class="dish-price">19&nbsp;€</span></div><p class="dish-desc">Pignons de pin, guacamole, pickles variés</p></li>
-          <li><div class="dish-line"><span class="dish-name">Cassolette de Saint-Jacques &amp; écrevisses</span><span class="dish-dots"></span><span class="dish-price">19&nbsp;€</span></div><p class="dish-desc">Flambée au Noilly Prat, feuilleté au sésame</p></li>
-        </ul>
+    <!-- Tabs + filters -->
+    <div class="carte-controls reveal">
+      <div class="tabs" role="tablist" aria-label="Sections de la carte">
+        <button class="tab is-active" role="tab" aria-selected="true" data-tab="entree">Entrées</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="plat">Plats</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="dessert">Desserts</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="menus">Nos menus</button>
       </div>
-
-      <div class="menu-col">
-        <h3 class="menu-col-title">Nos plats</h3>
-        <ul class="dish-list">
-          <li><div class="dish-line"><span class="dish-name">Cassolette de rognons &amp; ris de veau <em>·&nbsp;signature</em></span><span class="dish-dots"></span><span class="dish-price">29&nbsp;€</span></div><p class="dish-desc">Aux morilles, purée 50/50 ou frites maison</p></li>
-          <li><div class="dish-line"><span class="dish-name">Tournedos Rossini <em>·&nbsp;signature</em></span><span class="dish-dots"></span><span class="dish-price">29&nbsp;€</span></div><p class="dish-desc">Foie gras poêlé, pommes paille, réduction au Brandy</p></li>
-          <li><div class="dish-line"><span class="dish-name">Le Pavé de flétan rôti</span><span class="dish-dots"></span><span class="dish-price">27&nbsp;€</span></div><p class="dish-desc">Déclinaison de légumes verts, réduction exotique au gingembre</p></li>
-          <li><div class="dish-line"><span class="dish-name">La Souris d'agneau confite 12h</span><span class="dish-dots"></span><span class="dish-price">27&nbsp;€</span></div><p class="dish-desc">Carottes fondantes, jus corsé</p></li>
-        </ul>
-      </div>
-
-      <div class="menu-col">
-        <h3 class="menu-col-title">Nos desserts</h3>
-        <ul class="dish-list">
-          <li><div class="dish-line"><span class="dish-name">Le Soufflé au Limoncello</span><span class="dish-dots"></span><span class="dish-price">9&nbsp;€</span></div><p class="dish-desc">Et son sorbet citron</p></li>
-          <li><div class="dish-line"><span class="dish-name">Le Chocolat</span><span class="dish-dots"></span><span class="dish-price">9&nbsp;€</span></div><p class="dish-desc">Sablé cacao, crémeux chocolat, mousse légère menthe</p></li>
-          <li><div class="dish-line"><span class="dish-name">La Rhubarbe</span><span class="dish-dots"></span><span class="dish-price">9&nbsp;€</span></div><p class="dish-desc">Crème vanille, financier amandes, granité</p></li>
-          <li><div class="dish-line"><span class="dish-name">Fromages affinés « Maison Beldicot »</span><span class="dish-dots"></span><span class="dish-price">10&nbsp;€</span></div><p class="dish-desc">Sélection du moment, affinage maison</p></li>
-        </ul>
+      <div class="filters" id="filters" aria-label="Filtrer les plats">
+        <button class="chip is-active" data-filter="all">Tout</button>
+        <button class="chip" data-filter="signature">Signature</button>
+        <button class="chip" data-filter="vegetarien">Végétarien</button>
       </div>
     </div>
 
-    <!-- Menus / formules -->
-    <div class="formules reveal">
-      <article class="formule">
-        <h4>Menu du Marché</h4>
-        <p class="formule-price">35&nbsp;€</p>
-        <p class="formule-desc">Entrée · plat · dessert au choix. La formule du marché, le midi en semaine.</p>
-      </article>
-      <article class="formule formule-feature">
-        <h4>Menu Ipso Facto</h4>
-        <p class="formule-price">52&nbsp;€</p>
-        <p class="formule-desc">Amuse-bouche, entrée, plat, fromages ou dessert, café « Dammann Frères ».</p>
-      </article>
-      <article class="formule">
-        <h4>Menu Dégustation</h4>
-        <p class="formule-price">69&nbsp;€</p>
-        <p class="formule-desc">Le foie gras, entrée, plat, fromages affinés, dessert et café.</p>
-      </article>
-      <article class="formule">
-        <h4>Menu Enfant</h4>
-        <p class="formule-price">12&nbsp;€</p>
-        <p class="formule-desc">Jusqu'à 12 ans — plat, dessert et une boisson.</p>
-      </article>
+    <!-- Dish panels -->
+    <div class="dish-panel" id="panel-entree" data-panel="entree">
+      <div class="dish-grid">
+        <button class="dish" data-cat="entree" data-tags="vegetarien" data-name="Le Quinoa de saison" data-price="14 €" data-img="" data-desc="Avocat, amandes, mozzarella, salade d'herbes et vinaigrette au citron. Une entrée fraîche et végétale qui suit le marché.">
+          <div class="dish-line"><span class="dish-name">Le Quinoa de saison</span><span class="dish-dots"></span><span class="dish-price">14&nbsp;€</span></div>
+          <p class="dish-desc">Avocat, amandes, mozzarella, vinaigrette citron</p><span class="dish-more">Découvrir →</span>
+        </button>
+        <button class="dish" data-cat="entree" data-tags="vegetarien" data-name="Les Ravioles de betteraves" data-price="18 €" data-img="images/dish-veg.webp" data-desc="Mousse de chèvre et ricotta, herbes fraîches, framboises et noisettes. La betterave de saison, tout en fraîcheur et en couleurs.">
+          <div class="dish-line"><span class="dish-name">Les Ravioles de betteraves</span><span class="dish-dots"></span><span class="dish-price">18&nbsp;€</span></div>
+          <p class="dish-desc">Mousse de chèvre &amp; ricotta, framboises, noisettes</p><span class="dish-more">Découvrir →</span>
+        </button>
+        <button class="dish" data-cat="entree" data-tags="" data-name="Le Tartare de thon rouge" data-price="19 €" data-img="images/dish-tartare.webp" data-desc="Thon rouge au couteau, pignons de pin, guacamole et pickles variés. Vivacité et croquant, une entrée iodée pleine de peps.">
+          <div class="dish-line"><span class="dish-name">Le Tartare de thon rouge</span><span class="dish-dots"></span><span class="dish-price">19&nbsp;€</span></div>
+          <p class="dish-desc">Pignons de pin, guacamole, pickles variés</p><span class="dish-more">Découvrir →</span>
+        </button>
+        <button class="dish" data-cat="entree" data-tags="" data-name="Cassolette de Saint-Jacques &amp; écrevisses" data-price="19 €" data-img="images/dish-scallops.webp" data-desc="Saint-Jacques et écrevisses flambées au Noilly Prat, petits légumes et feuilleté au sésame. Généreux et parfumé.">
+          <div class="dish-line"><span class="dish-name">Cassolette de Saint-Jacques &amp; écrevisses</span><span class="dish-dots"></span><span class="dish-price">19&nbsp;€</span></div>
+          <p class="dish-desc">Flambée au Noilly Prat, feuilleté au sésame</p><span class="dish-more">Découvrir →</span>
+        </button>
+        <button class="dish" data-cat="entree" data-tags="" data-name="Le Foie Gras en terrine" data-price="21 €" data-img="" data-desc="Cuisson en terrine « Au Crillon des Vosges », rhubarbe pochée, gel de rhubarbe et pain spécial. Un classique, façon maison.">
+          <div class="dish-line"><span class="dish-name">Le Foie Gras en terrine</span><span class="dish-dots"></span><span class="dish-price">21&nbsp;€</span></div>
+          <p class="dish-desc">« Au Crillon des Vosges », rhubarbe pochée</p><span class="dish-more">Découvrir →</span>
+        </button>
+      </div>
     </div>
+
+    <div class="dish-panel" id="panel-plat" data-panel="plat" hidden>
+      <div class="dish-grid">
+        <button class="dish" data-cat="plat" data-tags="signature" data-name="Cassolette de rognons &amp; ris de veau" data-price="29 €" data-img="images/dish-lamb.webp" data-desc="Rognons et ris de veau aux morilles, purée 50/50 ou frites maison. Le plat signature de la maison — généreux, canaille, incontournable.">
+          <div class="dish-line"><span class="dish-name">Cassolette de rognons &amp; ris de veau <em>·&nbsp;signature</em></span><span class="dish-dots"></span><span class="dish-price">29&nbsp;€</span></div>
+          <p class="dish-desc">Aux morilles, purée 50/50 ou frites maison</p><span class="dish-more">Découvrir →</span>
+        </button>
+        <button class="dish" data-cat="plat" data-tags="signature" data-name="Tournedos Rossini" data-price="29 €" data-img="images/hero-signature.webp" data-desc="Bœuf dans le filet, foie gras poêlé, pommes paille et réduction au Brandy. La signature du chef sur les sauces, dans toute sa splendeur.">
+          <div class="dish-line"><span class="dish-name">Tournedos Rossini <em>·&nbsp;signature</em></span><span class="dish-dots"></span><span class="dish-price">29&nbsp;€</span></div>
+          <p class="dish-desc">Foie gras poêlé, pommes paille, réduction au Brandy</p><span class="dish-more">Découvrir →</span>
+        </button>
+        <button class="dish" data-cat="plat" data-tags="" data-name="Le Pavé de flétan rôti" data-price="27 €" data-img="images/dish-fish-bisque.webp" data-desc="Flétan rôti, déclinaison de légumes verts et réduction exotique au gingembre. Cuisson basse température pour une chair nacrée.">
+          <div class="dish-line"><span class="dish-name">Le Pavé de flétan rôti</span><span class="dish-dots"></span><span class="dish-price">27&nbsp;€</span></div>
+          <p class="dish-desc">Légumes verts, réduction exotique au gingembre</p><span class="dish-more">Découvrir →</span>
+        </button>
+        <button class="dish" data-cat="plat" data-tags="" data-name="La Souris d'agneau confite 12h" data-price="27 €" data-img="images/dish-mackerel.webp" data-desc="Souris d'agneau confite douze heures, carottes fondantes et jus corsé. La basse température dans ce qu'elle a de plus fondant.">
+          <div class="dish-line"><span class="dish-name">La Souris d'agneau confite 12h</span><span class="dish-dots"></span><span class="dish-price">27&nbsp;€</span></div>
+          <p class="dish-desc">Carottes fondantes, jus corsé</p><span class="dish-more">Découvrir →</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dish-panel" id="panel-dessert" data-panel="dessert" hidden>
+      <div class="dish-grid">
+        <button class="dish" data-cat="dessert" data-tags="vegetarien" data-name="Le Soufflé au Limoncello" data-price="9 €" data-img="images/dessert-citrus.webp" data-desc="Soufflé au Limoncello et son sorbet citron. Léger, aérien, tout en fraîcheur d'agrumes.">
+          <div class="dish-line"><span class="dish-name">Le Soufflé au Limoncello</span><span class="dish-dots"></span><span class="dish-price">9&nbsp;€</span></div>
+          <p class="dish-desc">Et son sorbet citron</p><span class="dish-more">Découvrir →</span>
+        </button>
+        <button class="dish" data-cat="dessert" data-tags="vegetarien" data-name="Le Chocolat" data-price="9 €" data-img="images/dessert-chocolate.webp" data-desc="Sablé cacao, crémeux chocolat et mousse légère à la menthe. Pour les amoureux du chocolat, sans lourdeur.">
+          <div class="dish-line"><span class="dish-name">Le Chocolat</span><span class="dish-dots"></span><span class="dish-price">9&nbsp;€</span></div>
+          <p class="dish-desc">Sablé cacao, crémeux chocolat, mousse menthe</p><span class="dish-more">Découvrir →</span>
+        </button>
+        <button class="dish" data-cat="dessert" data-tags="vegetarien" data-name="La Tarte caramel &amp; noisettes" data-price="9 €" data-img="images/dessert-caramel.webp" data-desc="Tarte au caramel, éclats de noisettes torréfiées et crème légère. Le réconfort d'un dessert de saison.">
+          <div class="dish-line"><span class="dish-name">La Tarte caramel &amp; noisettes</span><span class="dish-dots"></span><span class="dish-price">9&nbsp;€</span></div>
+          <p class="dish-desc">Éclats de noisettes torréfiées, crème légère</p><span class="dish-more">Découvrir →</span>
+        </button>
+        <button class="dish" data-cat="dessert" data-tags="vegetarien" data-name="La Rhubarbe" data-price="9 €" data-img="images/dessert-pear.webp" data-desc="Crème légère vanille, financier aux amandes et granité. La rhubarbe, entre acidité et douceur.">
+          <div class="dish-line"><span class="dish-name">La Rhubarbe</span><span class="dish-dots"></span><span class="dish-price">9&nbsp;€</span></div>
+          <p class="dish-desc">Crème vanille, financier amandes, granité</p><span class="dish-more">Découvrir →</span>
+        </button>
+        <button class="dish" data-cat="dessert" data-tags="vegetarien" data-name="Fromages affinés « Maison Beldicot »" data-price="10 €" data-img="" data-desc="Notre sélection de fromages affinés « Maison Beldicot », au gré des arrivages. À déguster avec un verre choisi.">
+          <div class="dish-line"><span class="dish-name">Fromages affinés « Maison Beldicot »</span><span class="dish-dots"></span><span class="dish-price">10&nbsp;€</span></div>
+          <p class="dish-desc">Sélection du moment, affinage maison</p><span class="dish-more">Découvrir →</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dish-panel" id="panel-menus" data-panel="menus" hidden>
+      <div class="formules">
+        <article class="formule"><h4>Menu du Marché</h4><p class="formule-price">35&nbsp;€</p><p class="formule-desc">Entrée · plat · dessert au choix. La formule du marché, le midi en semaine.</p></article>
+        <article class="formule formule-feature"><h4>Menu Ipso Facto</h4><p class="formule-price">52&nbsp;€</p><p class="formule-desc">Amuse-bouche, entrée, plat, fromages ou dessert, café « Dammann Frères ».</p></article>
+        <article class="formule"><h4>Menu Dégustation</h4><p class="formule-price">69&nbsp;€</p><p class="formule-desc">Le foie gras, entrée, plat, fromages affinés, dessert et café.</p></article>
+        <article class="formule"><h4>Menu Enfant</h4><p class="formule-price">12&nbsp;€</p><p class="formule-desc">Jusqu'à 12 ans — plat, dessert et une boisson.</p></article>
+      </div>
+    </div>
+
+    <p class="empty-note" id="emptyNote" hidden>Aucun plat dans cette sélection.</p>
     <p class="prices-note reveal">Prix nets, service compris. Carte susceptible d'évoluer selon le marché.</p>
   </div>
 </section>
@@ -290,34 +312,16 @@
       <h3>Demander un devis</h3>
       <p class="devis-sub">Dites-nous tout — nous revenons vers vous rapidement.</p>
       <form id="devisForm" novalidate>
-        <div class="field">
-          <label for="d-nom">Nom &amp; prénom</label>
-          <input id="d-nom" name="nom" type="text" autocomplete="name" required />
+        <div class="field"><label for="d-nom">Nom &amp; prénom</label><input id="d-nom" name="nom" type="text" autocomplete="name" required /></div>
+        <div class="field-row">
+          <div class="field"><label for="d-tel">Téléphone</label><input id="d-tel" name="tel" type="tel" autocomplete="tel" required /></div>
+          <div class="field"><label for="d-email">Email</label><input id="d-email" name="email" type="email" autocomplete="email" required /></div>
         </div>
         <div class="field-row">
-          <div class="field">
-            <label for="d-tel">Téléphone</label>
-            <input id="d-tel" name="tel" type="tel" autocomplete="tel" required />
-          </div>
-          <div class="field">
-            <label for="d-email">Email</label>
-            <input id="d-email" name="email" type="email" autocomplete="email" required />
-          </div>
+          <div class="field"><label for="d-date">Date souhaitée</label><input id="d-date" name="date" type="date" /></div>
+          <div class="field"><label for="d-nb">Nombre de personnes</label><input id="d-nb" name="personnes" type="number" min="1" inputmode="numeric" /></div>
         </div>
-        <div class="field-row">
-          <div class="field">
-            <label for="d-date">Date souhaitée</label>
-            <input id="d-date" name="date" type="date" />
-          </div>
-          <div class="field">
-            <label for="d-nb">Nombre de personnes</label>
-            <input id="d-nb" name="personnes" type="number" min="1" inputmode="numeric" />
-          </div>
-        </div>
-        <div class="field">
-          <label for="d-msg">Votre projet</label>
-          <textarea id="d-msg" name="message" rows="4" placeholder="Type d'évènement, envies, budget…"></textarea>
-        </div>
+        <div class="field"><label for="d-msg">Votre projet</label><textarea id="d-msg" name="message" rows="4" placeholder="Type d'évènement, envies, budget…"></textarea></div>
         <button class="btn btn-solid btn-block" type="submit">Envoyer ma demande</button>
         <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
         <p class="form-alt">Ou appelez-nous directement au <a href="tel:+33329311144">03&nbsp;29&nbsp;31&nbsp;11&nbsp;44</a>.</p>
@@ -333,20 +337,71 @@
       <p class="eyebrow">Galerie</p>
       <h2>Un avant-goût</h2>
     </div>
-    <div class="gallery reveal" id="gallery">
-      <button class="g-item g-tall" data-full="images/dish-scallops.webp"><img src="images/dish-scallops.webp" alt="Saint-Jacques et risotto crémeux" loading="lazy" /></button>
-      <button class="g-item" data-full="images/dessert-chocolate.webp"><img src="images/dessert-chocolate.webp" alt="Dessert au chocolat et menthe" loading="lazy" /></button>
-      <button class="g-item" data-full="images/room-2.webp"><img src="images/room-2.webp" alt="Salle du restaurant en soirée" loading="lazy" /></button>
-      <button class="g-item g-tall" data-full="images/dish-fish-bisque.webp"><img src="images/dish-fish-bisque.webp" alt="Poisson snacké et bisque" loading="lazy" /></button>
-      <button class="g-item" data-full="images/dessert-caramel.webp"><img src="images/dessert-caramel.webp" alt="Tarte caramel et noisettes" loading="lazy" /></button>
-      <button class="g-item" data-full="images/dish-tartare.webp"><img src="images/dish-tartare.webp" alt="Entrée dressée, tuile croustillante" loading="lazy" /></button>
-      <button class="g-item g-tall" data-full="images/dish-mackerel.webp"><img src="images/dish-mackerel.webp" alt="Filet de maquereau, mousseline de carotte" loading="lazy" /></button>
-      <button class="g-item" data-full="images/dessert-pear.webp"><img src="images/dessert-pear.webp" alt="Dessert poire et amande" loading="lazy" /></button>
-      <button class="g-item" data-full="images/dish-veg.webp"><img src="images/dish-veg.webp" alt="Assiette végétale, courgette et burrata" loading="lazy" /></button>
-      <button class="g-item g-tall" data-full="images/dessert-citrus.webp"><img src="images/dessert-citrus.webp" alt="Dessert chocolat et agrumes" loading="lazy" /></button>
-      <button class="g-item" data-full="images/private-1.webp"><img src="images/private-1.webp" alt="Table dressée, décoration soignée" loading="lazy" /></button>
-      <button class="g-item" data-full="images/room-1.webp"><img src="images/room-1.webp" alt="Salle et tables du restaurant" loading="lazy" /></button>
+    <div class="gallery-filters reveal" id="galleryFilters">
+      <button class="chip is-active" data-gfilter="all">Tout</button>
+      <button class="chip" data-gfilter="plats">Plats</button>
+      <button class="chip" data-gfilter="desserts">Desserts</button>
+      <button class="chip" data-gfilter="salle">Salle</button>
+      <button class="chip" data-gfilter="receptions">Réceptions</button>
     </div>
+    <div class="gallery reveal" id="gallery">
+      <button class="g-item g-tall" data-cat="plats" data-full="images/dish-scallops.webp"><img src="images/dish-scallops.webp" alt="Saint-Jacques et risotto crémeux" loading="lazy" /></button>
+      <button class="g-item" data-cat="desserts" data-full="images/dessert-chocolate.webp"><img src="images/dessert-chocolate.webp" alt="Dessert au chocolat et menthe" loading="lazy" /></button>
+      <button class="g-item" data-cat="salle" data-full="images/room-2.webp"><img src="images/room-2.webp" alt="Salle du restaurant en soirée" loading="lazy" /></button>
+      <button class="g-item g-tall" data-cat="plats" data-full="images/dish-fish-bisque.webp"><img src="images/dish-fish-bisque.webp" alt="Poisson snacké et bisque" loading="lazy" /></button>
+      <button class="g-item" data-cat="desserts" data-full="images/dessert-caramel.webp"><img src="images/dessert-caramel.webp" alt="Tarte caramel et noisettes" loading="lazy" /></button>
+      <button class="g-item" data-cat="plats" data-full="images/dish-tartare.webp"><img src="images/dish-tartare.webp" alt="Entrée dressée, tuile croustillante" loading="lazy" /></button>
+      <button class="g-item g-tall" data-cat="plats" data-full="images/dish-mackerel.webp"><img src="images/dish-mackerel.webp" alt="Filet de poisson, mousseline de carotte" loading="lazy" /></button>
+      <button class="g-item" data-cat="desserts" data-full="images/dessert-pear.webp"><img src="images/dessert-pear.webp" alt="Dessert poire et amande" loading="lazy" /></button>
+      <button class="g-item" data-cat="plats" data-full="images/dish-veg.webp"><img src="images/dish-veg.webp" alt="Assiette végétale, courgette et burrata" loading="lazy" /></button>
+      <button class="g-item g-tall" data-cat="desserts" data-full="images/dessert-citrus.webp"><img src="images/dessert-citrus.webp" alt="Dessert chocolat et agrumes" loading="lazy" /></button>
+      <button class="g-item" data-cat="receptions" data-full="images/private-1.webp"><img src="images/private-1.webp" alt="Table dressée, décoration soignée" loading="lazy" /></button>
+      <button class="g-item" data-cat="salle" data-full="images/room-1.webp"><img src="images/room-1.webp" alt="Salle et tables du restaurant" loading="lazy" /></button>
+      <button class="g-item" data-cat="receptions" data-full="images/private-2.webp"><img src="images/private-2.webp" alt="Private room dressée pour un groupe" loading="lazy" /></button>
+      <button class="g-item" data-cat="receptions" data-full="images/private-3.webp"><img src="images/private-3.webp" alt="Private room décorée pour une fête" loading="lazy" /></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AVIS ============ -->
+<section class="section avis" id="avis">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Ils ont aimé</p>
+      <h2>4,9 ★ sur Google</h2>
+      <p class="section-intro">La confiance de nos clients, avis après avis.</p>
+    </div>
+    <!-- Remplacez ces avis par de vrais avis Google si vous le souhaitez -->
+    <div class="reviews reveal" id="reviews" aria-roledescription="carrousel" aria-label="Avis clients">
+      <div class="reviews-track" id="reviewsTrack">
+        <figure class="review">
+          <div class="review-stars" aria-hidden="true">★★★★★</div>
+          <blockquote>« Une cuisine soignée et pleine de goût, les sauces sont exceptionnelles. La cassolette de ris de veau est un délice. »</blockquote>
+          <figcaption>Camille R. <span>· Avis Google</span></figcaption>
+        </figure>
+        <figure class="review">
+          <div class="review-stars" aria-hidden="true">★★★★★</div>
+          <blockquote>« Accueil chaleureux, produits frais et une belle carte des vins. On sent le travail du chef dans chaque assiette. »</blockquote>
+          <figcaption>Julien M. <span>· Avis Google</span></figcaption>
+        </figure>
+        <figure class="review">
+          <div class="review-stars" aria-hidden="true">★★★★★</div>
+          <blockquote>« Nous avons privatisé la salle pour un anniversaire : tout était parfait, de la déco au service. Merci pour ce moment ! »</blockquote>
+          <figcaption>Sophie L. <span>· Avis Google</span></figcaption>
+        </figure>
+        <figure class="review">
+          <div class="review-stars" aria-hidden="true">★★★★★</div>
+          <blockquote>« Le tournedos Rossini et sa réduction au Brandy… un régal. Adresse à découvrir absolument à Épinal. »</blockquote>
+          <figcaption>Thomas B. <span>· Avis Google</span></figcaption>
+        </figure>
+      </div>
+      <div class="reviews-nav">
+        <button class="rev-btn" id="revPrev" aria-label="Avis précédent">‹</button>
+        <div class="reviews-dots" id="reviewsDots" role="tablist" aria-label="Choisir un avis"></div>
+        <button class="rev-btn" id="revNext" aria-label="Avis suivant">›</button>
+      </div>
+    </div>
+    <p class="avis-cta reveal"><a href="https://www.google.com/search?q=Ipso+Facto+Épinal" target="_blank" rel="noopener">Voir tous les avis sur Google →</a></p>
   </div>
 </section>
 
@@ -357,48 +412,38 @@
       <p class="eyebrow">Infos pratiques</p>
       <h2>Nous trouver &amp; réserver</h2>
 
+      <div class="status-block" id="statusBlock">
+        <span class="status-dot"></span>
+        <span class="status-text">Horaires</span>
+      </div>
+
       <table class="hours" aria-label="Horaires d'ouverture">
         <tbody>
-          <tr><th scope="row">Lundi</th><td>12h – 14h</td><td class="closed">Fermé le soir</td></tr>
-          <tr><th scope="row">Mardi</th><td>12h – 14h</td><td>19h – 23h</td></tr>
-          <tr><th scope="row">Mercredi</th><td>12h – 14h</td><td>19h – 23h</td></tr>
-          <tr><th scope="row">Jeudi</th><td>12h – 14h</td><td>19h – 23h</td></tr>
-          <tr><th scope="row">Vendredi</th><td>12h – 14h</td><td>19h – 23h</td></tr>
-          <tr><th scope="row">Samedi</th><td>12h – 14h</td><td>19h – 23h</td></tr>
-          <tr class="row-closed"><th scope="row">Dimanche</th><td colspan="2" class="closed">Fermé</td></tr>
+          <tr data-day="1"><th scope="row">Lundi</th><td>12h – 14h</td><td class="closed">Fermé le soir</td></tr>
+          <tr data-day="2"><th scope="row">Mardi</th><td>12h – 14h</td><td>19h – 23h</td></tr>
+          <tr data-day="3"><th scope="row">Mercredi</th><td>12h – 14h</td><td>19h – 23h</td></tr>
+          <tr data-day="4"><th scope="row">Jeudi</th><td>12h – 14h</td><td>19h – 23h</td></tr>
+          <tr data-day="5"><th scope="row">Vendredi</th><td>12h – 14h</td><td>19h – 23h</td></tr>
+          <tr data-day="6"><th scope="row">Samedi</th><td>12h – 14h</td><td>19h – 23h</td></tr>
+          <tr data-day="0" class="row-closed"><th scope="row">Dimanche</th><td colspan="2" class="closed">Fermé</td></tr>
         </tbody>
       </table>
       <p class="hours-note">Fermé le lundi soir et le dimanche — <em>sauf réservation de groupe à partir de 15 personnes.</em></p>
 
       <ul class="contact-list">
-        <li>
-          <span class="ci" aria-hidden="true">📍</span>
-          <div><strong>17 rue de la Maix, 88000 Épinal</strong><br><span class="muted">Quartier historique · Cité des Images</span></div>
-        </li>
-        <li>
-          <span class="ci" aria-hidden="true">📞</span>
-          <div><a href="tel:+33329311144">03 29 31 11 44</a></div>
-        </li>
-        <li>
-          <span class="ci" aria-hidden="true">✉️</span>
-          <div><a href="mailto:ipsofacto.resto@gmail.com">ipsofacto.resto@gmail.com</a></div>
-        </li>
-        <li>
-          <span class="ci" aria-hidden="true">◎</span>
-          <div><a href="https://instagram.com/ipsofactoresto88" target="_blank" rel="noopener">@ipsofactoresto88</a></div>
-        </li>
+        <li><span class="ci" aria-hidden="true">📍</span><div><strong>17 rue de la Maix, 88000 Épinal</strong><br><span class="muted">Quartier historique · Cité des Images</span></div></li>
+        <li><span class="ci" aria-hidden="true">📞</span><div><a href="tel:+33329311144">03 29 31 11 44</a></div></li>
+        <li><span class="ci" aria-hidden="true">✉️</span><div><a href="mailto:ipsofacto.resto@gmail.com">ipsofacto.resto@gmail.com</a></div></li>
+        <li><span class="ci" aria-hidden="true">◎</span><div><a href="https://instagram.com/ipsofactoresto88" target="_blank" rel="noopener">@ipsofactoresto88</a></div></li>
       </ul>
 
-      <a class="btn btn-solid" href="tel:+33329311144">Réserver au 03 29 31 11 44</a>
+      <button class="btn btn-solid" data-reserve>Réserver une table</button>
     </div>
 
     <div class="infos-map reveal">
-      <iframe
-        title="Carte — Ipso Facto, 17 rue de la Maix, Épinal"
+      <iframe title="Carte — Ipso Facto, 17 rue de la Maix, Épinal"
         src="https://www.google.com/maps?q=17%20rue%20de%20la%20Maix%2C%2088000%20%C3%89pinal&output=embed"
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
-        allowfullscreen></iframe>
+        loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
     </div>
   </div>
 </section>
@@ -412,36 +457,34 @@
       <span class="emblem" aria-hidden="true"><span class="emblem-script">Ipso Facto</span></span>
       <p class="footer-tag">Restaurant français traditionnel · Épinal</p>
     </div>
-
     <div class="footer-col">
       <h4>Le restaurant</h4>
       <p>17 rue de la Maix<br>88000 Épinal</p>
       <p><a href="tel:+33329311144">03 29 31 11 44</a><br><a href="mailto:ipsofacto.resto@gmail.com">ipsofacto.resto@gmail.com</a></p>
     </div>
-
     <div class="footer-col">
       <h4>Naviguer</h4>
       <nav class="footer-nav" aria-label="Pied de page">
-        <a href="#maison">La maison</a>
-        <a href="#carte">La carte</a>
-        <a href="#vins">Les vins</a>
-        <a href="#privatisation">Privatisation</a>
-        <a href="#infos">Infos pratiques</a>
+        <a href="#maison">La maison</a><a href="#carte">La carte</a><a href="#vins">Les vins</a><a href="#privatisation">Privatisation</a><a href="#infos">Infos pratiques</a>
       </nav>
     </div>
-
     <div class="footer-col">
       <h4>Suivez-nous</h4>
       <p><a href="https://instagram.com/ipsofactoresto88" target="_blank" rel="noopener">Instagram @ipsofactoresto88</a></p>
       <p class="rating-foot"><span class="stars" aria-hidden="true">★★★★★</span> 4,9 sur Google</p>
     </div>
   </div>
-
   <div class="wrap footer-legal">
     <p>© <span id="year">2026</span> Ipso Facto — Tous droits réservés.</p>
     <p class="legal-mini">Mentions légales : Restaurant Ipso Facto, 17 rue de la Maix, 88000 Épinal. Photographies non contractuelles. L'abus d'alcool est dangereux pour la santé, à consommer avec modération.</p>
   </div>
 </footer>
+
+<!-- Sticky mobile action bar -->
+<div class="mobile-bar">
+  <a class="mb-btn mb-call" href="tel:+33329311144"><span aria-hidden="true">📞</span> Appeler</a>
+  <button class="mb-btn mb-book" data-reserve><span aria-hidden="true">🍽</span> Réserver</button>
+</div>
 
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Image agrandie">
@@ -449,6 +492,66 @@
   <button class="lb-prev" id="lbPrev" aria-label="Précédent">‹</button>
   <img id="lbImg" src="" alt="" />
   <button class="lb-next" id="lbNext" aria-label="Suivant">›</button>
+</div>
+
+<!-- Dish detail modal -->
+<div class="modal" id="dishModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dishModalName">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card dish-modal">
+    <button class="modal-close" data-close aria-label="Fermer">×</button>
+    <div class="dm-media" id="dmMedia"></div>
+    <div class="dm-body">
+      <div class="dm-tags" id="dmTags"></div>
+      <h3 id="dishModalName">—</h3>
+      <p class="dm-desc" id="dmDesc"></p>
+      <div class="dm-foot">
+        <span class="dm-price" id="dmPrice"></span>
+        <button class="btn btn-solid" data-reserve>Réserver une table</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reservation modal -->
+<div class="modal" id="resaModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="resaTitle">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card resa-modal">
+    <button class="modal-close" data-close aria-label="Fermer">×</button>
+    <p class="eyebrow">Réservation</p>
+    <h3 id="resaTitle">Réserver une table</h3>
+    <p class="resa-sub">Indiquez vos préférences — nous confirmons par téléphone.</p>
+
+    <form id="resaForm" novalidate>
+      <div class="field">
+        <label>Service</label>
+        <div class="seg" id="resaService" role="group" aria-label="Service">
+          <button type="button" class="seg-btn is-active" data-service="Déjeuner (12h–14h)">Déjeuner</button>
+          <button type="button" class="seg-btn" data-service="Dîner (19h–23h)">Dîner</button>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="r-date">Date</label><input id="r-date" name="date" type="date" required /></div>
+        <div class="field">
+          <label for="r-nb">Couverts</label>
+          <div class="stepper">
+            <button type="button" class="step-btn" data-step="-1" aria-label="Moins">−</button>
+            <input id="r-nb" name="couverts" type="number" value="2" min="1" max="30" inputmode="numeric" />
+            <button type="button" class="step-btn" data-step="1" aria-label="Plus">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="r-nom">Nom</label><input id="r-nom" name="nom" type="text" autocomplete="name" required /></div>
+        <div class="field"><label for="r-tel">Téléphone</label><input id="r-tel" name="tel" type="tel" autocomplete="tel" required /></div>
+      </div>
+      <p class="resa-info" id="resaInfo" role="status" aria-live="polite"></p>
+      <div class="resa-actions">
+        <a class="btn btn-outline" href="tel:+33329311144">Appeler le restaurant</a>
+        <button class="btn btn-solid" type="submit">Envoyer la demande</button>
+      </div>
+      <p class="form-note" id="resaNote" role="status" aria-live="polite"></p>
+    </form>
+  </div>
 </div>
 
 <script src="script.js" defer></script>
