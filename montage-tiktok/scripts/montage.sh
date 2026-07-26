@@ -107,7 +107,7 @@ ffmpeg -y -loglevel error "${SEG_ARGS[@]}" -i "$IN" \
   -filter_complex "[0:v]$VF[v]" \
   -map "[v]" -map 0:a? \
   -af "loudnorm=I=-14:TP=-1.5:LRA=11" \
-  -c:v libx264 -preset medium -crf 20 -pix_fmt yuv420p -r "$FPS" \
+  -c:v libx264 -preset "${X264_PRESET:-medium}" -crf 20 -pix_fmt yuv420p -r "$FPS" \
   -c:a aac -b:a 192k -ar 44100 -ac 2 \
   "$TMP/body.mp4"
 
@@ -125,7 +125,7 @@ drawtext=fontfile=$FONT_FILE:text='ABONNE-TOI POUR LA SUITE':fontcolor=0xF5C518:
 fontsize=52:borderw=6:bordercolor=black:x=(w-tw)/2:y=(h/2+80):\
 alpha='if(lt(t,0.5),t/0.5,1)',setsar=1[v]" \
     -map "[v]" -map 1:a \
-    -c:v libx264 -preset medium -crf 20 -pix_fmt yuv420p -r "$FPS" \
+    -c:v libx264 -preset "${X264_PRESET:-medium}" -crf 20 -pix_fmt yuv420p -r "$FPS" \
     -c:a aac -b:a 192k -ar 44100 -ac 2 \
     "$TMP/cta.mp4"
 
@@ -133,7 +133,7 @@ alpha='if(lt(t,0.5),t/0.5,1)',setsar=1[v]" \
   ffmpeg -y -loglevel error -i "$TMP/body.mp4" -i "$TMP/cta.mp4" \
     -filter_complex "[0:v][0:a][1:v][1:a]concat=n=2:v=1:a=1[v][a]" \
     -map "[v]" -map "[a]" \
-    -c:v libx264 -preset medium -crf 20 -pix_fmt yuv420p \
+    -c:v libx264 -preset "${X264_PRESET:-medium}" -crf 20 -pix_fmt yuv420p \
     -c:a aac -b:a 192k -ar 44100 -ac 2 \
     "$OUT"
 else
