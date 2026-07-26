@@ -1,0 +1,6 @@
+# Vidéos de travail (souvent lourdes) — on garde les dossiers, pas le contenu
+entrees/*
+sorties/*
+!entrees/.gitkeep
+!sorties/.gitkeep
+*.wav
