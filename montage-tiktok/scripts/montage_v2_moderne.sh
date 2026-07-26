@@ -14,8 +14,8 @@
 # =============================================================================
 set -euo pipefail
 
-IN="${1:?vidéo d'entrée}"
-TITLE="${2:?bandeau titre PNG}"
+IN="${1:?video entree}"
+TITLE="${2:?bandeau PNG}"
 OUT="${3:?sortie}"
 TFLASH="${4:-13.15}"
 
