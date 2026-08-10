@@ -1,0 +1,6 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Sorties de generate_oneshot.py
+out/
