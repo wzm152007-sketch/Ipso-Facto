@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "headers": [
     {
-      "source": "/(film|motion-h|motion-v|img|fonts)/(.*)",
+      "source": "/(film|video|img|fonts)/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
