@@ -6,7 +6,7 @@
 <title>L'Écopticien</title>
 <meta name="description" content="L'Écopticien est un opticien à Golbey, dans les Vosges. Il vend des lunettes neuves et reconditionnées, et reprend vos anciennes montures.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#121212">
+<meta name="theme-color" content="#07080F">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23121212'/%3E%3Ccircle cx='10' cy='16' r='6' fill='none' stroke='%23BA936B' stroke-width='2.4'/%3E%3Ccircle cx='22' cy='16' r='6' fill='none' stroke='%23BA936B' stroke-width='2.4'/%3E%3Cpath d='M16 15v-.5' stroke='%23BA936B' stroke-width='2.4'/%3E%3C/svg%3E">
 <link rel="preload" as="font" type="font/woff2" href="fonts/bodoni.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/hanken.woff2" crossorigin>
@@ -16,14 +16,14 @@
 @font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/hanken.woff2) format("woff2")}
 @font-face{font-family:"DM Mono";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/dm-mono.woff2) format("woff2")}
 /* Concept : le magasin et le geste de l'opticien. Le titre est une échelle de Monoyer,
-   le fond est un chrome liquide où le nom du magasin est caché, les sections flottent dessus en verre.
+   le fond est une nébuleuse où le nom du magasin est caché, les sections flottent dessus en verre.
    Couleurs relevées sur le site actuel et dans le magasin :
    noir, blanc et gris des textes du site, clair des pictos du site,
    chêne du comptoir, or du cadre du miroir. */
 :root{
   --noir:#121212; --noir-2:#161616; --blanc:#FFFFFF; --clair:#F2F2F2; --gris:#9F9F9F; --gris-fonce:#595959;
   --chene:#BA936B; --or:#765D35;
-  --f:18,18,18; --c:242,242,242;
+  --f:18,18,18; --c:242,242,242; --ciel:#07080F;
   --display:"Bodoni Moda","Didot","Bodoni MT",Georgia,serif;
   --texte:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
   --mono:"DM Mono",ui-monospace,Menlo,monospace;
@@ -38,7 +38,7 @@
 @supports (height:100svh){:root{--scene:calc(100svh - var(--entete) - env(safe-area-inset-top,0px))}}
 @media (min-width:900px){:root{--marge:max(32px,calc((100vw - 1280px)/2))}}
 /* Thème écologique : le vert du sous-bois et le papier recyclé remplacent le noir et le blanc, le chêne reste */
-[data-theme="eco"]{--noir:#0B2116;--noir-2:#0F2A1D;--blanc:#F7F6EC;--clair:#EEF1E2;--gris-fonce:#4E5F52;--or:#2F5A3A;--f:8,30,20;--c:238,241,226}
+[data-theme="eco"]{--noir:#0B2116;--noir-2:#0F2A1D;--blanc:#F7F6EC;--clair:#EEF1E2;--gris-fonce:#4E5F52;--or:#2F5A3A;--f:8,30,20;--c:238,241,226;--ciel:#06130E}
 [data-theme="eco"] .si-chrome{display:none!important}
 html:not([data-theme="eco"]) .si-eco{display:none!important}
 /* Deux ambiances : le noir du site et de l'enseigne, le clair des murs du magasin */
@@ -46,7 +46,7 @@ html:not([data-theme="eco"]) .si-eco{display:none!important}
 .t-clair{--fond:var(--clair);--fond-2:#E4E4E4;--txt:var(--noir);--doux:rgba(var(--f),.84);--filet:rgba(var(--f),.18);--accent:var(--or);--plein:var(--noir);--sur-plein:var(--blanc);color:var(--txt)}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--noir);transition:background-color .7s}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--ciel);transition:background-color .7s}
 body{margin:0;font:400 17px/1.6 var(--texte);overflow-x:clip;transition:color .7s}
 img{display:block;max-width:100%}
 a{color:inherit}
@@ -56,10 +56,10 @@ section[id]{scroll-margin-top:var(--entete)}
 .etiquette{font:500 12px/1.3 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0}
 h2{font:500 clamp(2.1rem,5vw,3.9rem)/1.06 var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
 
-/* Le liquide reste fixé derrière tout le site */
-#liquide{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:-1;display:block;pointer-events:none}
+/* La nébuleuse reste fixée derrière tout le site */
+#fond{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:-1;display:block;pointer-events:none}
 
-/* Liquid Glass transparent : on voit le liquide à travers. Son contraste est adouci plutôt que caché,
+/* Liquid Glass transparent : on voit la nébuleuse à travers. Son contraste est adouci plutôt que caché,
    pour que le texte reste lisible. Un liseré de lumière fait le tour du panneau, les bords s'éclairent comme une épaisseur de verre. */
 .verre{
   --v-fond:rgba(var(--f),.14);
@@ -90,7 +90,8 @@ h2{font:500 clamp(2.1rem,5vw,3.9rem)/1.06 var(--display);margin:0;text-wrap:bala
 [data-theme="eco"] .verre{--accent:#DCC49E}
 [data-theme="eco"] .t-clair .verre{--accent:#1F4A2B}
 .t-clair .verre::before{background:linear-gradient(135deg,#fff,rgba(255,255,255,.4) 34%,rgba(var(--f),.1) 62%,#fff)}
-.sans-liquide .t-clair .verre{--v-fond:var(--clair)}
+.sans-fond{background:var(--ciel) url(img/nebuleuse.webp) center/cover fixed}
+.sans-fond .t-clair .verre{--v-fond:var(--clair)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   .verre{--v-fond:rgba(var(--f),.94)}
   .t-clair .verre{--v-fond:rgba(var(--c),.97)}
@@ -131,7 +132,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @media (min-width:940px){.nav{display:flex}.entete .tel-mobile{display:none}}
 @media (max-width:1100px){.nav{gap:20px}}
 
-/* Haut de page : le texte dans un panneau de verre, posé sur le liquide */
+/* Haut de page : le texte dans un panneau de verre, posé sur la nébuleuse */
 .hero-contenu{display:flex;align-items:center;min-height:var(--scene);margin-inline:var(--marge);padding-block:clamp(14px,3vw,40px)}
 .hero-texte{width:100%;max-width:min(860px,max(480px,calc((100vh - 408px)*1.9)));min-width:0;padding:clamp(20px,4.6vh,52px) var(--pad)}
 @media (max-width:899px){.hero-contenu{padding-bottom:calc(14px + 66px + env(safe-area-inset-bottom,0px))}}
@@ -353,7 +354,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
 </style>
 </head>
 <body class="t-noir">
-<canvas id="liquide" aria-hidden="true"></canvas>
+<canvas id="fond" aria-hidden="true"></canvas>
 <header class="entete" id="entete">
   <div class="wrap">
     <a class="logo" href="#haut" aria-label="L’Écopticien, retour en haut">
@@ -369,7 +370,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
       <a class="tel" href="tel:+33372739543">03 72 73 95 43</a>
     </nav>
     <a class="tel tel-mobile" href="tel:+33372739543">03 72 73 95 43</a>
-    <button type="button" class="theme" id="theme" aria-pressed="false" aria-label="Passer au thème écologique"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3C11.5 2.7 4 7 4 14.4c0 1.800.5 3.400 1.300 4.700C6.400 14.800 9.300 11.300 14 9.200c-3.800 2.900-6.100 6.400-6.900 11 1 .4 2.100.6 3.200.6C17.800 20.800 22 13 21 3z"/></svg><span class="mot si-chrome">Thème écologique</span><span class="mot si-eco">Thème chrome</span></button>
+    <button type="button" class="theme" id="theme" aria-pressed="false" aria-label="Passer au thème écologique"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3C11.5 2.7 4 7 4 14.4c0 1.800.5 3.400 1.300 4.700C6.400 14.800 9.300 11.300 14 9.200c-3.800 2.900-6.100 6.400-6.900 11 1 .4 2.100.6 3.200.6C17.800 20.800 22 13 21 3z"/></svg><span class="mot si-chrome">Thème écologique</span><span class="mot si-eco">Thème classique</span></button>
     </div>
   </div>
 </header>
@@ -397,7 +398,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
       </div>
     </div>
     <div class="fenetre" id="fenetre">
-      <p class="verre">Nous avons caché notre nom dans le liquide. <span class="si-doigt">Cherchez-le du doigt.</span><span class="si-souris">Cherchez-le à la souris.</span></p>
+      <p class="verre">Nous avons caché notre nom dans la nébuleuse. <span class="si-doigt">Cherchez-le du doigt.</span><span class="si-souris">Cherchez-le à la souris.</span></p>
     </div>
   </section>
 
@@ -575,7 +576,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
 
   function borne(v,a,b){ return Math.max(a, Math.min(b, v)); }
 
-  // Le bouton de thème : le liquide et les couleurs glissent de l'un à l'autre
+  // Le bouton de thème : la nébuleuse et les couleurs glissent de l'une à l'autre
   var racine = document.documentElement;
   var boutonTheme = document.getElementById('theme');
   var titre = document.getElementById('titre'), titreChrome = titre.getAttribute('aria-label');
@@ -583,10 +584,10 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
   function appliquerTheme(eco){
     racine.setAttribute('data-theme', eco ? 'eco' : 'chrome');
     boutonTheme.setAttribute('aria-pressed', eco ? 'true' : 'false');
-    boutonTheme.setAttribute('aria-label', eco ? 'Revenir au thème chrome' : 'Passer au thème écologique');
+    boutonTheme.setAttribute('aria-label', eco ? 'Revenir au thème classique' : 'Passer au thème écologique');
     titre.setAttribute('aria-label', eco ? titre.getAttribute('data-eco') : titreChrome);
-    couleurBarre.setAttribute('content', eco ? '#0B2116' : '#121212');
-    if(window.__liquide) window.__liquide.theme(eco ? 1 : 0);
+    couleurBarre.setAttribute('content', eco ? '#06130E' : '#07080F');
+    if(window.__fond) window.__fond.theme(eco ? 1 : 0);
   }
   boutonTheme.addEventListener('click', function(){ appliquerTheme(racine.getAttribute('data-theme') !== 'eco'); });
   appliquerTheme(racine.getAttribute('data-theme') === 'eco');
@@ -596,7 +597,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
   boutonFiger.addEventListener('click', function(){
     var fige = boutonFiger.getAttribute('aria-pressed') !== 'true';
     boutonFiger.setAttribute('aria-pressed', fige ? 'true' : 'false');
-    if(window.__liquide) window.__liquide.figer(fige);
+    if(window.__fond) window.__fond.figer(fige);
   });
 
   // Estimation de reprise : marque et modèle choisis dans la liste. Si le service le permet, une photo en plus,
@@ -893,6 +894,6 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
   }
 })();
 </script>
-<script src="liquide.js"></script>
+<script src="nebuleuse.js"></script>
 </body>
 </html>
