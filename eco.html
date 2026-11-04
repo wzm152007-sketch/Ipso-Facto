@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>L'Écopticien</title>
-<meta name="description" content="L'Écopticien, opticien à Golbey dans les Vosges. Lunettes neuves et reconditionnées, reprise de vos anciennes montures.">
+<meta name="description" content="L'Écopticien est un opticien à Golbey, dans les Vosges. Il vend des lunettes neuves et reconditionnées, et reprend vos anciennes montures.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#121212">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23121212'/%3E%3Ccircle cx='10' cy='16' r='6' fill='none' stroke='%23BA936B' stroke-width='2.4'/%3E%3Ccircle cx='22' cy='16' r='6' fill='none' stroke='%23BA936B' stroke-width='2.4'/%3E%3Cpath d='M16 15v-.5' stroke='%23BA936B' stroke-width='2.4'/%3E%3C/svg%3E">
@@ -117,18 +117,18 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .theme:hover{border-color:var(--chene)}
 [data-theme="eco"] .theme{background:var(--clair);border-color:var(--clair);color:var(--noir)}
 .theme .mot{display:none}
-@media (min-width:900px){.theme{width:auto;padding:0 15px}.theme .mot{display:inline}}
+@media (min-width:940px){.theme{width:auto;padding:0 15px}.theme .mot{display:inline}}
 @media (max-width:379px){.entete .tel-mobile{display:none!important}}
 .logo{display:inline-block;flex:none;padding:6px 11px 5px;border:1px solid var(--txt);text-decoration:none;text-align:center;line-height:1}
 .logo b{display:block;font:500 17px/1.1 var(--display);letter-spacing:.06em}
 .logo small{display:block;white-space:nowrap;margin-top:2px;font:500 6.5px/1.2 var(--texte);letter-spacing:.09em;text-transform:uppercase}
 .nav{display:none;gap:30px;align-items:center;font-size:15px}
-.nav a{text-decoration:none;position:relative;padding:6px 0}
+.nav a{text-decoration:none;position:relative;padding:6px 0;white-space:nowrap}
 .nav a:not(.tel)::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .3s}
 .nav a:hover::after{transform:scaleX(1)}
 .tel{font:600 15px/1 var(--texte);font-variant-numeric:tabular-nums;white-space:nowrap}
 .entete .tel-mobile{display:inline-block;font-size:14px;text-decoration:none}
-@media (min-width:900px){.nav{display:flex}.entete .tel-mobile{display:none}}
+@media (min-width:940px){.nav{display:flex}.entete .tel-mobile{display:none}}
 @media (max-width:1100px){.nav{gap:20px}}
 
 /* Haut de page : le texte dans un panneau de verre, posé sur le liquide */
@@ -362,7 +362,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
     </a>
     <div class="entete-droite">
     <nav class="nav" aria-label="Navigation">
-      <a href="#eco">Notre approche</a>
+      <a href="#eco">Pourquoi Écopticien</a>
       <a href="#reprise">Reprise</a>
       <a href="#magasin">Le magasin</a>
       <a href="#contact">Contact</a>
@@ -387,7 +387,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
           <span class="l l3e si-eco" data-a="3/10"><b>PAR NOS ARTISANS LUNETIERS</b></span>
         </h1>
         <p class="dix" data-a="10/10"><span>Cette ligne est floue&nbsp;? Passez nous voir.</span></p>
-        <p class="accroche"><span class="si-chrome">Grandes marques à prix serrés, montures remises à neuf par nos artisans lunetiers.</span><span class="si-eco">Équipez-vous de manière plus responsable&nbsp;: nos artisans lunetiers remettent des montures à neuf.</span> <strong>Apportez vos anciennes lunettes&nbsp;: leur valeur est déduite de votre facture.</strong></p>
+        <p class="accroche"><span class="si-chrome">Nous vendons des montures de grandes marques à prix serrés, et des montures remises à neuf par nos artisans lunetiers.</span><span class="si-eco">Plutôt qu’une paire neuve, choisissez une monture remise à neuf par nos artisans lunetiers.</span> <strong>Apportez vos anciennes lunettes et nous déduisons leur valeur de votre facture.</strong></p>
         <div class="actions">
           <a class="btn btn-plein" href="tel:+33372739543">Appeler le magasin</a>
           <a class="btn btn-ligne" href="https://www.google.com/maps/dir/?api=1&destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener">Venir à Golbey</a>
@@ -397,35 +397,35 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
       </div>
     </div>
     <div class="fenetre" id="fenetre">
-      <p class="verre">Notre nom est caché dans le liquide. <span class="si-doigt">Cherchez-le du doigt.</span><span class="si-souris">Cherchez-le à la souris.</span></p>
+      <p class="verre">Nous avons caché notre nom dans le liquide. <span class="si-doigt">Cherchez-le du doigt.</span><span class="si-souris">Cherchez-le à la souris.</span></p>
     </div>
   </section>
 
   <section class="eco section" id="eco">
     <div class="verre panneau eco-intro">
       <p class="etiquette">Pourquoi «&nbsp;Écopticien&nbsp;»&nbsp;?</p>
-      <h2><span class="si-chrome">Payer&nbsp;moins, jeter&nbsp;moins, bien&nbsp;voir.</span><span class="si-eco">Jeter&nbsp;moins, payer&nbsp;moins, bien&nbsp;voir.</span></h2>
+      <h2><span class="si-chrome">Parce que vos lunettes peuvent coûter moins cher et servir plus longtemps.</span><span class="si-eco">Parce que vos lunettes peuvent servir plus longtemps et coûter moins cher.</span></h2>
     </div>
-    <div class="defile" id="defile" tabindex="0" role="group" aria-label="Les trois engagements, à faire défiler">
+    <div class="defile" id="defile" tabindex="0" role="group" aria-label="Les trois sens de «&nbsp;Éco&nbsp;», à faire défiler">
       <article class="diapo verre">
         <div class="diapo-photo"><img src="img/frames.jpg" decoding="async" draggable="false" alt="Montures de grandes marques déposées sur un plateau en bois."></div>
         <div class="diapo-texte">
           <h3><b>ÉCO</b><em>nomique</em></h3>
-          <p>Réduisez votre reste à charge en nous apportant vos anciennes montures. Nos opticiens estiment leur valeur et la déduisent de votre facture.<small>Voir conditions en magasin.</small></p>
+          <p>Réduisez votre reste à charge en nous apportant vos anciennes montures. Nos opticiens estiment leur valeur et la déduisent de votre facture.<small>Conditions de reprise à voir en magasin.</small></p>
         </div>
       </article>
       <article class="diapo verre">
         <div class="diapo-photo"><img src="img/polish.jpg" loading="lazy" decoding="async" draggable="false" alt="Une branche de lunettes polie à la main sur une polisseuse, à l’atelier."></div>
         <div class="diapo-texte">
           <h3><b>ÉCO</b><em>logique</em></h3>
-          <p>Équipez-vous de manière plus responsable avec notre gamme de montures reconditionnées par nos artisans lunetiers.</p>
+          <p>Nos artisans lunetiers remettent des montures à neuf. Vous pouvez en choisir une plutôt que d’acheter une paire neuve.</p>
         </div>
       </article>
       <article class="diapo verre">
         <div class="diapo-photo"><img src="img/shelves.jpg" loading="lazy" decoding="async" draggable="false" alt="Mur d’étagères en bois garni de montures et de solaires."></div>
         <div class="diapo-texte">
           <h3><b>ÉCO</b><em>ptique</em></h3>
-          <p>Vous trouverez aussi chez nous des montures neuves de grandes marques, à des prix qui défient la concurrence.</p>
+          <p>Nous vendons aussi des montures neuves de grandes marques, à prix serrés.</p>
         </div>
       </article>
     </div>
@@ -443,9 +443,9 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
       <p class="etiquette rv">La reprise, en pratique</p>
       <h2 class="rv">Vos anciennes montures ont encore de la valeur.</h2>
       <ol class="etapes">
-        <li class="rv"><div><h3>Apportez-les en magasin</h3><p>Vos anciennes lunettes, celles qui dorment dans un tiroir.</p></div></li>
-        <li class="rv"><div><h3>Nos opticiens les estiment</h3><p>Ils évaluent la valeur de votre équipement.</p></div></li>
-        <li class="rv"><div><h3>Vous payez moins</h3><p>La valeur estimée est déduite de votre facture.</p></div></li>
+        <li class="rv"><div><h3>Apportez-les en magasin</h3><p>Même celles que vous ne portez plus depuis des années.</p></div></li>
+        <li class="rv"><div><h3>Nos opticiens les estiment</h3><p>Ils regardent chaque monture et vous disent combien elle vaut.</p></div></li>
+        <li class="rv"><div><h3>Vous payez moins</h3><p>Nous déduisons ce montant de votre facture.</p></div></li>
       </ol>
       <p class="mention rv">Conditions de reprise à voir en magasin.</p>
     </div>
@@ -453,7 +453,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
     <div class="verre panneau estimer" id="estimer">
       <p class="etiquette">Estimation en ligne</p>
       <h2>Combien valent vos anciennes lunettes&nbsp;?</h2>
-      <p class="estimer-intro">Vue, soleil ou sport&nbsp;: choisissez la marque et le modèle de votre paire, indiquez son état, et vous obtenez tout de suite une première fourchette.<span id="e-intro-photo" hidden> Vous pouvez aussi ajouter une photo.</span></p>
+      <p class="estimer-intro">Choisissez la marque, le modèle et l’état de vos lunettes de vue, de soleil ou de sport. Le site affiche aussitôt une première fourchette.<span id="e-intro-photo" hidden> Vous pouvez aussi ajouter une photo.</span></p>
       <form class="estimer-form" id="f-estimer" novalidate>
         <div class="champs">
           <label class="champ">
@@ -479,13 +479,13 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
           <input type="file" id="e-photo" accept="image/*" aria-label="Ajouter une photo de vos lunettes">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
           <b>Ajouter une photo</b>
-          <small>Facultatif. La paire seule, posée à plat, de face et bien éclairée. Sans visage dans le cadre.</small>
+          <small>Facultatif. Posez la paire à plat, de face, en pleine lumière, sans visage dans le cadre.</small>
           <img id="e-apercu" alt="Aperçu de votre photo">
           <span class="depot-changer" aria-hidden="true">Changer la photo</span>
         </label>
         <div class="estimer-envoi">
           <button type="submit" class="btn btn-plein" id="e-envoi" disabled>Estimer ma reprise</button>
-          <p class="mention" id="e-google" hidden>Si vous ajoutez une photo, elle est envoyée à Google (Gemini) pour l’analyse, avec ce que vous avez choisi. Le site ne la conserve pas.</p>
+          <p class="mention" id="e-google" hidden>Si vous ajoutez une photo, le site l’envoie à Google (Gemini) pour l’analyse, avec ce que vous avez choisi. Il ne la conserve pas.</p>
         </div>
       </form>
       <p class="estimer-msg" id="e-msg" role="alert" hidden></p>
@@ -503,7 +503,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
           <a class="btn btn-plein" href="tel:+33372739543">Appeler le magasin</a>
           <a class="btn btn-ligne" href="https://www.google.com/maps/dir/?api=1&destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener">Venir à Golbey</a>
         </div>
-        <p class="mention">Estimation indicative et non contractuelle&nbsp;: la valeur définitive est fixée en magasin, après examen de la monture. Voir conditions en magasin. Maquette&nbsp;: liste de marques et barème d’exemple, à valider par le magasin.</p>
+        <p class="mention">Cette estimation est indicative et non contractuelle. Nos opticiens fixent la valeur définitive en magasin, après examen de la monture. Conditions de reprise à voir en magasin. Sur cette maquette, la liste de marques et le barème sont des exemples à valider par le magasin.</p>
         <button type="button" class="estimer-refaire" id="e-refaire">Estimer une autre paire</button>
       </div>
     </div>
@@ -517,7 +517,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
       </div>
       <div>
         <p class="etiquette rv">Le conseil</p>
-        <h2 class="rv">La bonne monture se choisit à deux.</h2>
+        <h2 class="rv">Nous choisissons votre monture avec vous.</h2>
         <p class="t rv">Vous essayez, on regarde ensemble, et votre opticien ajuste la monture à la main sur votre visage. Vous repartez avec des lunettes qui vous vont.</p>
         <div class="avis rv">
           <b>5,0</b>
@@ -534,10 +534,10 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
           <p class="etiquette rv">Le magasin</p>
           <h2 class="rv">Passez nous voir à&nbsp;Golbey.</h2>
         </div>
-        <p class="rv">Découvrez ce qui fait la particularité du magasin en une courte vidéo. <a class="lien" href="https://youtube.com/shorts/BqK9tPUe1UU" target="_blank" rel="noopener">Voir la vidéo sur YouTube</a></p>
+        <p class="rv">Nous présentons le magasin dans une courte vidéo. <a class="lien" href="https://youtube.com/shorts/BqK9tPUe1UU" target="_blank" rel="noopener">Voir la vidéo sur YouTube</a></p>
       </div>
       <div class="galerie">
-        <figure class="g-sapin"><div class="cadre"><img class="fx" src="img/tree.jpg" loading="lazy" decoding="async" alt="Sapin en lattes de bois décoré de lunettes, dans le magasin."></div><figcaption>Le sapin de Noël du magasin, habillé de montures.</figcaption></figure>
+        <figure class="g-sapin"><div class="cadre"><img class="fx" src="img/tree.jpg" loading="lazy" decoding="async" alt="Sapin en lattes de bois décoré de lunettes, dans le magasin."></div><figcaption>Le sapin de Noël du magasin, décoré de montures.</figcaption></figure>
         <figure class="g-a"><div class="cadre"><img class="fx" src="img/interior.jpg" loading="lazy" decoding="async" alt="Intérieur du magasin avec comptoir en bois et tables."></div><figcaption>L’intérieur du magasin.</figcaption></figure>
         <figure class="g-b"><div class="cadre"><img class="fx" src="img/front.jpg" loading="lazy" decoding="async" alt="Façade en briques du magasin avec l’enseigne L’Écopticien."></div><figcaption>La façade, au 28 avenue de la Fontenelle.</figcaption></figure>
       </div>
@@ -611,7 +611,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
       indisponible: 'L’estimation en ligne n’est pas disponible pour le moment. Appelez-nous au 03 72 73 95 43, ou passez en magasin.',
       non_branche: 'L’analyse par photo n’est pas disponible pour le moment. Choisissez votre marque dans la liste, ou appelez-nous au 03 72 73 95 43.',
       cle_refusee: 'L’analyse par photo n’est pas disponible pour le moment. Choisissez votre marque dans la liste, ou appelez-nous au 03 72 73 95 43.',
-      quota: 'L’analyse par photo est très demandée en ce moment. Réessayez un peu plus tard, ou choisissez votre marque dans la liste.',
+      quota: 'L’analyse par photo est saturée pour le moment. Réessayez un peu plus tard, ou choisissez votre marque dans la liste.',
       trop_de_demandes: 'Vous avez envoyé beaucoup de photos d’affilée. Réessayez dans quelques minutes, ou choisissez votre marque dans la liste.',
       ajouter_photo: 'Cette marque n’est pas dans la liste. Ajoutez une photo pour une première estimation, ou montrez la paire à nos opticiens.',
       pas_de_lunettes: 'Nous ne voyons pas de lunettes sur cette photo. Essayez avec la paire posée à plat, de face.',
@@ -624,8 +624,8 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
       reseau: 'La connexion a échoué. Vérifiez votre réseau et réessayez.'
     };
     var MOTIFS = {
-      hors_liste: 'Cette marque n’est pas encore dans notre liste. Montrez la paire à nos opticiens : ils l’estimeront sur place.',
-      connectees: 'Une paire connectée ne s’estime pas à distance, car il faut aussi contrôler son électronique. Montrez-la à nos opticiens.'
+      hors_liste: 'Cette marque n’est pas encore dans notre liste. Montrez la paire à nos opticiens, ils l’estimeront sur place.',
+      connectees: 'Nous ne pouvons pas estimer une paire connectée à distance, car il faut aussi contrôler son électronique. Montrez-la à nos opticiens.'
     };
     var ERREUR = 'L’estimation n’a pas abouti. Réessayez dans un instant, ou appelez-nous au 03 72 73 95 43.';
     var TYPES = {vue:'Lunettes de vue', solaire:'Lunettes de soleil', sport:'Lunettes de sport', lecture:'Lunettes de lecture', enfant:'Lunettes pour enfant', connectees:'Lunettes connectées', autre:'Lunettes', inconnu:'Lunettes'};
@@ -718,10 +718,10 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
       var q = r.reprise, p = r.paire, euros = function(v){ return v + '\u00a0€'; };
       if(q.a_voir_en_magasin){
         ecrire('r-montant', 'À voir en magasin');
-        ecrire('r-suite', MOTIFS[q.motif] || 'Difficile de donner une valeur à distance à cette paire. Montrez-la à nos opticiens.');
+        ecrire('r-suite', MOTIFS[q.motif] || 'Nous ne pouvons pas estimer cette paire à distance. Montrez-la à nos opticiens.');
       } else if(q.plafond_atteint){
         ecrire('r-montant', 'À partir de ' + euros(q.min));
-        ecrire('r-suite', 'Une paire de cette valeur s’estime en magasin. Le montant retenu est déduit de votre facture.');
+        ecrire('r-suite', 'Nous estimons les paires de cette valeur en magasin, et nous déduisons le montant de votre facture.');
       } else {
         ecrire('r-montant', 'Entre ' + euros(q.min) + ' et ' + euros(q.max));
         ecrire('r-suite', 'déduits de votre facture, après vérification de la monture en magasin.');
