@@ -303,7 +303,7 @@
   var infoCarte = gl.getExtension('WEBGL_debug_renderer_info');
   var nomCarte = infoCarte ? String(gl.getParameter(infoCarte.UNMASKED_RENDERER_WEBGL)) : '';
   var cartePuissante = /RTX|GTX|Radeon RX|Radeon Pro|Arc\s|Apple M\d/i.test(nomCarte);
-  var BUDGET = cartePuissante ? 9e6 : (tactile ? 2.2e6 : 3.2e6), MINI = .6;
+  var BUDGET = cartePuissante ? 9e6 : (tactile ? 2.2e6 : 3.2e6), MINI = .75;
   var qualite = 2, echelle = 1, RW = 0, RH = 0;
   function dimensionner(){
     var w = toile.clientWidth || innerWidth, h = toile.clientHeight || innerHeight;
@@ -431,9 +431,10 @@
       else toucher(w*(.06+.88*balayage), h*.5 + Math.min(w,h)*.06*Math.sin(balayage*9), .62);
     }
     dessiner();
-    // Qualité automatique : sous 22 images par seconde durables, on calcule moins de points
+    // Qualité automatique : si la cadence tombe durablement (sous 36 images par seconde sur ordinateur,
+    // sous 22 sur téléphone), on calcule moins de points
     if(n-debut < 1500) return;
-    if(coutMs > 45){ lents++; rapides = 0; } else { rapides++; if(rapides > 30) lents = 0; }
+    if(coutMs > (tactile ? 45 : 28)){ lents++; rapides = 0; } else { rapides++; if(rapides > 30) lents = 0; }
     if(adapte && lents > 24 && echelle > MINI){
       qualite = Math.max(MINI, echelle*.8);
       lents = 0; dimensionner(); dessiner();
