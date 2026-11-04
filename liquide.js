@@ -282,7 +282,7 @@
   lireScroll();
 
   // Boucle : 30 images par seconde sur téléphone, moins de points si l'appareil peine
-  var adapte = true, dejaDessine = false, avant = 0, prec = 0, lents = 0, rapides = 0, pas = tactile ? 1000/31 : 1000/61;
+  var adapte = true, avant = 0, prec = 0, lents = 0, rapides = 0, pas = tactile ? 1000/31 : 1000/61;
   function dessiner(){
     gl.uniform1f(U.uT, temps); gl.uniform1f(U.uClair, clair);
     gl.uniform1f(U.uDefil, defil); gl.uniform1f(U.uBase, base);
@@ -309,9 +309,8 @@
       if(balayage >= 1) balayage = -1;
       else toucher(w*(.06+.88*balayage), h*.5 + Math.min(w,h)*.06*Math.sin(balayage*9), .62);
     }
-    // Rien à calculer quand le liquide est entièrement caché par le motion ou par le film
-    if((couvert || window.__fondCouvre) && dejaDessine) return;
-    dejaDessine = true;
+    // Rien à calculer quand le liquide est entièrement caché par le film
+    if(couvert) return;
     dessiner();
     // Qualité automatique : si les images tardent, on calcule moins de points
     if(coutMs > pas*1.4){ lents++; rapides = 0; } else { rapides++; if(rapides > 30) lents = 0; }

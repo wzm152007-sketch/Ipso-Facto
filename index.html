@@ -10,8 +10,6 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23121212'/%3E%3Ccircle cx='10' cy='16' r='6' fill='none' stroke='%23BA936B' stroke-width='2.4'/%3E%3Ccircle cx='22' cy='16' r='6' fill='none' stroke='%23BA936B' stroke-width='2.4'/%3E%3Cpath d='M16 15v-.5' stroke='%23BA936B' stroke-width='2.4'/%3E%3C/svg%3E">
 <link rel="preload" as="font" type="font/woff2" href="fonts/bodoni.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/hanken.woff2" crossorigin>
-<link rel="preload" as="image" href="video/motion-16x9.jpg" media="(orientation:landscape)">
-<link rel="preload" as="image" href="video/motion-9x16.jpg" media="(orientation:portrait)">
 <script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&innerHeight>=560)document.documentElement.classList.add('pin')</script>
 <style>
 @font-face{font-family:"Bodoni Moda";font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/bodoni.woff2) format("woff2")}
@@ -98,23 +96,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @media (min-width:900px){.nav{display:flex}.entete .tel-mobile{display:none}}
 @media (max-width:1100px){.nav{gap:20px}}
 
-/* Haut de page : le motion tourne en boucle derrière le texte, puis se dissout dans le liquide */
-.hero{position:relative}
-.hero-fond{position:sticky;top:calc(var(--entete) + env(safe-area-inset-top,0px));height:var(--scene);margin-bottom:calc(-1*var(--scene));overflow:hidden;background:#0a0a0a;pointer-events:none}
-.hero-media{position:absolute;inset:0;background:url(video/motion-16x9.jpg) 50% 50%/cover no-repeat}
-.hero-video{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;opacity:0;transition:opacity .6s}
-.hero-video.joue{opacity:1}
-.hero-voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,18,18,.84),rgba(18,18,18,.7) 46%,rgba(18,18,18,.58) 72%,rgba(18,18,18,.78))}
-@media (orientation:portrait){.hero-media{background-image:url(video/motion-9x16.jpg)}}
-/* À l'horizontale, l'action se place à droite du texte */
-@media (min-width:900px) and (orientation:landscape){
-  .hero-media{left:20%;right:-20%}
-  .hero-fond::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0a0a0a 20%,rgba(10,10,10,0) 44%)}
-  .hero-voile{background:linear-gradient(90deg,rgba(18,18,18,.9),rgba(18,18,18,.64) 40%,rgba(18,18,18,.05) 70%)}
-}
-.hero-contenu{position:relative;z-index:1;display:flex;align-items:center;min-height:var(--scene);padding-block:clamp(20px,4vw,52px)}
-.hero-texte{width:100%;max-width:min(760px,calc((100vh - 68px)*1.02));min-width:0;text-shadow:0 1px 18px rgba(0,0,0,.5)}
-.hero-texte .btn{text-shadow:none}
+/* Haut de page : le texte dans un panneau de verre, posé sur le liquide */
+.hero-contenu{display:flex;align-items:center;min-height:var(--scene);margin-inline:var(--marge);padding-block:clamp(14px,3vw,40px)}
+.hero-texte{--v-fond:rgba(18,18,18,.62);width:100%;max-width:min(860px,max(480px,calc((100vh - 408px)*1.9)));min-width:0;padding:clamp(20px,4.6vh,52px) var(--pad)}
+@media (max-width:899px){.hero-contenu{padding-bottom:calc(14px + 66px + env(safe-area-inset-bottom,0px))}}
 .echelle{container-type:inline-size;margin:18px 0 0;font-family:var(--display);font-weight:500}
 .echelle span.l{--g:2.5rem;display:grid;grid-template-columns:var(--g) minmax(0,1fr);align-items:baseline;line-height:1.08;animation:net 1s cubic-bezier(.2,.7,.2,1) both}
 .echelle span.l::before,.dix::before{content:attr(data-a);font:500 10px/1 var(--mono);color:var(--doux);letter-spacing:0;text-transform:none}
@@ -126,12 +111,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .accroche{font-size:clamp(1.08rem,1.7vw,1.25rem);line-height:1.5;margin:0 0 26px;max-width:32em;color:var(--clair);animation:apparait .9s .55s both}
 .accroche strong{font-weight:600;color:var(--txt)}
 .actions{display:flex;flex-wrap:wrap;gap:10px;animation:apparait .9s .65s both}
-@media (max-width:480px){.actions .btn{padding-inline:1.1em}}
+@media (max-width:480px){
+  .actions .btn{padding-inline:1em;font-size:15px}
+  .dix{letter-spacing:.06em}
+}
 .note{display:flex;align-items:center;gap:.6em;margin:20px 0 0;font-size:15px;color:var(--clair);animation:apparait .9s .75s both}
 .note i{font-style:normal;color:var(--accent);letter-spacing:.08em}
 @keyframes net{from{filter:blur(12px);opacity:.25}to{filter:none;opacity:1}}
 @keyframes apparait{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.hero-clair{height:110vh;height:110svh}
 .fenetre{position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:center;height:85vh;height:85svh;padding:0 16px clamp(34px,9vh,84px)}
 .fenetre p{margin:0;padding:12px 24px;border-radius:26px;font-size:15px;line-height:1.35;text-align:center}
 .si-doigt,.si-souris{display:block}
@@ -292,8 +279,7 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
-  .hero-clair,.fenetre{display:none}
-  .hero-fond{position:absolute;inset:0;height:auto;margin:0}
+  .fenetre{display:none}
 }
 </style>
 </head>
@@ -319,14 +305,8 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
 
 <main id="haut">
   <section class="hero" id="hero">
-    <div class="hero-fond" id="hero-fond" aria-hidden="true">
-      <div class="hero-media" id="hero-media">
-        <video class="hero-video" id="hero-video" muted loop autoplay playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback tabindex="-1"></video>
-      </div>
-      <div class="hero-voile" id="hero-voile"></div>
-    </div>
-    <div class="wrap hero-contenu">
-      <div class="hero-texte" id="hero-texte">
+    <div class="hero-contenu">
+      <div class="verre hero-texte">
         <p class="etiquette">Opticien à Golbey, dans les Vosges</p>
         <h1 class="echelle" aria-label="Lunettes neuves et reconditionnées">
           <span class="l l1" data-a="1/10"><b>LUNETTES</b></span>
@@ -342,7 +322,6 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
         <p class="note"><i aria-hidden="true">★★★★★</i> 5,0 sur Google, 38 avis</p>
       </div>
     </div>
-    <div class="hero-clair" aria-hidden="true"></div>
     <div class="fenetre" id="fenetre">
       <p class="verre">Notre nom est caché dans le liquide. <span class="si-doigt">Cherchez-le du doigt.</span><span class="si-souris">Cherchez-le à la souris.</span></p>
     </div>
@@ -608,68 +587,6 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
     };
   }
 
-  // Le motion en boucle derrière le texte du haut de page
-  var fond = document.getElementById('hero-fond');
-  var media = document.getElementById('hero-media');
-  var voile = document.getElementById('hero-voile');
-  var video = document.getElementById('hero-video');
-  var fenetre = document.getElementById('fenetre');
-  var heroTexte = document.getElementById('hero-texte');
-  var formatVideo = '', videoVue = null, imageSecours = null;
-  function choisirVideo(){
-    var format = innerWidth < innerHeight ? 'motion-9x16' : 'motion-16x9';
-    if(format === formatVideo) return;
-    formatVideo = format;
-    if(imageSecours){ if(imageSecours.parentNode) media.removeChild(imageSecours); imageSecours = null; }
-    video.muted = true;
-    video.src = 'video/' + format + '.mp4';
-    lancerVideo();
-  }
-  function lancerVideo(){
-    var p = video.play();
-    if(p && p.catch) p.catch(function(e){ if(e && e.name === 'NotAllowedError') secoursVideo(); });
-  }
-  // Mode économie d'énergie de l'iPhone : la vidéo refuse de démarrer seule.
-  // Safari sait lire le même fichier dans une image ; sinon l'affiche reste en place et le premier contact lance la vidéo.
-  function secoursVideo(){
-    if(imageSecours) return;
-    var m = imageSecours = new Image();
-    m.alt = '';
-    m.className = 'hero-video joue';
-    m.onload = function(){ if(imageSecours === m && video.paused) media.appendChild(m); };
-    m.src = video.currentSrc || video.src;
-    function auContact(){
-      removeEventListener('touchend', auContact);
-      removeEventListener('click', auContact);
-      var p = video.play();
-      if(p && p.then) p.then(function(){ if(m.parentNode) media.removeChild(m); if(imageSecours === m) imageSecours = null; }, function(){});
-    }
-    addEventListener('touchend', auContact, {passive:true});
-    addEventListener('click', auContact);
-  }
-  function majHero(y){
-    var H = innerHeight;
-    var texte = heroTexte.offsetHeight || H;
-    // Le voile s'efface quand le texte s'en va, puis le motion se dissout dans le liquide
-    voile.style.opacity = (1 - .84*lisse(texte*.1, texte*.95, y)).toFixed(3);
-    var k = lisse(.3*H, H, fenetre.getBoundingClientRect().top);
-    fond.style.opacity = k.toFixed(3);
-    fond.style.visibility = k > 0 ? 'visible' : 'hidden';
-    window.__fondCouvre = k >= 1;
-    var vue = k > 0;
-    if(vue !== videoVue){
-      videoVue = vue;
-      if(vue) lancerVideo();
-      else video.pause();
-    }
-  }
-  if(!calme){
-    video.addEventListener('playing', function(){ video.classList.add('joue'); });
-    // Au retour sur l'onglet, le téléphone peut avoir mis la vidéo en pause
-    document.addEventListener('visibilitychange', function(){ if(!document.hidden && videoVue) lancerVideo(); });
-    choisirVideo();
-  }
-
   var filmZone = document.getElementById('film-scroll');
   var filmScene = document.getElementById('film-scene');
   var filmNav = document.getElementById('film-nav');
@@ -684,7 +601,7 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
       function(){ if(clips[k+1]) clips[k+1].charger(); });
   });
   var fixes = false, carteActive = -1, ongletActif = 0, etats = [], filmAutorise = false;
-  // Le film se charge juste après le haut de page, pour que la vidéo passe en premier
+  // Le film se charge juste après le haut de page, pour que celui-ci s'affiche d'abord
   function autoriserFilm(){
     if(filmAutorise) return;
     filmAutorise = true;
@@ -850,12 +767,11 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
     attente = false;
     var y = scrollY;
     entete.classList.toggle('colle', y > 8);
-    if(!calme) majHero(y);
     if(epingle()) piloteFilm.maj();
   }
   function demander(){ if(!attente){attente = true; requestAnimationFrame(maj);} }
   addEventListener('scroll', demander, {passive:true});
-  addEventListener('resize', function(){ reglerPin(); cadrer(); demander(); majDiapo(); if(!calme) choisirVideo(); });
+  addEventListener('resize', function(){ reglerPin(); cadrer(); demander(); majDiapo(); });
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(cadrer);
   if(epingle()){
     cadrer();
