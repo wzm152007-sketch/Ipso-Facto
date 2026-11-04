@@ -5,7 +5,9 @@
   var toile = document.getElementById('liquide');
   if(!toile) return;
   var racine = document.documentElement;
-  var calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Avec le réglage « moins d'animations » du système, le liquide coule plus lentement et le scroll ne l'agite plus.
+  // Il réagit toujours au doigt et à la souris, et un bouton en bas de page permet de l'arrêter.
+  var reduit = matchMedia('(prefers-reduced-motion: reduce)').matches, fige = false;
   var tactile = navigator.maxTouchPoints > 0;
   var gl = toile.getContext('webgl', {alpha:false, antialias:false, depth:false, stencil:false});
   function sansLiquide(){
@@ -23,7 +25,8 @@
   'precision highp float;',
   'uniform vec2 uRes;uniform float uT,uClair,uEco,uDefil,uBase,uTouche;',
   'uniform vec3 uP[6];uniform sampler2D uNom;uniform vec2 uNomTaille;',
-  'float gNom,gLac,gL=0.;',
+  'uniform vec4 uV[4];uniform float uVR;',
+  'float gNom,gLac,gL=0.,gDans=0.;',
   'float pic(float x){float v=.5+.5*sin(x);v*=v;return v*v;}',
   'float fen(float x,float a,float b,float c,float d){return smoothstep(a-gL,b+gL,x)*(1.-smoothstep(c-gL,d+gL,x));}',
   // Un filet de lumière : plus il devient fin à l'écran, plus il s'atténue, au lieu de se hacher
@@ -63,7 +66,7 @@
   '  float b2=smoothstep(-.2,.8,sin(q.x*.8-q.y*.7+4.2+t*.03));',
   '  float h=.52*sin(q.y*1.9+1.2*sin(q.x*1.1+t*.05));',
   '  h+=(.4+.6*fin)*b1*.27*pic(q.y*5.6+1.5*sin(q.x*1.3)+.7);',
-  '  float zone=smoothstep(-.15,.75,sin(q.x*.47-q.y*.33+.7+t*.02));',
+  '  float zone=smoothstep(-.15,.75,sin(q.x*.47-q.y*.33+.7+t*.02))*(1.-.78*gDans);',
   '  h+=(.24+.76*fin)*(.3+.7*zone)*b2*.135*pic(q.y*12.+2.1*sin(q.x*.9+1.));',
   '  h+=fin*zone*b1*b2*.07*pic(q.y*23.+2.6*sin(q.x*.7+3.));',
   '  h+=fin*zone*smoothstep(.05,.8,sin(q.x*.6+q.y*.9+2.3))*.036*pic(q.y*41.+3.1*sin(q.x*.6+.5)+1.3*sin(q.x*1.7));',
@@ -96,9 +99,25 @@
   'void main(){',
   '  float cote=min(uRes.x,uRes.y);',
   '  vec2 uv=(gl_FragCoord.xy-.5*uRes)/cote;',
-  '  float e=max(1.25/cote,.0011),h0=champ(uv),nom=gNom,lac=gLac;',
-  '  float hx=champ(uv+vec2(e,0.)),nx=gNom;',
-  '  float hy=champ(uv+vec2(0.,e)),ny=gNom;',
+  // Sous un panneau : près du bord, le verre courbe la vue vers l'intérieur, comme une épaisseur de verre
+  '  vec2 w=uv;',
+  '  for(int i=0;i<4;i++){',
+  '    vec4 b=uV[i];',
+  '    vec2 c=.5*(b.xy+b.zw),q=abs(uv-c)-.5*(b.zw-b.xy)+uVR;',
+  '    float sd=length(max(q,0.))+min(max(q.x,q.y),0.)-uVR;',
+  '    if(sd<0.){',
+  '      vec2 s=vec2(uv.x<c.x?-1.:1.,uv.y<c.y?-1.:1.),dir;',
+  '      if(q.x>0.&&q.y>0.)dir=normalize(q)*s;',
+  '      else if(q.x>q.y)dir=vec2(s.x,0.);',
+  '      else dir=vec2(0.,s.y);',
+  '      float t=clamp(1.+sd/.075,0.,1.);',
+  '      w=uv-dir*t*t*.085;',
+  '      gDans=1.-smoothstep(-.05,0.,sd);',
+  '    }',
+  '  }',
+  '  float e=max(1.25/cote,.0011),h0=champ(w),nom=gNom,lac=gLac;',
+  '  float hx=champ(w+vec2(e,0.)),nx=gNom;',
+  '  float hy=champ(w+vec2(0.,e)),ny=gNom;',
   // La pente du liquide s'aplatit autour des lettres, celle des lettres s'y ajoute
   '  vec2 g=(vec2(hx,hy)-h0)/e*lac+(vec2(nx,ny)-nom)/e*.036;',
   '  vec3 n=normalize(vec3(-g*.3,1.));',
@@ -108,8 +127,8 @@
   // Noir : reflets francs, à peine irisés sur les arêtes, avec un halo doux autour des lumières et un peu de matière dans les ombres
   '  vec3 noir=vec3(0.),blanc=vec3(0.);',
   '  if(uClair<.999){',
-  '    vec3 c=vec3(studio(r+dd),studio(r),studio(r+dd*1.5));',
-  '    c.g=min(c.g,max(c.r,c.b));',
+  '    float s0=studio(r),s1=studio(r+dd);',
+  '    vec3 c=vec3(s1,min(s0,s1),s1);',
   '    vec2 l1=r-vec2(.44,.3),l2=r+vec2(.42,.26);',
   '    float pente=1.-n.z;',
   '    float halo=.15*exp(-dot(l1,l1)/.1)+.07*exp(-dot(l2,l2)/.06)+.05*pente*pente+.018*smoothstep(-.6,.8,h0);',
@@ -128,7 +147,8 @@
   '  }',
   // Blanc : grandes zones claires, nappes noires, liserés discrets ; en thème écologique, papier et mousse
   '  if(uClair>.001){',
-  '    vec3 k=vec3(nappes(r+dd*.6),nappes(r),nappes(r+dd));',
+  '    float k0=nappes(r),k1=nappes(r+dd*.8);',
+  '    vec3 k=vec3(k1,k0,k1);',
   '    float gris=smoothstep(.1,.95,length(r));',
   '    blanc=mix(vec3(.985-.08*gris-nom*.1),vec3(.012),k);',
   '    if(uEco>.001){',
@@ -165,7 +185,7 @@
     var aLoc = gl.getAttribLocation(prog, 'a');
     gl.enableVertexAttribArray(aLoc);
     gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
-    ['uRes','uT','uClair','uEco','uDefil','uBase','uTouche','uP','uNom','uNomTaille'].forEach(function(n){ U[n] = gl.getUniformLocation(prog, n); });
+    ['uRes','uT','uClair','uEco','uDefil','uBase','uTouche','uP','uNom','uNomTaille','uV','uVR'].forEach(function(n){ U[n] = gl.getUniformLocation(prog, n); });
     // Texture vide le temps que la police arrive : le nom est de toute façon caché au départ
     texNom = gl.createTexture();
     gl.activeTexture(gl.TEXTURE0);
@@ -269,7 +289,7 @@
     var largeur = (vertical ? .84 : Math.min(1.36, .8*innerWidth/innerHeight))/.82;
     gl.uniform2f(U.uNomTaille, largeur, largeur*H/W);
     nomPret = true;
-    if(calme) dessiner();
+    if(fige) dessiner();
   }
   function autoriserNom(){
     if(nomAutorise) return;
@@ -277,10 +297,14 @@
     dessinerNom();
   }
 
-  // Résolution de calcul : deux fois plus de points que l'écran n'a de pixels logiques sur un écran fin,
-  // dans la limite d'un budget total. Si l'appareil peine, on descend par paliers.
-  var BUDGET = 2.2e6, MINI = .6;
-  var qualite = Math.min(window.devicePixelRatio || 1, 2), echelle = 1, RW = 0, RH = 0;
+  // Résolution de calcul : deux fois plus de points que de pixels logiques sur tous les écrans. Sur un écran standard,
+  // l'image est ensuite réduite à l'affichage, ce qui lisse les filets. Le budget dépend de la carte graphique ;
+  // si l'appareil peine quand même, on descend par paliers.
+  var infoCarte = gl.getExtension('WEBGL_debug_renderer_info');
+  var nomCarte = infoCarte ? String(gl.getParameter(infoCarte.UNMASKED_RENDERER_WEBGL)) : '';
+  var cartePuissante = /RTX|GTX|Radeon RX|Radeon Pro|Arc\s|Apple M\d/i.test(nomCarte);
+  var BUDGET = cartePuissante ? 9e6 : (tactile ? 2.2e6 : 3.2e6), MINI = .6;
+  var qualite = 2, echelle = 1, RW = 0, RH = 0;
   function dimensionner(){
     var w = toile.clientWidth || innerWidth, h = toile.clientHeight || innerHeight;
     echelle = Math.min(qualite, Math.sqrt(BUDGET/(w*h)));
@@ -319,7 +343,7 @@
   function lireScroll(){
     var y = scrollY, milieu = innerHeight/2;
     if(y !== dernierY) geste = performance.now();
-    agite = Math.min(1, agite + Math.abs(y-dernierY)*.0012);
+    if(!reduit) agite = Math.min(1, agite + Math.abs(y-dernierY)*.0012);
     defilCible -= (y-dernierY)*.00042;
     dernierY = y;
     clairCible = 0;
@@ -328,11 +352,48 @@
     var f = fenetre && fenetre.getBoundingClientRect();
     var dansFenetre = f && f.top < innerHeight*.6 && f.bottom > innerHeight*.4;
     baseCible = dansFenetre ? .14 : 0;
-    if(dansFenetre && !balayageFait && !calme){ balayageFait = true; balayage = 0; }
+    if(dansFenetre && !balayageFait){ balayageFait = true; balayage = 0; }
   }
   addEventListener('scroll', lireScroll, {passive:true});
   addEventListener('resize', function(){ dimensionner(); dessinerNom(); lireScroll(); });
   lireScroll();
+
+  // Les panneaux de verre : leur place sur la page est mesurée à part, le scroll suffit ensuite
+  var verres = [].slice.call(document.querySelectorAll('.hero-texte,.panneau,.diapo'));
+  var rail = document.getElementById('defile');
+  var places = [], vues = new Float32Array(16);
+  function mesurer(){
+    var x = rail ? rail.scrollLeft : 0, y = scrollY;
+    places = verres.map(function(v){
+      var r = v.getBoundingClientRect(), dansRail = rail && rail.contains(v);
+      return {g: r.left + (dansRail ? x : 0), h: r.top + y, d: r.right + (dansRail ? x : 0), b: r.bottom + y, rail: dansRail};
+    });
+    var st = verres[0] ? getComputedStyle(verres[0]) : null;
+    rayonVerre = st ? parseFloat(st.borderTopLeftRadius) || 24 : 24;
+  }
+  var rayonVerre = 24;
+  function poserVerres(){
+    var W = toile.clientWidth || innerWidth, H = toile.clientHeight || innerHeight, m = Math.min(W,H);
+    var y = scrollY, x = rail ? rail.scrollLeft : 0, n = 0, i;
+    for(i = 0; i < places.length && n < 4; i++){
+      var p = places[i], dx = p.rail ? x : 0, g = p.g-dx, d = p.d-dx, h = p.h-y, b = p.b-y;
+      if(b < 0 || h > H || d < 0 || g > W) continue;
+      vues[n*4] = (g-W/2)/m; vues[n*4+1] = (H/2-b)/m; vues[n*4+2] = (d-W/2)/m; vues[n*4+3] = (H/2-h)/m;
+      n++;
+    }
+    // Les places restantes sont loin de l'écran
+    for(i = n; i < 4; i++){ vues[i*4] = 9; vues[i*4+1] = 9; vues[i*4+2] = 9.1; vues[i*4+3] = 9.1; }
+    gl.uniform4fv(U.uV, vues);
+    gl.uniform1f(U.uVR, rayonVerre/m);
+  }
+  mesurer();
+  addEventListener('load', mesurer);
+  addEventListener('resize', mesurer);
+  if(window.ResizeObserver){
+    var veille = new ResizeObserver(mesurer);
+    verres.forEach(function(v){ veille.observe(v); });
+  }
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(mesurer);
 
   // Sur téléphone : 60 images par seconde quand on touche ou qu'on scrolle, 30 au repos pour ménager la batterie
   var adapte = true, debut = 0, avant = 0, prec = 0, lents = 0, rapides = 0;
@@ -342,18 +403,19 @@
     gl.uniform1f(U.uT, temps); gl.uniform1f(U.uClair, clair); gl.uniform1f(U.uEco, eco);
     gl.uniform1f(U.uDefil, defil); gl.uniform1f(U.uBase, base); gl.uniform1f(U.uTouche, plusFort);
     gl.uniform3fv(U.uP, points);
+    poserVerres();
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
   function boucle(n){
     requestAnimationFrame(boucle);
-    if(document.hidden) return;
+    if(document.hidden || fige) return;
     var pas = (tactile && !appui && n-geste > 1500) ? 1000/31 : 1000/61;
     if(n-avant < pas) return;
     if(!debut) debut = n;
     var dt = Math.min(.08, (n-avant)/1000);
     var coutMs = n-prec; prec = n;
     avant = n;
-    temps += dt*(1+agite*2.2);
+    temps += dt*(reduit ? .45 : 1+agite*2.2);
     agite *= Math.pow(.2, dt);
     clair += (clairCible-clair)*(1-Math.pow(.04, dt));
     eco += (ecoCible-eco)*(1-Math.pow(.03, dt));
@@ -377,10 +439,8 @@
       lents = 0; dimensionner(); dessiner();
     }
   }
-  // Mouvement réduit : une seule image, pas d'animation
-  function tout(){ dimensionner(); dessinerNom(); dessiner(); }
-  if(calme){ tout(); addEventListener('resize', tout); }
-  else requestAnimationFrame(boucle);
+  requestAnimationFrame(boucle);
+  addEventListener('resize', function(){ if(fige) dessiner(); });
 
   // La police d'abord, pour graver le nom avec les bonnes lettres
   if(document.fonts && document.fonts.load){
@@ -391,12 +451,13 @@
   // Si le téléphone reprend la main sur la carte graphique, on repart de zéro au retour
   toile.addEventListener('webglcontextlost', function(e){ e.preventDefault(); });
   toile.addEventListener('webglcontextrestored', function(){
-    preparer(); nomPret = false; RW = RH = 0; dimensionner(); dessinerNom(); if(calme) dessiner();
+    preparer(); nomPret = false; RW = RH = 0; dimensionner(); dessinerNom(); if(fige) dessiner();
   });
 
   // Changement de thème par le bouton du site, et accès pour les tests
   window.__liquide = {
-    theme: function(v){ ecoCible = v; if(calme){ eco = v; dessiner(); } },
+    theme: function(v){ ecoCible = v; mesurer(); if(fige){ eco = v; dessiner(); } },
+    figer: function(v){ fige = v; if(!v){ avant = prec = performance.now(); lents = 0; } },
     toucher: toucher,
     regler: function(o){
       if('t' in o) temps = o.t;
