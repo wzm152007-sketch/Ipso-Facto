@@ -38,8 +38,8 @@
 @supports (height:100svh){:root{--scene:calc(100svh - var(--entete) - env(safe-area-inset-top,0px))}}
 @media (min-width:900px){:root{--marge:max(32px,calc((100vw - 1280px)/2))}}
 /* Deux ambiances : le noir du site et de l'enseigne, le clair des murs du magasin */
-.t-noir{--fond:var(--noir);--fond-2:var(--noir-2);--txt:var(--blanc);--doux:rgba(242,242,242,.76);--filet:rgba(255,255,255,.18);--accent:var(--chene);--plein:var(--blanc);--sur-plein:var(--noir);color:var(--txt)}
-.t-clair{--fond:var(--clair);--fond-2:#E4E4E4;--txt:var(--noir);--doux:rgba(18,18,18,.74);--filet:rgba(18,18,18,.18);--accent:var(--or);--plein:var(--noir);--sur-plein:var(--blanc);color:var(--txt)}
+.t-noir{--fond:var(--noir);--fond-2:var(--noir-2);--txt:var(--blanc);--doux:rgba(242,242,242,.9);--filet:rgba(255,255,255,.18);--accent:var(--chene);--plein:var(--blanc);--sur-plein:var(--noir);color:var(--txt)}
+.t-clair{--fond:var(--clair);--fond-2:#E4E4E4;--txt:var(--noir);--doux:rgba(18,18,18,.84);--filet:rgba(18,18,18,.18);--accent:var(--or);--plein:var(--noir);--sur-plein:var(--blanc);color:var(--txt)}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--noir)}
 body{margin:0;font:400 17px/1.6 var(--texte);overflow-x:clip}
@@ -54,34 +54,52 @@ h2{font:500 clamp(2.1rem,5vw,3.9rem)/1.06 var(--display);margin:0;text-wrap:bala
 /* Le liquide reste fixé derrière tout le site */
 #liquide{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:-1;display:block;pointer-events:none}
 
-/* Le verre : ce qui passe derrière est flouté, un reflet fin court sur le bord haut */
+/* Liquid Glass : le liquide reste visible à travers, flouté et assombri pour que le texte se lise.
+   Un liseré de lumière fait le tour du panneau, et les bords s'éclairent comme une épaisseur de verre. */
 .verre{
-  --v-fond:rgba(18,18,18,.7);--v-bord:rgba(255,255,255,.16);--v-reflet:rgba(255,255,255,.24);--v-ombre:rgba(0,0,0,.42);
-  background:linear-gradient(140deg,rgba(255,255,255,.08),rgba(255,255,255,0) 42%),var(--v-fond);
-  -webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);
-  border:1px solid var(--v-bord);border-radius:var(--arrondi);
-  box-shadow:inset 0 1px 0 var(--v-reflet),0 20px 60px var(--v-ombre);
+  --v-fond:rgba(18,18,18,.4);
+  --accent:#D6B996; /* le chêne, éclairci pour rester lisible sur le verre */
+  position:relative;
+  background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.02) 38%,rgba(255,255,255,0) 62%,rgba(255,255,255,.05)),var(--v-fond);
+  -webkit-backdrop-filter:blur(26px) saturate(1.7) brightness(.58);backdrop-filter:blur(26px) saturate(1.7) brightness(.58);
+  border:1px solid rgba(255,255,255,.1);border-radius:var(--arrondi);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(255,255,255,.16),inset 0 20px 32px -24px rgba(255,255,255,.3),inset 0 -20px 32px -26px rgba(255,255,255,.14),0 24px 60px rgba(0,0,0,.45);
+  text-shadow:0 1px 2px rgba(0,0,0,.4);
 }
-.t-clair .verre{--v-fond:rgba(242,242,242,.8);--v-bord:rgba(255,255,255,.75);--v-reflet:rgba(255,255,255,.95);--v-ombre:rgba(18,18,18,.16)}
+.verre::before{
+  content:"";position:absolute;inset:-1px;padding:1px;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.8),rgba(255,255,255,.14) 30%,rgba(255,255,255,.04) 60%,rgba(255,255,255,.46));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
+}
+.t-clair .verre{
+  --v-fond:rgba(242,242,242,.66);
+  --accent:#5A4524; /* l'or, foncé pour rester lisible sur le verre */
+  -webkit-backdrop-filter:blur(26px) saturate(1.5) brightness(1.25);backdrop-filter:blur(26px) saturate(1.5) brightness(1.25);
+  border-color:rgba(255,255,255,.45);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.5),inset 0 20px 32px -24px rgba(255,255,255,.8),0 24px 60px rgba(18,18,18,.2);
+  text-shadow:0 1px 1px rgba(255,255,255,.4);
+}
+.t-clair .verre::before{background:linear-gradient(135deg,#fff,rgba(255,255,255,.4) 34%,rgba(18,18,18,.1) 62%,#fff)}
 .sans-liquide .t-clair .verre{--v-fond:var(--clair)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   .verre{--v-fond:rgba(18,18,18,.94)}
   .t-clair .verre{--v-fond:rgba(242,242,242,.97)}
-  .entete,.barre{background:rgba(18,18,18,.96)!important}
+  .entete,.barre,.pin .film-nav{background:rgba(18,18,18,.96)!important}
 }
 .section{padding-block:clamp(26px,4.5vw,56px)}
 .panneau{margin-inline:var(--marge);padding:clamp(30px,5.4vw,72px) var(--pad)}
 
 /* Boutons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.6em;min-height:50px;padding:.7em 1.5em;font:600 16px/1.2 var(--texte);text-decoration:none;border:1px solid var(--txt);border-radius:999px;transition:background .25s,color .25s,border-color .25s}
+.btn{text-shadow:none;display:inline-flex;align-items:center;justify-content:center;gap:.6em;min-height:50px;padding:.7em 1.5em;font:600 16px/1.2 var(--texte);text-decoration:none;border:1px solid var(--txt);border-radius:999px;transition:background .25s,color .25s,border-color .25s}
 .btn-plein{background:var(--plein);color:var(--sur-plein);border-color:var(--plein)}
 .btn-plein:hover{background:var(--accent);border-color:var(--accent)}
-.btn-ligne{background:rgba(255,255,255,.07)}
+.btn-ligne{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
 .btn-ligne:hover{background:var(--txt);color:var(--fond)}
 
 /* En-tête */
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--noir)}
-.entete{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(18,18,18,.72);-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);border-bottom:1px solid rgba(255,255,255,.08);transition:border-color .3s}
+.entete{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(18,18,18,.42);-webkit-backdrop-filter:blur(22px) saturate(1.7) brightness(.62);backdrop-filter:blur(22px) saturate(1.7) brightness(.62);border-bottom:1px solid rgba(255,255,255,.08);transition:border-color .3s}
 .entete.colle{border-color:rgba(255,255,255,.2)}
 .entete .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;height:var(--entete)}
 .logo{display:inline-block;padding:6px 11px 5px;border:1px solid var(--txt);text-decoration:none;text-align:center;line-height:1}
@@ -98,7 +116,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 /* Haut de page : le texte dans un panneau de verre, posé sur le liquide */
 .hero-contenu{display:flex;align-items:center;min-height:var(--scene);margin-inline:var(--marge);padding-block:clamp(14px,3vw,40px)}
-.hero-texte{--v-fond:rgba(18,18,18,.62);width:100%;max-width:min(860px,max(480px,calc((100vh - 408px)*1.9)));min-width:0;padding:clamp(20px,4.6vh,52px) var(--pad)}
+.hero-texte{width:100%;max-width:min(860px,max(480px,calc((100vh - 408px)*1.9)));min-width:0;padding:clamp(20px,4.6vh,52px) var(--pad)}
 @media (max-width:899px){.hero-contenu{padding-bottom:calc(14px + 66px + env(safe-area-inset-bottom,0px))}}
 .echelle{container-type:inline-size;margin:18px 0 0;font-family:var(--display);font-weight:500}
 .echelle span.l{--g:2.5rem;display:grid;grid-template-columns:var(--g) minmax(0,1fr);align-items:baseline;line-height:1.08;animation:net 1s cubic-bezier(.2,.7,.2,1) both}
@@ -141,11 +159,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .pin .carte{position:absolute;inset:0;margin:0;display:flex;align-items:flex-end;overflow:hidden;background:var(--noir);transform:translate3d(0,100%,0);transform-origin:50% 0;will-change:transform}
 .pin .carte:first-child{transform:none}
 .pin .carte img{display:none}
-.pin .carte-voile{display:block;position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(18,18,18,.96),rgba(18,18,18,.62) 26%,rgba(18,18,18,0) 50%),linear-gradient(to right,rgba(18,18,18,.72),rgba(18,18,18,0) 42%)}
+.pin .carte-voile{display:block;position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(18,18,18,.5),rgba(18,18,18,0) 40%)}
 .pin .film-scene.vertical .carte-voile{background:linear-gradient(to bottom,rgba(18,18,18,0) var(--deb),var(--noir) var(--fin))}
-.pin .carte-texte{position:relative;width:100%;padding-block:0 clamp(18px,3.4vw,44px)}
+.carte-bulle{padding:clamp(14px,2vw,22px) clamp(16px,2.4vw,28px)}
+.pin .carte-texte{position:relative;width:100%;padding-block:0 clamp(14px,3vw,40px)}
+.pin .carte-bulle{display:inline-block;max-width:min(100%,600px)}
 .pin .carte-ombre{display:block;position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
-.pin .film-nav{position:absolute;left:0;right:0;top:0;z-index:4;padding-block:12px 18px;background:linear-gradient(to bottom,rgba(18,18,18,.94),rgba(18,18,18,.6) 62%,rgba(18,18,18,0))}
+.pin .film-nav{position:absolute;left:0;right:0;top:0;z-index:4;padding-block:12px 4px;background:rgba(18,18,18,.42);-webkit-backdrop-filter:blur(22px) saturate(1.6) brightness(.68);backdrop-filter:blur(22px) saturate(1.6) brightness(.68);border-bottom:1px solid rgba(255,255,255,.12)}
 .pin .film-onglets{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px}
 .onglet{appearance:none;-webkit-appearance:none;position:relative;min-height:40px;margin:0;padding:10px 0 8px;border:0;background:none;color:var(--doux);font:500 clamp(9.5px,2.75vw,14px)/1.2 var(--texte);text-align:left;white-space:nowrap;cursor:pointer;transition:color .25s}
 .onglet::before,.onglet::after{content:"";position:absolute;left:0;right:0;top:0;height:2px}
@@ -258,18 +278,18 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @media (min-width:800px){.infos{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 /* Barre d'action sur téléphone */
-.barre{position:fixed;left:0;right:0;bottom:0;z-index:25;display:grid;grid-template-columns:1fr 1fr;gap:8px;background:rgba(18,18,18,.72);-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);border-top:1px solid rgba(255,255,255,.14);padding:8px max(12px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.barre{position:fixed;left:0;right:0;bottom:0;z-index:25;display:grid;grid-template-columns:1fr 1fr;gap:8px;background:rgba(18,18,18,.42);-webkit-backdrop-filter:blur(22px) saturate(1.7) brightness(.62);backdrop-filter:blur(22px) saturate(1.7) brightness(.62);border-top:1px solid rgba(255,255,255,.14);padding:8px max(12px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
 .barre .btn{min-height:48px;padding:.5em;font-size:15px}
 body{padding-bottom:calc(66px + env(safe-area-inset-bottom,0px))}
 @media (min-width:900px){.barre{display:none}body{padding-bottom:0}}
 
 /* Apparitions au scroll : l'état de repos reste lisible sans script */
-.arme{opacity:.15;transform:translateY(22px)}
+.arme{opacity:.4;transform:translateY(14px)}
 .flou{filter:blur(10px);transform:scale(1.04)}
-.rv{transition:opacity .85s cubic-bezier(.2,.7,.2,1),transform .95s cubic-bezier(.2,.7,.2,1)}
+.rv{transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
 .fx{transition:filter 1.1s cubic-bezier(.2,.7,.2,1),transform 1.3s cubic-bezier(.2,.7,.2,1)}
 .etapes li:nth-child(2).rv{transition-delay:.1s}.etapes li:nth-child(3).rv{transition-delay:.2s}
-.numero.rv{transition:opacity .85s cubic-bezier(.2,.7,.2,1),transform .95s cubic-bezier(.2,.7,.2,1),color .3s}
+.numero.rv{transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1),color .3s}
 
 /* Finesse des déliés : le Bodoni reste net et lisible, même sur un écran standard */
 .echelle b{font-optical-sizing:none;font-variation-settings:"opsz" 20}
@@ -340,31 +360,31 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
           <div class="carte">
             <canvas role="img" aria-label="Des mains découpent la forme d’une monture dans une plaque d’acétate."></canvas>
             <div class="carte-voile" aria-hidden="true"></div>
-            <div class="wrap carte-texte"><h3>La découpe</h3><p>La forme de la monture est découpée dans une plaque d’acétate.</p></div>
+            <div class="wrap carte-texte"><div class="verre carte-bulle"><h3>La découpe</h3><p>La forme de la monture est découpée dans une plaque d’acétate.</p></div></div>
             <div class="carte-ombre" aria-hidden="true"></div>
           </div>
           <div class="carte">
             <canvas role="img" aria-label="Un disque de coton polit la monture posée sur l’établi."></canvas>
             <div class="carte-voile" aria-hidden="true"></div>
-            <div class="wrap carte-texte"><h3>Le polissage</h3><p>La monture passe au disque de coton jusqu’à devenir brillante.</p></div>
+            <div class="wrap carte-texte"><div class="verre carte-bulle"><h3>Le polissage</h3><p>La monture passe au disque de coton jusqu’à devenir brillante.</p></div></div>
             <div class="carte-ombre" aria-hidden="true"></div>
           </div>
           <div class="carte">
             <canvas role="img" aria-label="Des mains fixent les charnières de la monture avec un petit tournevis."></canvas>
             <div class="carte-voile" aria-hidden="true"></div>
-            <div class="wrap carte-texte"><h3>L’assemblage</h3><p>Charnières et branches sont fixées à la main, vis par vis.</p></div>
+            <div class="wrap carte-texte"><div class="verre carte-bulle"><h3>L’assemblage</h3><p>Charnières et branches sont fixées à la main, vis par vis.</p></div></div>
             <div class="carte-ombre" aria-hidden="true"></div>
           </div>
           <div class="carte">
             <canvas role="img" aria-label="Des mains placent les deux verres dans la monture."></canvas>
             <div class="carte-voile" aria-hidden="true"></div>
-            <div class="wrap carte-texte"><h3>Les verres</h3><p>Les deux verres prennent place dans la monture.</p></div>
+            <div class="wrap carte-texte"><div class="verre carte-bulle"><h3>Les verres</h3><p>Les deux verres prennent place dans la monture.</p></div></div>
             <div class="carte-ombre" aria-hidden="true"></div>
           </div>
           <div class="carte">
             <canvas role="img" aria-label="La paire de lunettes terminée, posée sur l’établi."></canvas>
             <div class="carte-voile" aria-hidden="true"></div>
-            <div class="wrap carte-texte"><h3>La paire finie</h3><p>Il ne reste plus qu’à l’ajuster sur votre visage, en magasin.</p></div>
+            <div class="wrap carte-texte"><div class="verre carte-bulle"><h3>La paire finie</h3><p>Il ne reste plus qu’à l’ajuster sur votre visage, en magasin.</p></div></div>
             <div class="carte-ombre" aria-hidden="true"></div>
           </div>
         </div>
@@ -679,13 +699,9 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
     else { var e = Math.max(W/16, H/9); w = e*16; h = e*9; t = (H-h)/2; }
     toiles.forEach(function(c){ poser(c, w, h, (W-w)/2, t); });
     filmScene.classList.toggle('vertical', vertical);
-    // En vertical, l'image s'efface dans le noir juste avant le texte, même sur un petit écran
-    cartes.forEach(function(c){
-      var haut = c.querySelector('.carte-texte').offsetTop;
-      var fin = Math.min(t + h*.98, haut + 4), deb = Math.max(t + h*.66, fin - h*.36);
-      c.style.setProperty('--fin', fin + 'px');
-      c.style.setProperty('--deb', Math.min(deb, fin - 30) + 'px');
-    });
+    // En vertical, l'image s'efface dans le noir sous le texte : le verre laisse voir ce qui passe derrière
+    filmScene.style.setProperty('--fin', (t + h*.98) + 'px');
+    filmScene.style.setProperty('--deb', (t + h*.7) + 'px');
   }
   function demarrer(){
     cadrer();
@@ -792,7 +808,7 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
           obs.unobserve(e.target);
         }
       });
-    },{rootMargin:'0px 0px -8% 0px'});
+    },{rootMargin:'0px 0px 8% 0px'});
     els.forEach(function(el){
       if(el.getBoundingClientRect().top > innerHeight){
         el.classList.add(el.classList.contains('fx') ? 'flou' : 'arme');
