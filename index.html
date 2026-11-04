@@ -10,7 +10,6 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23121212'/%3E%3Ccircle cx='10' cy='16' r='6' fill='none' stroke='%23BA936B' stroke-width='2.4'/%3E%3Ccircle cx='22' cy='16' r='6' fill='none' stroke='%23BA936B' stroke-width='2.4'/%3E%3Cpath d='M16 15v-.5' stroke='%23BA936B' stroke-width='2.4'/%3E%3C/svg%3E">
 <link rel="preload" as="font" type="font/woff2" href="fonts/bodoni.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/hanken.woff2" crossorigin>
-<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&innerHeight>=560)document.documentElement.classList.add('pin')</script>
 <style>
 @font-face{font-family:"Bodoni Moda";font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/bodoni.woff2) format("woff2")}
 @font-face{font-family:"Bodoni Moda";font-style:italic;font-weight:400 900;font-display:swap;src:url(fonts/bodoni-italic.woff2) format("woff2")}
@@ -85,7 +84,7 @@ h2{font:500 clamp(2.1rem,5vw,3.9rem)/1.06 var(--display);margin:0;text-wrap:bala
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   .verre{--v-fond:rgba(18,18,18,.94)}
   .t-clair .verre{--v-fond:rgba(242,242,242,.97)}
-  .entete,.barre,.pin .film-nav{background:rgba(18,18,18,.96)!important}
+  .entete,.barre{background:rgba(18,18,18,.96)!important}
 }
 .section{padding-block:clamp(26px,4.5vw,56px)}
 .panneau{margin-inline:var(--marge);padding:clamp(30px,5.4vw,72px) var(--pad)}
@@ -142,41 +141,6 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .si-doigt,.si-souris{display:block}
 .si-souris{display:none}
 @media (hover:hover) and (pointer:fine){.si-doigt{display:none}.si-souris{display:block}}
-
-/* Le film : une carte par catégorie, pilotée image par image par le scroll */
-.film{position:relative;background:var(--noir)}
-.film-scene{position:relative;padding-block:clamp(48px,7vw,84px)}
-.film-scene canvas,.carte-voile,.carte-ombre,.film-onglets{display:none}
-.carte{margin-top:30px}
-.carte img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:2px;margin-bottom:14px}
-.carte h3{margin:0 0 6px;font:500 clamp(2.4rem,5vw,4.2rem)/1.05 var(--display);letter-spacing:-.01em}
-.carte p{margin:0;max-width:27em;color:var(--clair);font-size:clamp(1.02rem,1.4vw,1.15rem);line-height:1.45}
-
-.pin .film-scroll{height:550vh;height:550svh}
-.pin .film-scene{position:sticky;top:calc(var(--entete) + env(safe-area-inset-top,0px));height:var(--scene);padding:0;overflow:hidden;background:var(--noir)}
-.pin .film-scene canvas{display:block;position:absolute;max-width:none}
-.pin .film-cartes{position:absolute;inset:0}
-.pin .carte{position:absolute;inset:0;margin:0;display:flex;align-items:flex-end;overflow:hidden;background:var(--noir);transform:translate3d(0,100%,0);transform-origin:50% 0;will-change:transform}
-.pin .carte:first-child{transform:none}
-.pin .carte img{display:none}
-.pin .carte-voile{display:block;position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(18,18,18,.5),rgba(18,18,18,0) 40%)}
-.pin .film-scene.vertical .carte-voile{background:linear-gradient(to bottom,rgba(18,18,18,0) var(--deb),var(--noir) var(--fin))}
-.carte-bulle{padding:clamp(14px,2vw,22px) clamp(16px,2.4vw,28px)}
-.pin .carte-texte{position:relative;width:100%;padding-block:0 clamp(14px,3vw,40px)}
-.pin .carte-bulle{display:inline-block;max-width:min(100%,600px)}
-.pin .carte-ombre{display:block;position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
-.pin .film-nav{position:absolute;left:0;right:0;top:0;z-index:4;padding-block:12px 4px;background:rgba(18,18,18,.42);-webkit-backdrop-filter:blur(22px) saturate(1.6) brightness(.68);backdrop-filter:blur(22px) saturate(1.6) brightness(.68);border-bottom:1px solid rgba(255,255,255,.12)}
-.pin .film-onglets{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px}
-.onglet{appearance:none;-webkit-appearance:none;position:relative;min-height:40px;margin:0;padding:10px 0 8px;border:0;background:none;color:var(--doux);font:500 clamp(9.5px,2.75vw,14px)/1.2 var(--texte);text-align:left;white-space:nowrap;cursor:pointer;transition:color .25s}
-.onglet::before,.onglet::after{content:"";position:absolute;left:0;right:0;top:0;height:2px}
-.onglet::before{background:var(--filet)}
-.onglet::after{background:var(--accent);transform-origin:left;transform:scaleX(var(--f,0))}
-.onglet:hover,.onglet.on{color:var(--txt)}
-@media (max-width:899px){
-  .pin .film-scene{height:calc(var(--scene) - 66px - env(safe-area-inset-bottom,0px))}
-  .pin .film-scroll{background:var(--noir)}
-  .pin .carte p{font-size:16px}
-}
 
 /* Les trois ÉCO : photos à faire défiler */
 .eco-intro{margin-bottom:clamp(12px,1.8vw,20px)}
@@ -293,7 +257,7 @@ body{padding-bottom:calc(66px + env(safe-area-inset-bottom,0px))}
 
 /* Finesse des déliés : le Bodoni reste net et lisible, même sur un écran standard */
 .echelle b{font-optical-sizing:none;font-variation-settings:"opsz" 20}
-h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-variation-settings:"opsz" 14}
+h2,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-variation-settings:"opsz" 14}
 .numero{font-optical-sizing:none;font-variation-settings:"opsz" 9}
 
 @media (prefers-reduced-motion:reduce){
@@ -312,7 +276,6 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
       <small>Optique traditionnelle et reconditionnée</small>
     </a>
     <nav class="nav" aria-label="Navigation">
-      <a href="#fabrication">La fabrication</a>
       <a href="#eco">Notre approche</a>
       <a href="#reprise">Reprise</a>
       <a href="#magasin">Le magasin</a>
@@ -344,51 +307,6 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
     </div>
     <div class="fenetre" id="fenetre">
       <p class="verre">Notre nom est caché dans le liquide. <span class="si-doigt">Cherchez-le du doigt.</span><span class="si-souris">Cherchez-le à la souris.</span></p>
-    </div>
-  </section>
-
-  <section class="film" id="fabrication">
-    <div class="film-scroll" id="film-scroll">
-      <div class="film-scene" id="film-scene">
-        <div class="film-nav" id="film-nav">
-          <div class="wrap">
-            <h2 class="etiquette">Comment naît une paire de lunettes</h2>
-            <div class="film-onglets" role="group" aria-label="Aller à une étape"><button type="button" class="onglet on">Découpe</button><button type="button" class="onglet">Polissage</button><button type="button" class="onglet">Assemblage</button><button type="button" class="onglet">Verres</button><button type="button" class="onglet">Paire finie</button></div>
-          </div>
-        </div>
-        <div class="film-cartes">
-          <div class="carte">
-            <canvas role="img" aria-label="Des mains découpent la forme d’une monture dans une plaque d’acétate."></canvas>
-            <div class="carte-voile" aria-hidden="true"></div>
-            <div class="wrap carte-texte"><div class="verre carte-bulle"><h3>La découpe</h3><p>La forme de la monture est découpée dans une plaque d’acétate.</p></div></div>
-            <div class="carte-ombre" aria-hidden="true"></div>
-          </div>
-          <div class="carte">
-            <canvas role="img" aria-label="Un disque de coton polit la monture posée sur l’établi."></canvas>
-            <div class="carte-voile" aria-hidden="true"></div>
-            <div class="wrap carte-texte"><div class="verre carte-bulle"><h3>Le polissage</h3><p>La monture passe au disque de coton jusqu’à devenir brillante.</p></div></div>
-            <div class="carte-ombre" aria-hidden="true"></div>
-          </div>
-          <div class="carte">
-            <canvas role="img" aria-label="Des mains fixent les charnières de la monture avec un petit tournevis."></canvas>
-            <div class="carte-voile" aria-hidden="true"></div>
-            <div class="wrap carte-texte"><div class="verre carte-bulle"><h3>L’assemblage</h3><p>Charnières et branches sont fixées à la main, vis par vis.</p></div></div>
-            <div class="carte-ombre" aria-hidden="true"></div>
-          </div>
-          <div class="carte">
-            <canvas role="img" aria-label="Des mains placent les deux verres dans la monture."></canvas>
-            <div class="carte-voile" aria-hidden="true"></div>
-            <div class="wrap carte-texte"><div class="verre carte-bulle"><h3>Les verres</h3><p>Les deux verres prennent place dans la monture.</p></div></div>
-            <div class="carte-ombre" aria-hidden="true"></div>
-          </div>
-          <div class="carte">
-            <canvas role="img" aria-label="La paire de lunettes terminée, posée sur l’établi."></canvas>
-            <div class="carte-voile" aria-hidden="true"></div>
-            <div class="wrap carte-texte"><div class="verre carte-bulle"><h3>La paire finie</h3><p>Il ne reste plus qu’à l’ajuster sur votre visage, en magasin.</p></div></div>
-            <div class="carte-ombre" aria-hidden="true"></div>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -500,228 +418,12 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
   <a class="btn btn-ligne" href="https://www.google.com/maps/dir/?api=1&destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener">Itinéraire</a>
 </div>
 
-<script>var NB_CLIPS=[31, 36, 42, 27, 26],CLES=[22, 23, 30, 16, 25];</script>
 <script>
 (function(){
   var calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var racine = document.documentElement;
   var entete = document.getElementById('entete');
 
   function borne(v,a,b){ return Math.max(a, Math.min(b, v)); }
-  function lisse(a,b,v){ var x = borne((v-a)/(b-a), 0, 1); return x*x*(3-2*x); }
-  function epingle(){ return racine.classList.contains('pin'); }
-  function trois(i){ return ('00' + i).slice(-3); }
-
-  // La scène épinglée ne s'active que si l'écran a assez de hauteur.
-  // On ne réévalue qu'au changement de largeur : la barre d'adresse des téléphones change la hauteur en plein scroll.
-  var largeur = innerWidth;
-  function reglerPin(){
-    if(innerWidth === largeur) return;
-    largeur = innerWidth;
-    var actif = !calme && innerHeight >= 560;
-    racine.classList.toggle('pin', actif);
-    if(actif){ demarrer(); }
-    else { piloteFilm.raz(); imagesFixes(); }
-  }
-
-  // Pilote de la scène épinglée : calcule p, de 0 à 1 sur la hauteur de la scène.
-  // Léger amorti : un cran de molette glisse au lieu de sauter.
-  function Pilote(zone, bloc, dessin){
-    var cible = 0, actuel = null, enBoucle = false;
-    function boucler(){
-      var d = cible - actuel;
-      if(Math.abs(d) < .0004){ actuel = cible; dessin(actuel); enBoucle = false; return; }
-      actuel += d*.16;
-      dessin(actuel);
-      requestAnimationFrame(boucler);
-    }
-    return {
-      maj: function(){
-        var r = zone.getBoundingClientRect();
-        var course = r.height - bloc.offsetHeight;
-        if(course <= 0) return;
-        cible = borne((entete.getBoundingClientRect().bottom - r.top) / course, 0, 1);
-        if(actuel === null){ actuel = cible; dessin(actuel); }
-        else if(cible !== actuel && !enBoucle){ enBoucle = true; requestAnimationFrame(boucler); }
-      },
-      raz: function(){ actuel = null; }
-    };
-  }
-
-  // Une séquence d'images dessinée sur une toile, à la position du scroll, dans les deux sens.
-  // Un premier passage large puis on remplit : le scroll répond dès les premières images.
-  function Sequence(toile, larg, haut, n, adresse, fini){
-    toile.width = larg; toile.height = haut;
-    var ctx = toile.getContext('2d', {alpha:false});
-    var imgs = [], lance = false, voulue = 0, affichee = -1, file = [], enCours = 0, restantes = n;
-    function prete(m){ return m && m.complete && m.naturalWidth > 0; }
-    function dessiner(i){
-      voulue = i;
-      var j = i;
-      if(!prete(imgs[j])){
-        j = -1;
-        for(var k = 1; k < n; k++){
-          if(prete(imgs[i-k])){ j = i-k; break; }
-          if(prete(imgs[i+k])){ j = i+k; break; }
-        }
-        if(j < 0) return;
-      }
-      if(j === affichee) return;
-      var sens = j > affichee ? 1 : -1;
-      ctx.drawImage(imgs[j], 0, 0, larg, haut);
-      affichee = j;
-      // Prépare les images suivantes dans le sens du scroll, pour éviter les à-coups
-      for(var q = 1; q <= 4; q++){
-        var m = imgs[j + q*sens];
-        if(prete(m) && m.decode && !m.prepa){ m.prepa = 1; m.decode().catch(function(){}); }
-      }
-    }
-    function suite(){
-      while(enCours < 10 && file.length){
-        enCours++;
-        (function(i){
-          var m = new Image();
-          m.onload = m.onerror = function(){
-            enCours--; restantes--;
-            dessiner(voulue);
-            if(restantes === 0 && fini) fini();
-            suite();
-          };
-          m.src = adresse(i);
-          imgs[i] = m;
-        })(file.shift());
-      }
-    }
-    return {
-      n: n,
-      dessiner: dessiner,
-      charger: function(){
-        if(lance) return;
-        lance = true;
-        var vu = {};
-        [8,4,2,1].forEach(function(pas){
-          for(var i = 0; i < n; i += pas){ if(!vu[i]){ vu[i] = 1; file.push(i); } }
-        });
-        suite();
-      }
-    };
-  }
-
-  var filmZone = document.getElementById('film-scroll');
-  var filmScene = document.getElementById('film-scene');
-  var filmNav = document.getElementById('film-nav');
-  var cartes = [].slice.call(filmScene.querySelectorAll('.carte'));
-  var ombres = cartes.map(function(c){ return c.querySelector('.carte-ombre'); });
-  var toiles = cartes.map(function(c){ return c.querySelector('canvas'); });
-  var onglets = [].slice.call(filmScene.querySelectorAll('.onglet'));
-  // Chaque catégorie a sa séquence ; une fois chargée, elle lance la suivante
-  var clips = cartes.map(function(c,k){
-    return Sequence(toiles[k], 1280, 720, NB_CLIPS[k],
-      function(i){ return 'film/' + (k+1) + '/' + trois(i) + '.webp'; },
-      function(){ if(clips[k+1]) clips[k+1].charger(); });
-  });
-  var fixes = false, carteActive = -1, ongletActif = 0, etats = [], filmAutorise = false;
-  // Le film se charge juste après le haut de page, pour que celui-ci s'affiche d'abord
-  function autoriserFilm(){
-    if(filmAutorise) return;
-    filmAutorise = true;
-    clips[0].charger();
-    demander();
-  }
-
-  // Cinq catégories, chacune sur un cinquième de la scène. ENTREE : la part où la carte monte.
-  var ENTREE = .22;
-
-  function poserCarte(k, y, ombre, echelle, visible){
-    var e = etats[k] || (etats[k] = {});
-    if(e.y === y && e.o === ombre && e.s === echelle && e.v === visible) return;
-    e.y = y; e.o = ombre; e.s = echelle; e.v = visible;
-    var c = cartes[k], r = Math.min(22, y*1.6).toFixed(1);
-    c.style.visibility = visible ? 'visible' : 'hidden';
-    c.style.transform = 'translate3d(0,' + y.toFixed(2) + '%,0) scale(' + echelle.toFixed(4) + ')';
-    c.style.borderRadius = r + 'px ' + r + 'px 0 0';
-    ombres[k].style.opacity = ombre.toFixed(3);
-  }
-
-  function rendreFilm(p){
-    var x = p*5, i = Math.min(4, Math.floor(x)), s = x-i;
-    // Dans chaque catégorie : la carte monte, le clip joue, puis la dernière image reste à l'écran
-    var c = i === 0 ? Math.min(1, s/.86) : borne((s-.16)/.7, 0, 1);
-    if(i === 4) c = borne((s-.16)/.6, 0, 1);
-    if(i !== carteActive){
-      carteActive = i;
-      clips.forEach(function(q,k){ if(k < i) q.dessiner(q.n-1); if(k > i) q.dessiner(0); });
-    }
-    if(filmAutorise) clips[i].charger();
-    clips[i].dessiner(Math.round(c*(clips[i].n-1)));
-    var e = i === 0 ? 1 : lisse(0, ENTREE, s);
-    cartes.forEach(function(_,k){
-      if(k > i) poserCarte(k, 100, 0, 1, false);
-      else if(k === i) poserCarte(k, (1-e)*100, 0, 1, true);
-      else if(k === i-1) poserCarte(k, 0, .6*e, 1-.05*e, e < 1);
-      else poserCarte(k, 0, 0, 1, false);
-    });
-    var actif = (i > 0 && s < ENTREE/2) ? i-1 : i;
-    onglets.forEach(function(b,k){
-      var f = k < i ? 1 : (k === i ? s : 0);
-      if(b.f !== f){ b.f = f; b.style.setProperty('--f', f.toFixed(3)); }
-    });
-    if(actif !== ongletActif){
-      onglets[ongletActif].classList.remove('on');
-      onglets[actif].classList.add('on');
-      ongletActif = actif;
-    }
-  }
-  var piloteFilm = Pilote(filmZone, filmScene, rendreFilm);
-
-  // Les onglets emmènent directement à une catégorie, sa carte déjà en place
-  onglets.forEach(function(b,k){
-    b.addEventListener('click', function(){
-      clips[k].charger();
-      var r = filmZone.getBoundingClientRect(), course = r.height - filmScene.offsetHeight;
-      var base = scrollY + r.top - entete.getBoundingClientRect().bottom;
-      var u = (k + (k ? ENTREE + .02 : .03))/5;
-      scrollTo({top: base + course*u, behavior: calme ? 'auto' : 'smooth'});
-    });
-  });
-
-  // Cadrage du film : plein écran quand la place le permet. En vertical, on garde la moitié centrale
-  // de l'image pour que la monture reste entière, sous les onglets, et que le texte passe dessous.
-  var PART_MINI = .5;
-  function poser(c, w, h, l, t){
-    c.style.width = w + 'px'; c.style.height = h + 'px'; c.style.left = l + 'px'; c.style.top = t + 'px';
-  }
-  function cadrer(){
-    var W = filmScene.clientWidth, H = filmScene.clientHeight;
-    if(!W || !H || !epingle()) return;
-    var vertical = (W/H)*(9/16) < PART_MINI, w, h, t;
-    if(vertical){ w = W/PART_MINI; h = w*9/16; t = filmNav.offsetHeight*.5; }
-    else { var e = Math.max(W/16, H/9); w = e*16; h = e*9; t = (H-h)/2; }
-    toiles.forEach(function(c){ poser(c, w, h, (W-w)/2, t); });
-    filmScene.classList.toggle('vertical', vertical);
-    // En vertical, l'image s'efface dans le noir sous le texte : le verre laisse voir ce qui passe derrière
-    filmScene.style.setProperty('--fin', (t + h*.98) + 'px');
-    filmScene.style.setProperty('--deb', (t + h*.7) + 'px');
-  }
-  function demarrer(){
-    cadrer();
-    setTimeout(autoriserFilm, 900);
-    addEventListener('scroll', autoriserFilm, {passive:true, once:true});
-    demander();
-  }
-  // Sans scroll épinglé (mouvement réduit, écran très bas) : une image fixe pour chaque catégorie
-  function imagesFixes(){
-    if(fixes) return;
-    fixes = true;
-    cartes.forEach(function(c,k){
-      var m = document.createElement('img');
-      m.alt = '';
-      m.decoding = 'async';
-      m.loading = 'lazy';
-      m.src = 'film/' + (k+1) + '/' + trois(CLES[k]) + '.webp';
-      c.insertBefore(m, c.firstChild);
-    });
-  }
 
   // Les photos ÉCO à faire défiler : au doigt, à la souris, au clavier ou avec les flèches
   var defile = document.getElementById('defile');
@@ -781,20 +483,10 @@ h2,.carte h3,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-
   var attente = false;
   function maj(){
     attente = false;
-    var y = scrollY;
-    entete.classList.toggle('colle', y > 8);
-    if(epingle()) piloteFilm.maj();
+    entete.classList.toggle('colle', scrollY > 8);
   }
-  function demander(){ if(!attente){attente = true; requestAnimationFrame(maj);} }
-  addEventListener('scroll', demander, {passive:true});
-  addEventListener('resize', function(){ reglerPin(); cadrer(); demander(); majDiapo(); });
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(cadrer);
-  if(epingle()){
-    cadrer();
-    if(document.readyState === 'complete') demarrer();
-    else addEventListener('load', demarrer);
-  }
-  else { imagesFixes(); }
+  addEventListener('scroll', function(){ if(!attente){attente = true; requestAnimationFrame(maj);} }, {passive:true});
+  addEventListener('resize', majDiapo);
   maj();
   majDiapo();
 

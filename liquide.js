@@ -257,10 +257,9 @@
 
   // Le scroll fait couler le liquide. Les sections claires le font passer au blanc.
   var clairCible = 0, clair = 0, base = 0, baseCible = 0, defil = 0, defilCible = 0, temps = 7, agite = 0;
-  var dernierY = scrollY, couvert = false, balayage = -1, balayageFait = false;
+  var dernierY = scrollY, balayage = -1, balayageFait = false;
   var sectionsClaires = [].slice.call(document.querySelectorAll('.t-clair'));
-  var zoneFilm = document.getElementById('film-scroll'), fenetre = document.getElementById('fenetre');
-  var entete = document.getElementById('entete');
+  var fenetre = document.getElementById('fenetre');
   function lireScroll(){
     var y = scrollY, milieu = innerHeight/2;
     agite = Math.min(1, agite + Math.abs(y-dernierY)*.0012);
@@ -273,9 +272,6 @@
     var dansFenetre = f && f.top < innerHeight*.6 && f.bottom > innerHeight*.4;
     baseCible = dansFenetre ? .14 : 0;
     if(dansFenetre && !balayageFait && !calme){ balayageFait = true; balayage = 0; }
-    // La scène du film couvre tout l'écran : inutile de calculer le liquide derrière
-    var z = zoneFilm && zoneFilm.getBoundingClientRect(), bas = entete ? entete.getBoundingClientRect().bottom : 0;
-    couvert = !!z && z.top <= bas && z.bottom >= innerHeight;
   }
   addEventListener('scroll', lireScroll, {passive:true});
   addEventListener('resize', function(){ dimensionner(); dessinerNom(); lireScroll(); });
@@ -309,8 +305,6 @@
       if(balayage >= 1) balayage = -1;
       else toucher(w*(.06+.88*balayage), h*.5 + Math.min(w,h)*.06*Math.sin(balayage*9), .62);
     }
-    // Rien à calculer quand le liquide est entièrement caché par le film
-    if(couvert) return;
     dessiner();
     // Qualité automatique : si les images tardent, on calcule moins de points
     if(coutMs > pas*1.4){ lents++; rapides = 0; } else { rapides++; if(rapides > 30) lents = 0; }
