@@ -229,9 +229,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .champs{display:grid;gap:14px;align-content:start}
 .champ{display:grid;gap:6px;font-size:15px;font-weight:600}
 .champ small{font-size:14px;font-weight:400;color:var(--doux)}
-.champ input{width:100%;min-height:48px;padding:0 14px;border:1px solid rgba(var(--f),.3);border-radius:12px;background:rgba(255,255,255,.66);color:var(--txt);font:400 16px/1.3 var(--texte);text-shadow:none}
-.champ input::placeholder{color:rgba(var(--f),.6)}
-.champ input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.champ select{width:100%;min-height:48px;padding:0 40px 0 14px;border:1px solid rgba(var(--f),.3);border-radius:12px;background-color:rgba(255,255,255,.66);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none' stroke='%23332b20' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 5l4.5 4.5L11.5 5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:14px 14px;color:var(--txt);font:400 16px/1.3 var(--texte);text-shadow:none;text-overflow:ellipsis;cursor:pointer;appearance:none;-webkit-appearance:none}
+.champ select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.champ select:disabled{opacity:.62;cursor:default}
+.champ select option,.champ select optgroup{background:#fff;color:#1c1a17}
 .etats{min-width:0;margin:0;padding:0;border:0}
 .etats legend{margin-bottom:8px;padding:0;font-size:15px;font-weight:600}
 .puces{display:flex;flex-wrap:wrap;gap:8px}
@@ -260,7 +261,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .resultat .mention{max-width:44em}
 .estimer-refaire{appearance:none;-webkit-appearance:none;margin-top:14px;padding:0;border:0;background:none;color:inherit;font:600 15px/1.3 var(--texte);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 @media (min-width:800px){
-  .estimer-form{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:20px clamp(22px,3vw,40px)}
+  .estimer-form{gap:20px clamp(22px,3vw,40px)}
+  .estimer-form.avec-photo{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+  .estimer-form:not(.avec-photo) .champs{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px clamp(16px,2vw,24px)}
+  .estimer-form:not(.avec-photo) .etats{grid-column:1/-1}
   .depot{min-height:100%}
   .estimer-envoi{grid-column:1/-1;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:20px}
   .resultat-details{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -449,24 +453,16 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
     <div class="verre panneau estimer" id="estimer">
       <p class="etiquette">Estimation en ligne</p>
       <h2>Combien valent vos anciennes lunettes&nbsp;?</h2>
-      <p class="estimer-intro">Vue, soleil, sport, enfant, grandes marques ou sans marque&nbsp;: toutes les paires peuvent être estimées. Une photo suffit pour obtenir une première fourchette.</p>
+      <p class="estimer-intro">Vue, soleil ou sport&nbsp;: choisissez la marque et le modèle de votre paire, indiquez son état, et vous obtenez tout de suite une première fourchette.<span id="e-intro-photo" hidden> Vous pouvez aussi ajouter une photo.</span></p>
       <form class="estimer-form" id="f-estimer" novalidate>
-        <label class="depot" id="depot">
-          <input type="file" id="e-photo" accept="image/*" aria-label="Ajouter une photo de vos lunettes">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
-          <b>Ajouter une photo</b>
-          <small>La paire seule, posée à plat, de face et bien éclairée. Sans visage dans le cadre.</small>
-          <img id="e-apercu" alt="Aperçu de votre photo">
-          <span class="depot-changer" aria-hidden="true">Changer la photo</span>
-        </label>
         <div class="champs">
           <label class="champ">
-            <span>Marque <small>(si vous la connaissez)</small></span>
-            <input type="text" id="e-marque" maxlength="60" autocomplete="off" placeholder="Ray-Ban, sans marque…">
+            <span>Marque</span>
+            <select id="e-marque" disabled><option value="">Chargement de la liste…</option></select>
           </label>
           <label class="champ">
             <span>Modèle <small>(facultatif)</small></span>
-            <input type="text" id="e-modele" maxlength="60" autocomplete="off">
+            <select id="e-modele" disabled><option value="">Choisissez d’abord la marque</option></select>
           </label>
           <fieldset class="etats">
             <legend>État</legend>
@@ -479,9 +475,17 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
             </div>
           </fieldset>
         </div>
+        <label class="depot" id="depot" hidden>
+          <input type="file" id="e-photo" accept="image/*" aria-label="Ajouter une photo de vos lunettes">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          <b>Ajouter une photo</b>
+          <small>Facultatif. La paire seule, posée à plat, de face et bien éclairée. Sans visage dans le cadre.</small>
+          <img id="e-apercu" alt="Aperçu de votre photo">
+          <span class="depot-changer" aria-hidden="true">Changer la photo</span>
+        </label>
         <div class="estimer-envoi">
-          <button type="submit" class="btn btn-plein" id="e-envoi">Estimer ma reprise</button>
-          <p class="mention">Pour l’analyse, votre photo et ce que vous saisissez sont envoyés à Google (Gemini). Le site ne les conserve pas.</p>
+          <button type="submit" class="btn btn-plein" id="e-envoi" disabled>Estimer ma reprise</button>
+          <p class="mention" id="e-google" hidden>Si vous ajoutez une photo, elle est envoyée à Google (Gemini) pour l’analyse, avec ce que vous avez choisi. Le site ne la conserve pas.</p>
         </div>
       </form>
       <p class="estimer-msg" id="e-msg" role="alert" hidden></p>
@@ -491,15 +495,15 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
         <p class="resultat-suite" id="r-suite"></p>
         <dl class="resultat-details">
           <div><dt>La paire</dt><dd id="r-paire"></dd></div>
-          <div><dt>État retenu</dt><dd id="r-etat"></dd></div>
-          <div><dt>Reconnaissance</dt><dd id="r-fiab"></dd></div>
+          <div id="r-etat-bloc"><dt>État retenu</dt><dd id="r-etat"></dd></div>
+          <div id="r-fiab-bloc"><dt>Reconnaissance</dt><dd id="r-fiab"></dd></div>
           <div id="r-def-bloc"><dt>Défauts vus</dt><dd id="r-defauts"></dd></div>
         </dl>
         <div class="actions">
           <a class="btn btn-plein" href="tel:+33372739543">Appeler le magasin</a>
           <a class="btn btn-ligne" href="https://www.google.com/maps/dir/?api=1&destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener">Venir à Golbey</a>
         </div>
-        <p class="mention">Estimation indicative et non contractuelle&nbsp;: la valeur définitive est fixée en magasin, après examen de la monture. Voir conditions en magasin. Maquette&nbsp;: montants calculés avec un barème d’exemple, à valider par le magasin.</p>
+        <p class="mention">Estimation indicative et non contractuelle&nbsp;: la valeur définitive est fixée en magasin, après examen de la monture. Voir conditions en magasin. Maquette&nbsp;: liste de marques et barème d’exemple, à valider par le magasin.</p>
         <button type="button" class="estimer-refaire" id="e-refaire">Estimer une autre paire</button>
       </div>
     </div>
@@ -595,36 +599,81 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
     if(window.__liquide) window.__liquide.figer(fige);
   });
 
-  // Estimation de reprise : la photo est réduite ici, envoyée au service du site, et le résultat affiché tel quel
+  // Estimation de reprise : marque et modèle choisis dans la liste. Si le service le permet, une photo en plus,
+  // réduite ici avant l'envoi. Le résultat est affiché tel quel.
   (function(){
     var form = document.getElementById('f-estimer');
+    var champMarque = document.getElementById('e-marque'), champModele = document.getElementById('e-modele');
     var depot = document.getElementById('depot'), champPhoto = document.getElementById('e-photo'), apercu = document.getElementById('e-apercu');
     var envoi = document.getElementById('e-envoi'), msg = document.getElementById('e-msg'), resultat = document.getElementById('e-resultat');
     var LIBELLE = envoi.textContent;
     var MESSAGES = {
-      non_branche: 'L’estimation en ligne n’est pas encore activée. Appelez-nous au 03 72 73 95 43, ou passez en magasin.',
-      cle_refusee: 'L’estimation en ligne n’est pas disponible pour le moment. Appelez-nous au 03 72 73 95 43, ou passez en magasin.',
-      quota: 'L’estimation en ligne est très demandée en ce moment. Réessayez un peu plus tard, ou appelez-nous au 03 72 73 95 43.',
-      trop_de_demandes: 'Vous avez fait beaucoup d’estimations d’affilée. Réessayez dans quelques minutes, ou appelez-nous au 03 72 73 95 43.',
+      indisponible: 'L’estimation en ligne n’est pas disponible pour le moment. Appelez-nous au 03 72 73 95 43, ou passez en magasin.',
+      non_branche: 'L’analyse par photo n’est pas disponible pour le moment. Choisissez votre marque dans la liste, ou appelez-nous au 03 72 73 95 43.',
+      cle_refusee: 'L’analyse par photo n’est pas disponible pour le moment. Choisissez votre marque dans la liste, ou appelez-nous au 03 72 73 95 43.',
+      quota: 'L’analyse par photo est très demandée en ce moment. Réessayez un peu plus tard, ou choisissez votre marque dans la liste.',
+      trop_de_demandes: 'Vous avez envoyé beaucoup de photos d’affilée. Réessayez dans quelques minutes, ou choisissez votre marque dans la liste.',
+      ajouter_photo: 'Cette marque n’est pas dans la liste. Ajoutez une photo pour une première estimation, ou montrez la paire à nos opticiens.',
       pas_de_lunettes: 'Nous ne voyons pas de lunettes sur cette photo. Essayez avec la paire posée à plat, de face.',
       plusieurs_paires: 'Nous voyons plusieurs paires. Photographiez-en une seule à la fois.',
       photo_floue: 'La photo est trop floue ou trop sombre. Essayez à la lumière du jour, la paire posée à plat.',
       image: 'Cette image ne peut pas être lue. Essayez avec une photo au format JPEG ou PNG.',
       format: 'Ce format d’image ne s’ouvre pas ici. Essayez avec une photo au format JPEG ou PNG.',
-      vide: 'Ajoutez une photo, ou indiquez au moins la marque.',
+      vide: 'Choisissez d’abord la marque de vos lunettes.',
+      vide_photo: 'Choisissez une marque, ou ajoutez une photo.',
       reseau: 'La connexion a échoué. Vérifiez votre réseau et réessayez.'
+    };
+    var MOTIFS = {
+      hors_liste: 'Cette marque n’est pas encore dans notre liste. Montrez la paire à nos opticiens : ils l’estimeront sur place.',
+      connectees: 'Une paire connectée ne s’estime pas à distance, car il faut aussi contrôler son électronique. Montrez-la à nos opticiens.'
     };
     var ERREUR = 'L’estimation n’a pas abouti. Réessayez dans un instant, ou appelez-nous au 03 72 73 95 43.';
     var TYPES = {vue:'Lunettes de vue', solaire:'Lunettes de soleil', sport:'Lunettes de sport', lecture:'Lunettes de lecture', enfant:'Lunettes pour enfant', connectees:'Lunettes connectées', autre:'Lunettes', inconnu:'Lunettes'};
     var MATIERES = {acetate:'acétate', plastique:'plastique', metal:'métal', titane:'titane', bois:'bois', corne:'corne', mixte:'matières mixtes', sans_monture:'sans monture'};
     var ETATS = {comme_neuf:'Comme neuves', tres_bon:'Très bon état', bon:'Bon état', use:'Usées', abime:'Abîmées', casse:'Cassées'};
     var FIABILITE = {sure:'Monture reconnue', probable:'Monture probablement reconnue', a_confirmer:'À confirmer en magasin'};
-    var photo = null, urlApercu = null, enCours = false;
+    var photo = null, urlApercu = null, enCours = false, photoDisponible = false;
+    var modelesDeLaMarque = Object.create(null);
 
     function dire(texte){
       msg.textContent = texte || '';
       msg.hidden = !texte;
     }
+    function option(parent, valeur, texte){
+      var o = document.createElement('option');
+      o.value = valeur;
+      o.textContent = texte;
+      parent.appendChild(o);
+    }
+    function remplirMarques(liste){
+      function groupe(libelle, marques){
+        var g = document.createElement('optgroup');
+        g.label = libelle;
+        marques.forEach(function(m){ option(g, m.nom, m.nom); });
+        champMarque.appendChild(g);
+      }
+      champMarque.textContent = '';
+      option(champMarque, '', 'Choisir une marque');
+      option(champMarque, 'sans_marque', 'Sans marque ou marque d’opticien');
+      groupe('Marques courantes', liste.filter(function(m){ return m.courante; }));
+      groupe('Toutes les marques', liste);
+      option(champMarque, 'autre_marque', 'Autre marque (pas dans la liste)');
+      liste.forEach(function(m){ modelesDeLaMarque[m.nom] = m.modeles; });
+      champMarque.disabled = false;
+    }
+    function remplirModeles(){
+      var modeles = modelesDeLaMarque[champMarque.value];
+      champModele.textContent = '';
+      if(!modeles){
+        option(champModele, '', champMarque.value ? 'Sans objet pour ce choix' : 'Choisissez d’abord la marque');
+        champModele.disabled = true;
+        return;
+      }
+      option(champModele, '', modeles.length ? 'Je ne sais pas, ou autre modèle' : 'Tous les modèles de cette marque');
+      modeles.forEach(function(m){ option(champModele, m, m); });
+      champModele.disabled = !modeles.length;
+    }
+    champMarque.addEventListener('change', function(){ dire(''); remplirModeles(); });
     // La photo est réduite et réencodée : envoi léger, et les données de localisation du fichier disparaissent
     function preparer(fichier){
       return new Promise(function(ok, ko){
@@ -669,7 +718,7 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
       var q = r.reprise, p = r.paire, euros = function(v){ return v + '\u00a0€'; };
       if(q.a_voir_en_magasin){
         ecrire('r-montant', 'À voir en magasin');
-        ecrire('r-suite', 'Difficile de donner une valeur à distance à cette paire. Montrez-la à nos opticiens.');
+        ecrire('r-suite', MOTIFS[q.motif] || 'Difficile de donner une valeur à distance à cette paire. Montrez-la à nos opticiens.');
       } else if(q.plafond_atteint){
         ecrire('r-montant', 'À partir de ' + euros(q.min));
         ecrire('r-suite', 'Une paire de cette valeur s’estime en magasin. Le montant retenu est déduit de votre facture.');
@@ -677,11 +726,16 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
         ecrire('r-montant', 'Entre ' + euros(q.min) + ' et ' + euros(q.max));
         ecrire('r-suite', 'déduits de votre facture, après vérification de la monture en magasin.');
       }
-      var nom = [p.marque, p.modele].filter(Boolean).join(' ');
+      // « Ray-Ban Meta » plutôt que « Ray-Ban Ray-Ban Meta »
+      var nom = q.motif === 'hors_liste' ? 'd’une autre marque'
+        : p.marque && p.modele && p.modele.indexOf(p.marque) === 0 ? p.modele
+        : [p.marque, p.modele].filter(Boolean).join(' ');
       var matiere = MATIERES[p.matiere] ? ', ' + MATIERES[p.matiere] : '';
       ecrire('r-paire', (TYPES[p.type] || 'Lunettes') + (nom ? ' ' + nom : '') + matiere);
       ecrire('r-etat', (ETATS[q.etat] || 'Bon état') + (q.etat_a_confirmer ? ', à confirmer' : ''));
-      ecrire('r-fiab', FIABILITE[q.reconnaissance] || FIABILITE.a_confirmer);
+      document.getElementById('r-etat-bloc').hidden = !!q.motif;
+      ecrire('r-fiab', FIABILITE[q.reconnaissance] || '');
+      document.getElementById('r-fiab-bloc').hidden = !FIABILITE[q.reconnaissance];
       var def = (p.defauts || []).join(', ');
       document.getElementById('r-def-bloc').hidden = !def;
       ecrire('r-defauts', def);
@@ -694,15 +748,15 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
     form.addEventListener('submit', function(e){
       e.preventDefault();
       if(enCours) return;
-      var marque = document.getElementById('e-marque').value.trim();
-      var modele = document.getElementById('e-modele').value.trim();
+      var marque = champMarque.value, modele = champModele.value;
       var coche = form.querySelector('input[name="etat"]:checked');
-      if(!photo && !marque){ dire(MESSAGES.vide); return; }
+      if(!photo && !marque){ dire(photoDisponible ? MESSAGES.vide_photo : MESSAGES.vide); return; }
+      if(!photo && marque === 'autre_marque' && photoDisponible){ dire(MESSAGES.ajouter_photo); return; }
       dire('');
       enCours = true;
       envoi.disabled = true;
       envoi.classList.add('charge');
-      envoi.textContent = 'Analyse en cours…';
+      envoi.textContent = photo ? 'Analyse en cours…' : 'Calcul en cours…';
       var arret = window.AbortController ? new AbortController() : null;
       var minuteur = arret ? setTimeout(function(){ arret.abort(); }, 40000) : 0;
       fetch('/api/estimer', {
@@ -729,19 +783,29 @@ h2,.diapo h3,.etapes li::before,.avis b,.resultat-montant{font-optical-sizing:no
     document.getElementById('e-refaire').addEventListener('click', function(){
       retirerPhoto();
       form.reset();
+      remplirModeles();
       resultat.hidden = true;
       form.hidden = false;
       dire('');
-      depot.scrollIntoView({block: 'center', behavior: calme ? 'auto' : 'smooth'});
+      form.scrollIntoView({block: 'center', behavior: calme ? 'auto' : 'smooth'});
     });
 
-    // Tant que la clé n'est pas ajoutée sur le serveur, on le dit tout de suite
+    // La liste vient du service du site. La photo n'apparaît que si la clé Gemini y est présente.
+    function indisponible(){
+      champMarque.options[0].textContent = 'Liste indisponible';
+      dire(MESSAGES.indisponible);
+    }
     fetch('/api/estimer').then(function(r){ return r.ok ? r.json() : null; }).then(function(r){
-      if(r && r.branche === false){
-        envoi.disabled = true;
-        dire(MESSAGES.non_branche);
-      }
-    }, function(){});
+      if(!r || !Array.isArray(r.marques) || !r.marques.length){ indisponible(); return; }
+      remplirMarques(r.marques);
+      remplirModeles();
+      envoi.disabled = false;
+      photoDisponible = r.branche === true;
+      depot.hidden = !photoDisponible;
+      document.getElementById('e-google').hidden = !photoDisponible;
+      document.getElementById('e-intro-photo').hidden = !photoDisponible;
+      form.classList.toggle('avec-photo', photoDisponible);
+    }, indisponible);
   })();
 
   // Les photos ÉCO à faire défiler : au doigt, à la souris, au clavier ou avec les flèches
