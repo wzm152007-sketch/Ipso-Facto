@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="fr" data-theme="eco">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>L'Écopticien</title>
+<meta name="description" content="L'Écopticien, opticien à Golbey dans les Vosges. Lunettes neuves et reconditionnées, reprise de vos anciennes montures.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#121212">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23121212'/%3E%3Ccircle cx='10' cy='16' r='6' fill='none' stroke='%23BA936B' stroke-width='2.4'/%3E%3Ccircle cx='22' cy='16' r='6' fill='none' stroke='%23BA936B' stroke-width='2.4'/%3E%3Cpath d='M16 15v-.5' stroke='%23BA936B' stroke-width='2.4'/%3E%3C/svg%3E">
+<link rel="preload" as="font" type="font/woff2" href="fonts/bodoni.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/hanken.woff2" crossorigin>
+<style>
+@font-face{font-family:"Bodoni Moda";font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/bodoni.woff2) format("woff2")}
+@font-face{font-family:"Bodoni Moda";font-style:italic;font-weight:400 900;font-display:swap;src:url(fonts/bodoni-italic.woff2) format("woff2")}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/hanken.woff2) format("woff2")}
+@font-face{font-family:"DM Mono";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/dm-mono.woff2) format("woff2")}
+/* Concept : le magasin et le geste de l'opticien. Le titre est une échelle de Monoyer,
+   le fond est un chrome liquide où le nom du magasin est caché, les sections flottent dessus en verre.
+   Couleurs relevées sur le site actuel et dans le magasin :
+   noir, blanc et gris des textes du site, clair des pictos du site,
+   chêne du comptoir, or du cadre du miroir. */
+:root{
+  --noir:#121212; --noir-2:#161616; --blanc:#FFFFFF; --clair:#F2F2F2; --gris:#9F9F9F; --gris-fonce:#595959;
+  --chene:#BA936B; --or:#765D35;
+  --f:18,18,18; --c:242,242,242;
+  --display:"Bodoni Moda","Didot","Bodoni MT",Georgia,serif;
+  --texte:"Hanken Grotesk","Helvetica Neue",Arial,sans-serif;
+  --mono:"DM Mono",ui-monospace,Menlo,monospace;
+  --entete:68px;
+  --pad:clamp(20px,4vw,56px);
+  --arrondi:clamp(20px,2.4vw,30px);
+  --arrondi-photo:clamp(11px,1.3vw,17px);
+  --marge:max(10px,env(safe-area-inset-left,0px));
+  --scene:calc(100vh - var(--entete) - env(safe-area-inset-top,0px));
+  color-scheme:dark;
+}
+@supports (height:100svh){:root{--scene:calc(100svh - var(--entete) - env(safe-area-inset-top,0px))}}
+@media (min-width:900px){:root{--marge:max(32px,calc((100vw - 1280px)/2))}}
+/* Thème écologique : le vert du sous-bois et le papier recyclé remplacent le noir et le blanc, le chêne reste */
+[data-theme="eco"]{--noir:#0B2116;--noir-2:#0F2A1D;--blanc:#F7F6EC;--clair:#EEF1E2;--gris-fonce:#4E5F52;--or:#2F5A3A;--f:8,30,20;--c:238,241,226}
+[data-theme="eco"] .si-chrome{display:none!important}
+html:not([data-theme="eco"]) .si-eco{display:none!important}
+/* Deux ambiances : le noir du site et de l'enseigne, le clair des murs du magasin */
+.t-noir{--fond:var(--noir);--fond-2:var(--noir-2);--txt:var(--blanc);--doux:rgba(var(--c),.9);--filet:rgba(255,255,255,.18);--accent:var(--chene);--plein:var(--blanc);--sur-plein:var(--noir);color:var(--txt)}
+.t-clair{--fond:var(--clair);--fond-2:#E4E4E4;--txt:var(--noir);--doux:rgba(var(--f),.84);--filet:rgba(var(--f),.18);--accent:var(--or);--plein:var(--noir);--sur-plein:var(--blanc);color:var(--txt)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--noir);transition:background-color .7s}
+body{margin:0;font:400 17px/1.6 var(--texte);overflow-x:clip;transition:color .7s}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+section[id]{scroll-margin-top:var(--entete)}
+.wrap{width:100%;max-width:1280px;margin-inline:auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.etiquette{font:500 12px/1.3 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0}
+h2{font:500 clamp(2.1rem,5vw,3.9rem)/1.06 var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+
+/* Le liquide reste fixé derrière tout le site */
+#liquide{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:-1;display:block;pointer-events:none}
+
+/* Liquid Glass : le liquide reste visible à travers, flouté et assombri pour que le texte se lise.
+   Un liseré de lumière fait le tour du panneau, et les bords s'éclairent comme une épaisseur de verre. */
+.verre{
+  --v-fond:rgba(var(--f),.4);
+  --accent:#D6B996; /* le chêne, éclairci pour rester lisible sur le verre */
+  position:relative;
+  background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.02) 38%,rgba(255,255,255,0) 62%,rgba(255,255,255,.05)),var(--v-fond);
+  -webkit-backdrop-filter:blur(26px) saturate(1.7) brightness(.58);backdrop-filter:blur(26px) saturate(1.7) brightness(.58);
+  border:1px solid rgba(255,255,255,.1);border-radius:var(--arrondi);
+  transition:background-color .7s,color .7s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(255,255,255,.16),inset 0 20px 32px -24px rgba(255,255,255,.3),inset 0 -20px 32px -26px rgba(255,255,255,.14),0 24px 60px rgba(0,0,0,.45);
+  text-shadow:0 1px 2px rgba(0,0,0,.4);
+}
+.verre::before{
+  content:"";position:absolute;inset:-1px;padding:1px;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.8),rgba(255,255,255,.14) 30%,rgba(255,255,255,.04) 60%,rgba(255,255,255,.46));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;
+}
+.t-clair .verre{
+  --v-fond:rgba(var(--c),.66);
+  --accent:#5A4524; /* l'or, foncé pour rester lisible sur le verre */
+  -webkit-backdrop-filter:blur(26px) saturate(1.5) brightness(1.25);backdrop-filter:blur(26px) saturate(1.5) brightness(1.25);
+  border-color:rgba(255,255,255,.45);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.5),inset 0 20px 32px -24px rgba(255,255,255,.8),0 24px 60px rgba(var(--f),.2);
+  text-shadow:0 1px 1px rgba(255,255,255,.4);
+}
+[data-theme="eco"] .verre{--accent:#DCC49E}
+[data-theme="eco"] .t-clair .verre{--accent:#2F5A3A}
+.t-clair .verre::before{background:linear-gradient(135deg,#fff,rgba(255,255,255,.4) 34%,rgba(var(--f),.1) 62%,#fff)}
+.sans-liquide .t-clair .verre{--v-fond:var(--clair)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .verre{--v-fond:rgba(var(--f),.94)}
+  .t-clair .verre{--v-fond:rgba(var(--c),.97)}
+  .entete,.barre{background:rgba(var(--f),.96)!important}
+}
+.section{padding-block:clamp(26px,4.5vw,56px)}
+.panneau{margin-inline:var(--marge);padding:clamp(30px,5.4vw,72px) var(--pad)}
+
+/* Boutons */
+.btn{text-shadow:none;display:inline-flex;align-items:center;justify-content:center;gap:.6em;min-height:50px;padding:.7em 1.5em;font:600 16px/1.2 var(--texte);text-decoration:none;border:1px solid var(--txt);border-radius:999px;transition:background .25s,color .25s,border-color .25s}
+.btn-plein{background:var(--plein);color:var(--sur-plein);border-color:var(--plein)}
+.btn-plein:hover{background:var(--accent);border-color:var(--accent)}
+.btn-ligne{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.btn-ligne:hover{background:var(--txt);color:var(--fond)}
+
+/* En-tête */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--noir)}
+.entete{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(var(--f),.42);-webkit-backdrop-filter:blur(22px) saturate(1.7) brightness(.62);backdrop-filter:blur(22px) saturate(1.7) brightness(.62);border-bottom:1px solid rgba(255,255,255,.08);transition:border-color .3s,background-color .7s}
+.entete.colle{border-color:rgba(255,255,255,.2)}
+.entete .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;height:var(--entete)}
+.entete-droite{display:flex;align-items:center;gap:clamp(8px,1.8vw,24px)}
+.theme{display:inline-flex;align-items:center;justify-content:center;gap:.5em;flex:none;width:40px;height:40px;padding:0;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.35);color:var(--txt);font:600 14px/1 var(--texte);white-space:nowrap;cursor:pointer;transition:background-color .35s,border-color .35s,color .35s}
+.theme svg{width:18px;height:18px;flex:none;fill:currentColor}
+.theme:hover{border-color:var(--chene)}
+[data-theme="eco"] .theme{background:var(--clair);border-color:var(--clair);color:var(--noir)}
+.theme .mot{display:none}
+@media (min-width:900px){.theme{width:auto;padding:0 15px}.theme .mot{display:inline}}
+@media (max-width:379px){.entete .tel-mobile{display:none!important}}
+.logo{display:inline-block;flex:none;padding:6px 11px 5px;border:1px solid var(--txt);text-decoration:none;text-align:center;line-height:1}
+.logo b{display:block;font:500 17px/1.1 var(--display);letter-spacing:.06em}
+.logo small{display:block;white-space:nowrap;margin-top:2px;font:500 6.5px/1.2 var(--texte);letter-spacing:.09em;text-transform:uppercase}
+.nav{display:none;gap:30px;align-items:center;font-size:15px}
+.nav a{text-decoration:none;position:relative;padding:6px 0}
+.nav a:not(.tel)::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.nav a:hover::after{transform:scaleX(1)}
+.tel{font:600 15px/1 var(--texte);font-variant-numeric:tabular-nums;white-space:nowrap}
+.entete .tel-mobile{display:inline-block;font-size:14px;text-decoration:none}
+@media (min-width:900px){.nav{display:flex}.entete .tel-mobile{display:none}}
+@media (max-width:1100px){.nav{gap:20px}}
+
+/* Haut de page : le texte dans un panneau de verre, posé sur le liquide */
+.hero-contenu{display:flex;align-items:center;min-height:var(--scene);margin-inline:var(--marge);padding-block:clamp(14px,3vw,40px)}
+.hero-texte{width:100%;max-width:min(860px,max(480px,calc((100vh - 408px)*1.9)));min-width:0;padding:clamp(20px,4.6vh,52px) var(--pad)}
+@media (max-width:899px){.hero-contenu{padding-bottom:calc(14px + 66px + env(safe-area-inset-bottom,0px))}}
+.echelle{container-type:inline-size;margin:18px 0 0;font-family:var(--display);font-weight:500}
+.echelle span.l{--g:2.5rem;display:grid;grid-template-columns:var(--g) minmax(0,1fr);align-items:baseline;line-height:1.08;animation:net 1s cubic-bezier(.2,.7,.2,1) both}
+.echelle span.l::before,.dix::before{content:attr(data-a);font:500 10px/1 var(--mono);color:var(--doux);letter-spacing:0;text-transform:none}
+.echelle span.l b{font-weight:500;white-space:nowrap}
+.l1 b{font-size:calc((100cqw - 2.5rem)/5.22)}
+.l2{animation-delay:.16s!important}.l2 b{font-size:calc((100cqw - 2.5rem)/7.1)}
+.l3{animation-delay:.32s!important}.l3 b{font-size:calc((100cqw - 2.5rem)/9.85)}
+.l2e{animation-delay:.16s!important}.l2e b{font-size:calc((100cqw - 2.5rem)/9.85)}
+.l3e{animation-delay:.32s!important}.l3e b{font-size:calc((100cqw - 2.5rem)/15.8)}
+.dix{display:grid;grid-template-columns:2.5rem minmax(0,1fr);align-items:baseline;margin:12px 0 26px;font:500 clamp(10.5px,1.05vw,12.5px)/1.3 var(--display);letter-spacing:.1em;text-transform:uppercase;animation:net 1s .48s both}
+.accroche{font-size:clamp(1.08rem,1.7vw,1.25rem);line-height:1.5;margin:0 0 26px;max-width:32em;color:var(--clair);animation:apparait .9s .55s both}
+.accroche strong{font-weight:600;color:var(--txt)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;animation:apparait .9s .65s both}
+@media (max-width:480px){
+  .actions .btn{padding-inline:1em;font-size:15px}
+  .dix{letter-spacing:.06em}
+}
+.note{display:flex;align-items:center;gap:.6em;margin:20px 0 0;font-size:15px;color:var(--clair);animation:apparait .9s .75s both}
+.note i{font-style:normal;color:var(--accent);letter-spacing:.08em}
+@keyframes net{from{filter:blur(12px);opacity:.25}to{filter:none;opacity:1}}
+@keyframes apparait{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fenetre{position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:center;height:85vh;height:85svh;padding:0 16px clamp(34px,9vh,84px)}
+.fenetre p{margin:0;padding:12px 24px;border-radius:26px;font-size:15px;line-height:1.35;text-align:center}
+.si-doigt,.si-souris{display:block}
+.si-souris{display:none}
+@media (hover:hover) and (pointer:fine){.si-doigt{display:none}.si-souris{display:block}}
+
+/* Les trois ÉCO : photos à faire défiler */
+.eco-intro{margin-bottom:clamp(12px,1.8vw,20px)}
+.eco-intro h2{max-width:15em;margin-top:12px}
+.defile{position:relative;display:flex;gap:clamp(10px,1.6vw,20px);overflow-x:auto;scroll-snap-type:x mandatory;padding:2px var(--marge) 30px;scroll-padding-inline:var(--marge);scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;cursor:grab}
+.defile::-webkit-scrollbar{display:none}
+.defile::after{content:"";flex:0 0 1px}
+.defile.tire{cursor:grabbing;scroll-snap-type:none;user-select:none;-webkit-user-select:none}
+.diapo{flex:0 0 min(84vw,620px);min-width:0;margin:0;padding:10px 10px 24px;scroll-snap-align:start}
+.diapo-texte{padding-inline:10px}
+.diapo-photo{overflow:hidden;aspect-ratio:4/3;border-radius:var(--arrondi-photo);background:var(--fond-2)}
+.diapo-photo img{width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
+.diapo h3{margin:20px 0 10px;font:500 clamp(2.8rem,4.6vw,4.4rem)/1 var(--display);letter-spacing:-.01em;white-space:nowrap}
+.diapo h3 b{font-weight:500;color:var(--accent)}
+.diapo h3 em{font-weight:400}
+.diapo p{margin:0;max-width:30em;color:var(--doux);font-size:clamp(1.02rem,1.3vw,1.12rem);line-height:1.5}
+.diapo small{display:block;margin-top:8px;font-size:14px}
+.defile-bas{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:-14px var(--marge) 0}
+.defile-points{display:flex;flex:1;gap:6px;max-width:190px;padding:14px 18px;border-radius:999px}
+.defile-points i{flex:1;height:2px;background:var(--filet);transition:background .25s}
+.defile-points i.on{background:var(--accent)}
+.defile-fleches{display:flex;gap:8px}
+.fleche{display:grid;place-items:center;width:48px;height:48px;padding:0;border-radius:50%;color:var(--txt);cursor:pointer;transition:border-color .25s,opacity .25s}
+.fleche:hover:not(:disabled){border-color:var(--accent)}
+.fleche:disabled{opacity:.45;cursor:default}
+.fleche svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+@media (min-width:900px){
+  .diapo{flex-basis:min(72vw,980px);display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(20px,2.6vw,36px);align-items:center;padding:12px}
+  .diapo h3{margin-top:0}
+  .diapo-texte{padding-inline:0 22px}
+}
+
+/* Reprise */
+.reprise h2{margin:12px 0 clamp(32px,5vw,56px);max-width:13em}
+.etapes{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--filet);counter-reset:e}
+.etapes li{counter-increment:e;display:grid;grid-template-columns:3.2rem minmax(0,1fr);padding-block:22px;border-bottom:1px solid var(--filet)}
+.etapes li::before{content:counter(e);font:500 2rem/1 var(--display);color:var(--accent)}
+.etapes h3{margin:0 0 4px;font:600 1.15rem/1.3 var(--texte)}
+.etapes p{margin:0;color:var(--doux)}
+.mention{margin:18px 0 0;font-size:14px;color:var(--doux)}
+@media (min-width:800px){
+  .etapes{grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--filet)}
+  .etapes li{display:block;padding:26px 30px 30px 0;border-bottom:0}
+  .etapes li+li{padding-left:30px;border-left:1px solid var(--filet)}
+  .etapes li::before{display:block;margin-bottom:18px;font-size:2.6rem}
+}
+
+/* Conseil */
+.conseil-grille{display:grid;gap:clamp(30px,4vw,44px);align-items:center}
+.conseil-duo{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:clamp(16px,2.2vw,26px);align-items:end;padding:8px 8px 8px}
+.miroir{position:relative}
+.miroir::after{content:"";position:absolute;inset:-7px;border:1px solid var(--accent);border-radius:999px 999px 12px 12px;pointer-events:none}
+.miroir-cadre{aspect-ratio:4/5;overflow:hidden;border-radius:999px 999px 6px 6px;background:var(--fond-2)}
+.miroir img{width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+.conseil-photo{overflow:hidden;border-radius:var(--arrondi-photo)}
+.conseil-photo img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 40%}
+.conseil h2{margin:12px 0 18px}
+.conseil p.t{margin:0 0 30px;max-width:32em;font-size:1.1rem;color:var(--doux)}
+.avis{display:flex;align-items:center;gap:18px;padding-top:22px;border-top:1px solid var(--filet)}
+.avis b{font:500 clamp(3rem,6vw,4.4rem)/1 var(--display)}
+.avis span{font-size:15px;line-height:1.35;color:var(--doux)}
+.avis i{display:block;font-style:normal;color:var(--accent);letter-spacing:.1em;font-size:17px}
+@media (min-width:900px){.conseil-grille{grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:clamp(40px,6vw,88px)}}
+
+/* Magasin */
+.magasin-tete{display:grid;gap:14px;margin-bottom:clamp(28px,4vw,48px)}
+.magasin-tete h2{margin-top:10px}
+.magasin-tete p{margin:0;max-width:30em}
+.lien{font-weight:600;text-underline-offset:4px;text-decoration-thickness:1px}
+.lien:hover{color:var(--accent)}
+.galerie{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.galerie figure{margin:0;min-width:0}
+.galerie .cadre{overflow:hidden;border-radius:var(--arrondi-photo);background:var(--fond-2)}
+.galerie img{width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+.galerie figure:hover img{transform:scale(1.03)}
+.galerie figcaption{font-size:14px;line-height:1.35;color:var(--doux);margin-top:8px}
+.g-sapin{grid-column:1/-1}.g-sapin .cadre{aspect-ratio:4/5}
+.g-a .cadre,.g-b .cadre{aspect-ratio:4/3}
+@media (min-width:800px){
+  .magasin-tete{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:end;gap:48px}
+  .galerie{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);grid-template-rows:auto auto;gap:16px 20px}
+  .g-sapin{grid-column:1;grid-row:1/3;display:flex;flex-direction:column}
+  .g-sapin .cadre{position:relative;flex:1;aspect-ratio:auto;min-height:0}
+  .g-sapin img{position:absolute;inset:0}
+  .g-a,.g-b{grid-column:2}
+}
+
+/* Contact */
+.contact h2{margin:12px 0 30px;max-width:12em}
+.numero-boite{container-type:inline-size}
+.numero{display:block;margin-bottom:34px;font:500 min(calc(100cqw/6.6),11rem)/1 var(--display);text-decoration:none;white-space:nowrap;letter-spacing:-.005em}
+.numero:hover{color:var(--accent)}
+.infos{display:grid;gap:24px;padding-block:26px;border-block:1px solid var(--filet)}
+.infos div{min-width:0}
+.infos p{margin:6px 0 0}
+.infos .btn{margin-top:10px}
+.infos a{text-underline-offset:4px;text-decoration-thickness:1px}
+.pied{display:flex;flex-wrap:wrap;gap:6px 24px;justify-content:space-between;margin-top:clamp(32px,5vw,60px);font-size:13px;color:var(--doux)}
+@media (min-width:800px){.infos{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Barre d'action sur téléphone */
+.barre{position:fixed;left:0;right:0;bottom:0;z-index:25;display:grid;grid-template-columns:1fr 1fr;gap:8px;background:rgba(var(--f),.42);-webkit-backdrop-filter:blur(22px) saturate(1.7) brightness(.62);backdrop-filter:blur(22px) saturate(1.7) brightness(.62);border-top:1px solid rgba(255,255,255,.14);padding:8px max(12px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
+.barre .btn{min-height:48px;padding:.5em;font-size:15px}
+body{padding-bottom:calc(66px + env(safe-area-inset-bottom,0px))}
+@media (min-width:900px){.barre{display:none}body{padding-bottom:0}}
+
+/* Apparitions au scroll : l'état de repos reste lisible sans script */
+.arme{opacity:.4;transform:translateY(14px)}
+.flou{filter:blur(10px);transform:scale(1.04)}
+.rv{transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.fx{transition:filter 1.1s cubic-bezier(.2,.7,.2,1),transform 1.3s cubic-bezier(.2,.7,.2,1)}
+.etapes li:nth-child(2).rv{transition-delay:.1s}.etapes li:nth-child(3).rv{transition-delay:.2s}
+.numero.rv{transition:opacity .55s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1),color .3s}
+
+/* Finesse des déliés : le Bodoni reste net et lisible, même sur un écran standard */
+.echelle b{font-optical-sizing:none;font-variation-settings:"opsz" 20}
+h2,.diapo h3,.etapes li::before,.avis b{font-optical-sizing:none;font-variation-settings:"opsz" 14}
+.numero{font-optical-sizing:none;font-variation-settings:"opsz" 9}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .fenetre{display:none}
+}
+</style>
+</head>
+<body class="t-noir">
+<canvas id="liquide" aria-hidden="true"></canvas>
+<header class="entete" id="entete">
+  <div class="wrap">
+    <a class="logo" href="#haut" aria-label="L’Écopticien, retour en haut">
+      <b>L’ÉCOPTICIEN</b>
+      <small>Optique traditionnelle et reconditionnée</small>
+    </a>
+    <div class="entete-droite">
+    <nav class="nav" aria-label="Navigation">
+      <a href="#eco">Notre approche</a>
+      <a href="#reprise">Reprise</a>
+      <a href="#magasin">Le magasin</a>
+      <a href="#contact">Contact</a>
+      <a class="tel" href="tel:+33372739543">03 72 73 95 43</a>
+    </nav>
+    <a class="tel tel-mobile" href="tel:+33372739543">03 72 73 95 43</a>
+    <button type="button" class="theme" id="theme" aria-pressed="false" aria-label="Passer au thème écologique"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 3C11.5 2.7 4 7 4 14.4c0 1.800.5 3.400 1.300 4.700C6.400 14.800 9.300 11.300 14 9.200c-3.800 2.900-6.100 6.400-6.900 11 1 .4 2.100.6 3.200.6C17.800 20.800 22 13 21 3z"/></svg><span class="mot si-chrome">Thème écologique</span><span class="mot si-eco">Thème chrome</span></button>
+    </div>
+  </div>
+</header>
+
+<main id="haut">
+  <section class="hero" id="hero">
+    <div class="hero-contenu">
+      <div class="verre hero-texte">
+        <p class="etiquette">Opticien à Golbey, dans les Vosges</p>
+        <h1 class="echelle" id="titre" aria-label="Lunettes neuves et reconditionnées" data-eco="Lunettes reconditionnées par nos artisans lunetiers">
+          <span class="l l1" data-a="1/10"><b>LUNETTES</b></span>
+          <span class="l l2 si-chrome" data-a="2/10"><b>NEUVES ET</b></span>
+          <span class="l l3 si-chrome" data-a="3/10"><b>RECONDITIONNÉES</b></span>
+          <span class="l l2e si-eco" data-a="2/10"><b>RECONDITIONNÉES</b></span>
+          <span class="l l3e si-eco" data-a="3/10"><b>PAR NOS ARTISANS LUNETIERS</b></span>
+        </h1>
+        <p class="dix" data-a="10/10"><span>Cette ligne est floue&nbsp;? Passez nous voir.</span></p>
+        <p class="accroche"><span class="si-chrome">Grandes marques à prix serrés, montures remises à neuf par nos artisans lunetiers.</span><span class="si-eco">Équipez-vous de manière plus responsable&nbsp;: nos artisans lunetiers remettent des montures à neuf.</span> <strong>Apportez vos anciennes lunettes&nbsp;: leur valeur est déduite de votre facture.</strong></p>
+        <div class="actions">
+          <a class="btn btn-plein" href="tel:+33372739543">Appeler le magasin</a>
+          <a class="btn btn-ligne" href="https://www.google.com/maps/dir/?api=1&destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener">Venir à Golbey</a>
+        </div>
+        <p class="note"><i aria-hidden="true">★★★★★</i> 5,0 sur Google, 38 avis</p>
+      </div>
+    </div>
+    <div class="fenetre" id="fenetre">
+      <p class="verre">Notre nom est caché dans le liquide. <span class="si-doigt">Cherchez-le du doigt.</span><span class="si-souris">Cherchez-le à la souris.</span></p>
+    </div>
+  </section>
+
+  <section class="eco section" id="eco">
+    <div class="verre panneau eco-intro">
+      <p class="etiquette">Pourquoi «&nbsp;Écopticien&nbsp;»&nbsp;?</p>
+      <h2><span class="si-chrome">Payer&nbsp;moins, jeter&nbsp;moins, bien&nbsp;voir.</span><span class="si-eco">Jeter&nbsp;moins, payer&nbsp;moins, bien&nbsp;voir.</span></h2>
+    </div>
+    <div class="defile" id="defile" tabindex="0" role="group" aria-label="Les trois engagements, à faire défiler">
+      <article class="diapo verre">
+        <div class="diapo-photo"><img src="img/frames.jpg" decoding="async" draggable="false" alt="Montures de grandes marques déposées sur un plateau en bois."></div>
+        <div class="diapo-texte">
+          <h3><b>ÉCO</b><em>nomique</em></h3>
+          <p>Réduisez votre reste à charge en nous apportant vos anciennes montures. Nos opticiens estiment leur valeur et la déduisent de votre facture.<small>Voir conditions en magasin.</small></p>
+        </div>
+      </article>
+      <article class="diapo verre">
+        <div class="diapo-photo"><img src="img/polish.jpg" loading="lazy" decoding="async" draggable="false" alt="Une branche de lunettes polie à la main sur une polisseuse, à l’atelier."></div>
+        <div class="diapo-texte">
+          <h3><b>ÉCO</b><em>logique</em></h3>
+          <p>Équipez-vous de manière plus responsable avec notre gamme de montures reconditionnées par nos artisans lunetiers.</p>
+        </div>
+      </article>
+      <article class="diapo verre">
+        <div class="diapo-photo"><img src="img/shelves.jpg" loading="lazy" decoding="async" draggable="false" alt="Mur d’étagères en bois garni de montures et de solaires."></div>
+        <div class="diapo-texte">
+          <h3><b>ÉCO</b><em>ptique</em></h3>
+          <p>Vous trouverez aussi chez nous des montures neuves de grandes marques, à des prix qui défient la concurrence.</p>
+        </div>
+      </article>
+    </div>
+    <div class="defile-bas">
+      <div class="defile-points verre" id="defile-points" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+      <div class="defile-fleches">
+        <button type="button" class="fleche verre" id="defile-prec" aria-label="Photo précédente" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+        <button type="button" class="fleche verre" id="defile-suiv" aria-label="Photo suivante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="reprise section t-clair" id="reprise">
+    <div class="verre panneau">
+      <p class="etiquette rv">La reprise, en pratique</p>
+      <h2 class="rv">Vos anciennes montures ont encore de la valeur.</h2>
+      <ol class="etapes">
+        <li class="rv"><div><h3>Apportez-les en magasin</h3><p>Vos anciennes lunettes, celles qui dorment dans un tiroir.</p></div></li>
+        <li class="rv"><div><h3>Nos opticiens les estiment</h3><p>Ils évaluent la valeur de votre équipement.</p></div></li>
+        <li class="rv"><div><h3>Vous payez moins</h3><p>La valeur estimée est déduite de votre facture.</p></div></li>
+      </ol>
+      <p class="mention rv">Conditions de reprise à voir en magasin.</p>
+    </div>
+  </section>
+
+  <section class="conseil section">
+    <div class="verre panneau conseil-grille">
+      <div class="conseil-duo">
+        <div class="miroir"><div class="miroir-cadre"><img class="fx" src="img/exam.jpg" loading="lazy" decoding="async" alt="L’opticien règle le réfracteur devant les yeux d’un client assis."></div></div>
+        <div class="conseil-photo"><img class="fx" src="img/fitting.jpg" loading="lazy" decoding="async" alt="L’opticien ajuste de grandes lunettes noires et claires sur le visage d’une cliente."></div>
+      </div>
+      <div>
+        <p class="etiquette rv">Le conseil</p>
+        <h2 class="rv">La bonne monture se choisit à deux.</h2>
+        <p class="t rv">Vous essayez, on regarde ensemble, et votre opticien ajuste la monture à la main sur votre visage. Vous repartez avec des lunettes qui vous vont.</p>
+        <div class="avis rv">
+          <b>5,0</b>
+          <span><i aria-hidden="true">★★★★★</i>38 avis Google</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="magasin section t-clair" id="magasin">
+    <div class="verre panneau">
+      <div class="magasin-tete">
+        <div>
+          <p class="etiquette rv">Le magasin</p>
+          <h2 class="rv">Passez nous voir à&nbsp;Golbey.</h2>
+        </div>
+        <p class="rv">Découvrez ce qui fait la particularité du magasin en une courte vidéo. <a class="lien" href="https://youtube.com/shorts/BqK9tPUe1UU" target="_blank" rel="noopener">Voir la vidéo sur YouTube</a></p>
+      </div>
+      <div class="galerie">
+        <figure class="g-sapin"><div class="cadre"><img class="fx" src="img/tree.jpg" loading="lazy" decoding="async" alt="Sapin en lattes de bois décoré de lunettes, dans le magasin."></div><figcaption>Le sapin de Noël du magasin, habillé de montures.</figcaption></figure>
+        <figure class="g-a"><div class="cadre"><img class="fx" src="img/interior.jpg" loading="lazy" decoding="async" alt="Intérieur du magasin avec comptoir en bois et tables."></div><figcaption>L’intérieur du magasin.</figcaption></figure>
+        <figure class="g-b"><div class="cadre"><img class="fx" src="img/front.jpg" loading="lazy" decoding="async" alt="Façade en briques du magasin avec l’enseigne L’Écopticien."></div><figcaption>La façade, au 28 avenue de la Fontenelle.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact section" id="contact">
+    <div class="verre panneau">
+      <p class="etiquette rv">Contact</p>
+      <h2 class="rv">Une question sur vos lunettes&nbsp;? Appelez-nous.</h2>
+      <div class="numero-boite"><a class="numero rv" href="tel:+33372739543">03 72 73 95 43</a></div>
+      <div class="infos rv">
+        <div><p class="etiquette">Adresse</p><p>28 avenue de la Fontenelle<br>88190 Golbey</p></div>
+        <div><p class="etiquette">Horaires</p><p><a href="https://www.google.com/maps/search/?api=1&query=L%27%C3%89copticien%2028%20Avenue%20de%20la%20Fontenelle%2088190%20Golbey" target="_blank" rel="noopener">Voir les horaires sur Google</a></p></div>
+        <div><p class="etiquette">Venir</p><a class="btn btn-plein" href="https://www.google.com/maps/dir/?api=1&destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener">Obtenir l’itinéraire</a></div>
+      </div>
+      <footer class="pied">
+        <span>© 2026 L’Écopticien. Tous droits réservés.</span>
+        <span>Proposition de refonte, maquette par Raccrod Production.</span>
+      </footer>
+    </div>
+  </section>
+</main>
+
+<div class="barre">
+  <a class="btn btn-plein" href="tel:+33372739543">Appeler</a>
+  <a class="btn btn-ligne" href="https://www.google.com/maps/dir/?api=1&destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener">Itinéraire</a>
+</div>
+
+<script>
+(function(){
+  var calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var entete = document.getElementById('entete');
+
+  function borne(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+  // Le bouton de thème : le liquide et les couleurs glissent de l'un à l'autre
+  var racine = document.documentElement;
+  var boutonTheme = document.getElementById('theme');
+  var titre = document.getElementById('titre'), titreChrome = titre.getAttribute('aria-label');
+  var couleurBarre = document.querySelector('meta[name="theme-color"]');
+  function appliquerTheme(eco){
+    racine.setAttribute('data-theme', eco ? 'eco' : 'chrome');
+    boutonTheme.setAttribute('aria-pressed', eco ? 'true' : 'false');
+    boutonTheme.setAttribute('aria-label', eco ? 'Revenir au thème chrome' : 'Passer au thème écologique');
+    titre.setAttribute('aria-label', eco ? titre.getAttribute('data-eco') : titreChrome);
+    couleurBarre.setAttribute('content', eco ? '#0B2116' : '#121212');
+    if(window.__liquide) window.__liquide.theme(eco ? 1 : 0);
+  }
+  boutonTheme.addEventListener('click', function(){ appliquerTheme(racine.getAttribute('data-theme') !== 'eco'); });
+  appliquerTheme(racine.getAttribute('data-theme') === 'eco');
+
+  // Les photos ÉCO à faire défiler : au doigt, à la souris, au clavier ou avec les flèches
+  var defile = document.getElementById('defile');
+  var diapos = [].slice.call(defile.querySelectorAll('.diapo'));
+  var points = [].slice.call(document.querySelectorAll('#defile-points i'));
+  var btnPrec = document.getElementById('defile-prec'), btnSuiv = document.getElementById('defile-suiv');
+  var diapoActive = 0;
+  function departDiapo(i){ return diapos[i].offsetLeft - (parseFloat(getComputedStyle(defile).paddingLeft) || 0); }
+  function proche(){
+    var x = defile.scrollLeft, n = diapos.length-1, best = 0, ecart = Infinity;
+    if(x >= defile.scrollWidth - defile.clientWidth - 4) return n;
+    diapos.forEach(function(_,i){ var d = Math.abs(departDiapo(i)-x); if(d < ecart){ ecart = d; best = i; } });
+    return best;
+  }
+  function majDiapo(){
+    diapoActive = proche();
+    points.forEach(function(p,i){ p.classList.toggle('on', i === diapoActive); });
+    btnPrec.disabled = diapoActive === 0;
+    btnSuiv.disabled = diapoActive === diapos.length-1;
+  }
+  function versDiapo(i){
+    defile.scrollTo({left: departDiapo(borne(i, 0, diapos.length-1)), behavior: calme ? 'auto' : 'smooth'});
+  }
+  btnPrec.addEventListener('click', function(){ versDiapo(diapoActive-1); });
+  btnSuiv.addEventListener('click', function(){ versDiapo(diapoActive+1); });
+  defile.addEventListener('scroll', function(){ requestAnimationFrame(majDiapo); }, {passive:true});
+  defile.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowRight'){ e.preventDefault(); versDiapo(diapoActive+1); }
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); versDiapo(diapoActive-1); }
+  });
+  // Glisser à la souris sur ordinateur ; sur téléphone, le défilement natif s'en charge
+  var tire = null;
+  defile.addEventListener('pointerdown', function(e){
+    if(e.pointerType !== 'mouse' || e.button !== 0) return;
+    tire = {x: e.clientX, g: defile.scrollLeft, depart: diapoActive, bouge: false};
+    defile.setPointerCapture(e.pointerId);
+  });
+  defile.addEventListener('pointermove', function(e){
+    if(!tire) return;
+    var d = e.clientX - tire.x;
+    if(!tire.bouge && Math.abs(d) > 4){ tire.bouge = true; defile.classList.add('tire'); }
+    if(tire.bouge) defile.scrollLeft = tire.g - d;
+  });
+  function lacher(e){
+    if(!tire) return;
+    var bouge = tire.bouge, d = e.clientX - tire.x, depart = tire.depart;
+    tire = null;
+    if(!bouge) return;
+    var cible = Math.abs(d) > 60 ? depart + (d < 0 ? 1 : -1) : depart;
+    versDiapo(cible);
+    // Le magnétisme revient une fois l'image en place
+    setTimeout(function(){ defile.classList.remove('tire'); }, calme ? 0 : 420);
+  }
+  defile.addEventListener('pointerup', lacher);
+  defile.addEventListener('pointercancel', lacher);
+
+  var attente = false;
+  function maj(){
+    attente = false;
+    entete.classList.toggle('colle', scrollY > 8);
+  }
+  addEventListener('scroll', function(){ if(!attente){attente = true; requestAnimationFrame(maj);} }, {passive:true});
+  addEventListener('resize', majDiapo);
+  maj();
+  majDiapo();
+
+  // Apparitions : seuls les éléments encore sous la ligne de flottaison sont armés
+  if(!calme && 'IntersectionObserver' in window){
+    var els = [].slice.call(document.querySelectorAll('.rv,.fx'));
+    var obs = new IntersectionObserver(function(entrees){
+      entrees.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.remove('arme','flou');
+          obs.unobserve(e.target);
+        }
+      });
+    },{rootMargin:'0px 0px 8% 0px'});
+    els.forEach(function(el){
+      if(el.getBoundingClientRect().top > innerHeight){
+        el.classList.add(el.classList.contains('fx') ? 'flou' : 'arme');
+      }
+      obs.observe(el);
+    });
+  }
+})();
+</script>
+<script src="liquide.js"></script>
+</body>
+</html>

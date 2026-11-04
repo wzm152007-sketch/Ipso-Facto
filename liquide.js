@@ -1,15 +1,16 @@
-// Fond en verre liquide : une surface de chrome noir (ou blanc) calculée en direct.
+// Fond en verre liquide : une surface de chrome (ou de malachite verte, en thème écologique) calculée en direct.
 // Le nom du magasin est gravé dans la surface : il ne ressort que là où on touche le liquide
 // et quand une vague lente passe dessus.
 (function(){
   var toile = document.getElementById('liquide');
   if(!toile) return;
+  var racine = document.documentElement;
   var calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var tactile = navigator.maxTouchPoints > 0;
-  var gl = toile.getContext('webgl', {alpha:false, antialias:false, depth:false, stencil:false, powerPreference:'low-power'});
+  var gl = toile.getContext('webgl', {alpha:false, antialias:false, depth:false, stencil:false});
   function sansLiquide(){
     toile.style.display = 'none';
-    document.documentElement.classList.add('sans-liquide');
+    racine.classList.add('sans-liquide');
     var f = document.getElementById('fenetre');
     if(f) f.style.display = 'none';
   }
@@ -20,7 +21,7 @@
   var FS = [
   derivees ? '#extension GL_OES_standard_derivatives : enable\n#define PIXEL(r) (fwidth(r.x)+fwidth(r.y))' : '#define PIXEL(r) .012',
   'precision highp float;',
-  'uniform vec2 uRes;uniform float uT,uClair,uDefil,uBase;',
+  'uniform vec2 uRes;uniform float uT,uClair,uEco,uDefil,uBase,uTouche;',
   'uniform vec3 uP[6];uniform sampler2D uNom;uniform vec2 uNomTaille;',
   'float gNom,gLac,gL=0.;',
   'float pic(float x){float v=.5+.5*sin(x);v*=v;return v*v;}',
@@ -28,18 +29,20 @@
   // Un filet de lumière : plus il devient fin à l'écran, plus il s'atténue, au lieu de se hacher
   'float filet(float x,float l){return (1.-smoothstep(0.,l+gL,abs(x)))*l/(l+gL);}',
   // Hauteur de la surface. Le courant part en diagonale et se replie en S ;
-  // sur cette houle, des plis fins qui apparaissent par endroits donnent les filets de lumière.
+  // sur cette houle, des plis de plus en plus fins, qui apparaissent par endroits, donnent les filets de lumière.
   'float champ(vec2 uv){',
   '  float t=uT,fin=1.-uClair;',
   '  vec2 u=uv+vec2(0.,uDefil);',
   '  vec2 a=vec2(u.x*.64-u.y*.77,u.x*.77+u.y*.64);',
   '  vec2 p=vec2(a.x*1.3,a.y*2.15)*(.62+.38*fin)+vec2(.3,.1);',
   '  float touche=0.,revele=0.;',
-  '  for(int i=0;i<6;i++){',
-  '    vec2 v=uv-uP[i].xy;float d=dot(v,v);float z=uP[i].z;',
-  '    float f=z*z*exp(-d/.03);',
-  '    p+=v*f*3.2;touche+=f;',
-  '    revele+=z*exp(-d/.075);',
+  '  if(uTouche>.002){',
+  '    for(int i=0;i<6;i++){',
+  '      vec2 v=uv-uP[i].xy;float d=dot(v,v);float z=uP[i].z;',
+  '      float f=z*z*exp(-d/.03);',
+  '      p+=v*f*3.2;touche+=f;',
+  '      revele+=z*exp(-d/.075);',
+  '    }',
   '  }',
   '  vec2 q=p;',
   '  q+=.74*sin(q.yx*vec2(1.3,.85)+vec2(t*.19,-t*.15));',
@@ -47,19 +50,24 @@
   '  q+=.21*sin(q.yx*vec2(4.9,3.6)+vec2(t*.11,t*.16)+4.1);',
   // Le nom ondule avec le liquide ; une vague lente le fait ressortir de temps en temps,
   // et le liquide se calme autour des lettres quand il remonte, pour qu'on puisse le lire
-  '  vec2 n=(uv+(q-p)*.012)/uNomTaille;n.y=-n.y;n+=.5;',
-  '  vec4 tx=texture2D(uNom,n);',
   '  float vague=sin(uv.x*1.1+uv.y*.7-t*.42);vague=smoothstep(.8,1.,vague);',
   '  float m=clamp(uBase+vague*.26+revele*1.5,0.,1.);',
-  '  gLac=1.-.9*tx.a*smoothstep(.1,.75,m);',
+  '  gLac=1.;gNom=0.;',
+  '  if(m>.002){',
+  '    vec2 n=(uv+(q-p)*.012)/uNomTaille;n.y=-n.y;n+=.5;',
+  '    vec4 tx=texture2D(uNom,n);',
+  '    gLac=1.-.9*tx.a*smoothstep(.1,.75,m);',
+  '    gNom=tx.r*m;',
+  '  }',
   '  float b1=smoothstep(-.5,.6,sin(q.x*1.1+q.y*.5+1.3));',
   '  float b2=smoothstep(-.2,.8,sin(q.x*.8-q.y*.7+4.2+t*.03));',
   '  float h=.52*sin(q.y*1.9+1.2*sin(q.x*1.1+t*.05));',
   '  h+=(.4+.6*fin)*b1*.27*pic(q.y*5.6+1.5*sin(q.x*1.3)+.7);',
-  '  h+=(.12+.88*fin)*b2*.135*pic(q.y*12.+2.1*sin(q.x*.9+1.));',
-  '  h+=fin*b1*b2*.07*pic(q.y*23.+2.6*sin(q.x*.7+3.));',
+  '  float zone=smoothstep(-.15,.75,sin(q.x*.47-q.y*.33+.7+t*.02));',
+  '  h+=(.24+.76*fin)*(.3+.7*zone)*b2*.135*pic(q.y*12.+2.1*sin(q.x*.9+1.));',
+  '  h+=fin*zone*b1*b2*.07*pic(q.y*23.+2.6*sin(q.x*.7+3.));',
+  '  h+=fin*zone*smoothstep(.05,.8,sin(q.x*.6+q.y*.9+2.3))*.036*pic(q.y*41.+3.1*sin(q.x*.6+.5)+1.3*sin(q.x*1.7));',
   '  h+=touche*.16;',
-  '  gNom=tx.r*m;',
   '  return h;',
   '}',
   // Le décor qui se reflète : des boîtes à lumière, nettes d'un côté, qui s'éteignent doucement de l'autre
@@ -69,21 +77,26 @@
   '  s+=.95*fen(e.x,-.6,-.575,-.52,-.3)*(1.-smoothstep(.35,.85,abs(e.y+.12)));',
   '  s+=.85*filet(e.y-.5,.03)*fen(e.x,-.7,-.2,.3,.8);',
   '  s+=.7*filet(e.y+.55,.024)*fen(e.x,-.6,-.1,.2,.7);',
+  '  s+=.5*filet(e.x+.13,.012)*fen(e.y,-.5,-.2,.25,.55);',
+  '  s+=.42*filet(e.x-.09,.006)*(1.-smoothstep(.25,.6,abs(e.y)));',
+  '  s+=.26*filet(e.x+.06,.004)*(1.-smoothstep(.15,.5,abs(e.y+.1)));',
   '  s+=.42*fen(e.x,-.26,-.04,.14,.2)*fen(e.y,.05,.24,.42,.7);',
   '  return min(s,1.);',
   '}',
-  // La version blanche : presque tout est clair, avec des nappes noires au bord net d'un côté et doux de l'autre
+  // La version claire : presque tout est blanc, avec des nappes sombres au bord net d'un côté et doux de l'autre
   'float nappes(vec2 r){',
   '  vec2 e=vec2(r.x*.6-r.y*.8,r.x*.8+r.y*.6);',
   '  float s=smoothstep(.1,.36,e.x)*.28+smoothstep(.36-gL,.385+gL,e.x)*.72;',
   '  s*=1.-smoothstep(.72,.98,e.x);',
   '  s+=smoothstep(.2,.56,-e.x)*(1.-smoothstep(.8,.84,-e.x))*(1.-smoothstep(.3,.8,abs(e.y)));',
   '  s+=filet(e.y-.55,.028)*.85*fen(e.x,-.6,-.3,.3,.6);',
+  '  s+=filet(e.y+.42,.014)*.6*fen(e.x,-.5,-.2,.2,.5);',
   '  return min(s,1.);',
   '}',
   'void main(){',
-  '  vec2 uv=(gl_FragCoord.xy-.5*uRes)/min(uRes.x,uRes.y);',
-  '  float e=.0032,h0=champ(uv),nom=gNom,lac=gLac;',
+  '  float cote=min(uRes.x,uRes.y);',
+  '  vec2 uv=(gl_FragCoord.xy-.5*uRes)/cote;',
+  '  float e=max(1.25/cote,.0011),h0=champ(uv),nom=gNom,lac=gLac;',
   '  float hx=champ(uv+vec2(e,0.)),nx=gNom;',
   '  float hy=champ(uv+vec2(0.,e)),ny=gNom;',
   // La pente du liquide s'aplatit autour des lettres, celle des lettres s'y ajoute
@@ -92,20 +105,47 @@
   '  vec2 r=2.*n.z*n.xy+uv*.22;',
   '  gL=min(PIXEL(r)*.7,.12);',
   '  vec2 dd=normalize(n.xy+vec2(1e-4))*.007;',
-  // Noir : reflets francs, à peine irisés de violet sur les arêtes
-  '  vec3 c=vec3(studio(r+dd),studio(r),studio(r+dd*1.5));',
-  '  c.g=min(c.g,max(c.r,c.b));',
-  '  vec3 noir=.006+c*.97+nom*.15;',
-  // Blanc : grandes zones claires, nappes noires, liserés discrets
-  '  vec3 k=vec3(nappes(r+dd*.6),nappes(r),nappes(r+dd));',
-  '  float gris=smoothstep(.1,.95,length(r));',
-  '  vec3 blanc=mix(vec3(.985-.08*gris-nom*.1),vec3(.012),k);',
-  '  gl_FragColor=vec4(mix(noir,blanc,uClair),1.);',
+  // Noir : reflets francs, à peine irisés sur les arêtes, avec un halo doux autour des lumières et un peu de matière dans les ombres
+  '  vec3 noir=vec3(0.),blanc=vec3(0.);',
+  '  if(uClair<.999){',
+  '    vec3 c=vec3(studio(r+dd),studio(r),studio(r+dd*1.5));',
+  '    c.g=min(c.g,max(c.r,c.b));',
+  '    vec2 l1=r-vec2(.44,.3),l2=r+vec2(.42,.26);',
+  '    float pente=1.-n.z;',
+  '    float halo=.15*exp(-dot(l1,l1)/.1)+.07*exp(-dot(l2,l2)/.06)+.05*pente*pente+.018*smoothstep(-.6,.8,h0);',
+  '    noir=.004+c*.96+halo+nom*.15;',
+  // Thème écologique : malachite veinée, reflets vert tendre, liserés dorés
+  '    if(uEco>.001){',
+  '      float l=dot(noir,vec3(.3,.59,.11));',
+  '      float v=.5+.5*sin(h0*15.+2.*sin(h0*4.+uT*.02));',
+  '      v=smoothstep(.12,.88,v);',
+  '      vec3 m=mix(vec3(.004,.032,.02),vec3(.012,.125,.076),v);',
+  '      m=mix(m,vec3(.075,.47,.28),smoothstep(.025,.5,l));',
+  '      m=mix(m,vec3(.91,.99,.86),smoothstep(.45,1.,l));',
+  '      m+=max(noir.r-noir.g,0.)*vec3(.6,.46,.06)+max(noir.b-noir.g,0.)*vec3(.22,.2,0.);',
+  '      noir=mix(noir,m,uEco);',
+  '    }',
+  '  }',
+  // Blanc : grandes zones claires, nappes noires, liserés discrets ; en thème écologique, papier et mousse
+  '  if(uClair>.001){',
+  '    vec3 k=vec3(nappes(r+dd*.6),nappes(r),nappes(r+dd));',
+  '    float gris=smoothstep(.1,.95,length(r));',
+  '    blanc=mix(vec3(.985-.08*gris-nom*.1),vec3(.012),k);',
+  '    if(uEco>.001){',
+  '      vec3 p=vec3(.95,.96,.885)-gris*vec3(.1,.07,.09)-nom*.1;',
+  '      p=mix(p,vec3(.018,.125,.08),k);',
+  '      blanc=mix(blanc,p,uEco);',
+  '    }',
+  '  }',
+  '  vec3 f=mix(noir,blanc,uClair);',
+  // Un grain imperceptible évite les bandes dans les dégradés
+  '  f+=(fract(52.9829189*fract(dot(gl_FragCoord.xy,vec2(.06711056,.00583715))))-.5)/170.;',
+  '  gl_FragColor=vec4(f,1.);',
   '}'
   ].join('\n');
 
   var U = {}, texNom = null;
-  var nomPret = false, formatNom = '';
+  var nomPret = false, nomAutorise = false, formatNom = '';
 
   function compiler(type, src){
     var s = gl.createShader(type);
@@ -125,8 +165,19 @@
     var aLoc = gl.getAttribLocation(prog, 'a');
     gl.enableVertexAttribArray(aLoc);
     gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
-    ['uRes','uT','uClair','uDefil','uBase','uP','uNom','uNomTaille'].forEach(function(n){ U[n] = gl.getUniformLocation(prog, n); });
+    ['uRes','uT','uClair','uEco','uDefil','uBase','uTouche','uP','uNom','uNomTaille'].forEach(function(n){ U[n] = gl.getUniformLocation(prog, n); });
+    // Texture vide le temps que la police arrive : le nom est de toute façon caché au départ
     texNom = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texNom);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE_ALPHA, 1, 1, 0, gl.LUMINANCE_ALPHA, gl.UNSIGNED_BYTE, new Uint8Array(2));
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.uniform1i(U.uNom, 0);
+    gl.uniform2f(U.uNomTaille, 1, 1);
   }
   try { preparer(); } catch(err){ sansLiquide(); return; }
 
@@ -166,12 +217,14 @@
 
   // Le nom, gravé dans une texture : une ligne à l'horizontale, deux lignes en vertical
   function dessinerNom(){
+    if(!nomAutorise) return;
     var vertical = innerWidth < innerHeight;
     var f = vertical ? 'v' : 'h';
     if(f === formatNom && nomPret) return;
     formatNom = f;
     var lignes = vertical ? ['L’ÉCO','PTICIEN'] : ['L’ÉCOPTICIEN'];
-    var W = 768, H = vertical ? 520 : 210;
+    // Plus de définition sur les écrans fins, pour que le relief reste net
+    var W = (window.devicePixelRatio || 1) > 1.4 ? 1024 : 768, H = Math.round(W*(vertical ? .677 : .273)), ech = W/768;
     var c = document.createElement('canvas'); c.width = W; c.height = H;
     var g = c.getContext('2d', {willReadFrequently:true});
     // Écrit petit puis agrandi : à petit corps, les déliés du Bodoni restent épais
@@ -195,6 +248,7 @@
       relief[i] = Math.sqrt(1-(1-x)*(1-x));
     }
     lisser(relief, W, H); lisser(relief, W, H);
+    if(W > 768) lisser(relief, W, H);
     // Autour des lettres : une zone qui s'estompe, nulle sur les bords de la texture
     var dehors = new Float32Array(W*H);
     for(i = 0; i < W*H; i++) dehors[i] = 1-cout[i];
@@ -202,7 +256,7 @@
     for(var yy = 1; yy < H-1; yy++) for(var xx = 1; xx < W-1; xx++){
       i = xx+yy*W;
       var e = Math.max(0, 1-Math.sqrt(loin[i])/rayon);
-      e = e*e*(3-2*e)*Math.min(1, Math.min(xx, W-1-xx, yy, H-1-yy)/22);
+      e = e*e*(3-2*e)*Math.min(1, Math.min(xx, W-1-xx, yy, H-1-yy)/(22*ech));
       octets[2*i] = Math.round(255*relief[i]);
       octets[2*i+1] = Math.round(255*e);
     }
@@ -210,27 +264,27 @@
     gl.bindTexture(gl.TEXTURE_2D, texNom);
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE_ALPHA, W, H, 0, gl.LUMINANCE_ALPHA, gl.UNSIGNED_BYTE, octets);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.uniform1i(U.uNom, 0);
     // Taille du nom dans les unités du liquide (le petit côté de l'écran vaut 1)
     var largeur = (vertical ? .84 : Math.min(1.36, .8*innerWidth/innerHeight))/.82;
     gl.uniform2f(U.uNomTaille, largeur, largeur*H/W);
     nomPret = true;
+    if(calme) dessiner();
   }
-  if(document.fonts && document.fonts.load){
-    document.fonts.load('800 22px "Bodoni Moda"').then(function(){ nomPret = false; dessinerNom(); }, dessinerNom);
+  function autoriserNom(){
+    if(nomAutorise) return;
+    nomAutorise = true;
+    dessinerNom();
   }
-  dessinerNom();
 
-  // Résolution de calcul : le liquide est doux, on peut calculer moins de points que l'écran n'en a
-  var qualite = tactile ? 1.25 : 1, RW = 0, RH = 0;
+  // Résolution de calcul : deux fois plus de points que l'écran n'a de pixels logiques sur un écran fin,
+  // dans la limite d'un budget total. Si l'appareil peine, on descend par paliers.
+  var BUDGET = 2.2e6, MINI = .6;
+  var qualite = Math.min(window.devicePixelRatio || 1, 2), echelle = 1, RW = 0, RH = 0;
   function dimensionner(){
     var w = toile.clientWidth || innerWidth, h = toile.clientHeight || innerHeight;
-    var k = Math.min(qualite, 1100/Math.max(w,h));
-    var nw = Math.max(2, Math.round(w*k)), nh = Math.max(2, Math.round(h*k));
+    echelle = Math.min(qualite, Math.sqrt(BUDGET/(w*h)));
+    var nw = Math.max(2, Math.round(w*echelle)), nh = Math.max(2, Math.round(h*echelle));
     if(nw === RW && nh === RH) return;
     RW = nw; RH = nh; toile.width = nw; toile.height = nh;
     gl.viewport(0,0,nw,nh);
@@ -239,11 +293,12 @@
   dimensionner();
 
   // Le doigt ou la souris laissent une traînée de six points qui s'efface doucement
-  var points = new Float32Array(18), dernier = [9,9], appui = false;
+  var points = new Float32Array(18), dernier = [9,9], appui = false, geste = -1e9;
   function toucher(x,y,force){
     var w = toile.clientWidth || innerWidth, h = toile.clientHeight || innerHeight, m = Math.min(w,h);
     var px = (x-w/2)/m, py = (h/2-y)/m;
     force = force || 1;
+    if(force === 1) geste = performance.now();
     if(Math.hypot(px-dernier[0], py-dernier[1]) < .022){ points[2] = Math.max(points[2], force); return; }
     dernier = [px,py];
     for(var i = 15; i >= 3; i -= 3){ points[i] = points[i-3]; points[i+1] = points[i-2]; points[i+2] = points[i-1]; }
@@ -257,11 +312,13 @@
 
   // Le scroll fait couler le liquide. Les sections claires le font passer au blanc.
   var clairCible = 0, clair = 0, base = 0, baseCible = 0, defil = 0, defilCible = 0, temps = 7, agite = 0;
+  var ecoCible = racine.getAttribute('data-theme') === 'eco' ? 1 : 0, eco = ecoCible;
   var dernierY = scrollY, balayage = -1, balayageFait = false;
   var sectionsClaires = [].slice.call(document.querySelectorAll('.t-clair'));
   var fenetre = document.getElementById('fenetre');
   function lireScroll(){
     var y = scrollY, milieu = innerHeight/2;
+    if(y !== dernierY) geste = performance.now();
     agite = Math.min(1, agite + Math.abs(y-dernierY)*.0012);
     defilCible -= (y-dernierY)*.00042;
     dernierY = y;
@@ -277,23 +334,29 @@
   addEventListener('resize', function(){ dimensionner(); dessinerNom(); lireScroll(); });
   lireScroll();
 
-  // Boucle : 30 images par seconde sur téléphone, moins de points si l'appareil peine
-  var adapte = true, avant = 0, prec = 0, lents = 0, rapides = 0, pas = tactile ? 1000/31 : 1000/61;
+  // Sur téléphone : 60 images par seconde quand on touche ou qu'on scrolle, 30 au repos pour ménager la batterie
+  var adapte = true, debut = 0, avant = 0, prec = 0, lents = 0, rapides = 0;
   function dessiner(){
-    gl.uniform1f(U.uT, temps); gl.uniform1f(U.uClair, clair);
-    gl.uniform1f(U.uDefil, defil); gl.uniform1f(U.uBase, base);
+    var plusFort = 0;
+    for(var i = 2; i < 18; i += 3) if(points[i] > plusFort) plusFort = points[i];
+    gl.uniform1f(U.uT, temps); gl.uniform1f(U.uClair, clair); gl.uniform1f(U.uEco, eco);
+    gl.uniform1f(U.uDefil, defil); gl.uniform1f(U.uBase, base); gl.uniform1f(U.uTouche, plusFort);
     gl.uniform3fv(U.uP, points);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
   function boucle(n){
     requestAnimationFrame(boucle);
-    if(document.hidden || n-avant < pas) return;
+    if(document.hidden) return;
+    var pas = (tactile && !appui && n-geste > 1500) ? 1000/31 : 1000/61;
+    if(n-avant < pas) return;
+    if(!debut) debut = n;
     var dt = Math.min(.08, (n-avant)/1000);
     var coutMs = n-prec; prec = n;
     avant = n;
     temps += dt*(1+agite*2.2);
     agite *= Math.pow(.2, dt);
     clair += (clairCible-clair)*(1-Math.pow(.04, dt));
+    eco += (ecoCible-eco)*(1-Math.pow(.03, dt));
     base += (baseCible-base)*(1-Math.pow(.1, dt));
     defil += (defilCible-defil)*(1-Math.pow(.02, dt));
     var fondu = Math.pow(.32, dt);
@@ -306,14 +369,24 @@
       else toucher(w*(.06+.88*balayage), h*.5 + Math.min(w,h)*.06*Math.sin(balayage*9), .62);
     }
     dessiner();
-    // Qualité automatique : si les images tardent, on calcule moins de points
-    if(coutMs > pas*1.4){ lents++; rapides = 0; } else { rapides++; if(rapides > 30) lents = 0; }
-    if(adapte && lents > 24 && qualite > .5){ qualite *= .8; lents = 0; dimensionner(); dessiner(); }
+    // Qualité automatique : sous 22 images par seconde durables, on calcule moins de points
+    if(n-debut < 1500) return;
+    if(coutMs > 45){ lents++; rapides = 0; } else { rapides++; if(rapides > 30) lents = 0; }
+    if(adapte && lents > 24 && echelle > MINI){
+      qualite = Math.max(MINI, echelle*.8);
+      lents = 0; dimensionner(); dessiner();
+    }
   }
   // Mouvement réduit : une seule image, pas d'animation
   function tout(){ dimensionner(); dessinerNom(); dessiner(); }
-  if(calme){ tout(); addEventListener('resize', tout); if(document.fonts && document.fonts.ready) document.fonts.ready.then(tout); }
+  if(calme){ tout(); addEventListener('resize', tout); }
   else requestAnimationFrame(boucle);
+
+  // La police d'abord, pour graver le nom avec les bonnes lettres
+  if(document.fonts && document.fonts.load){
+    document.fonts.load('800 22px "Bodoni Moda"').then(autoriserNom, autoriserNom);
+    setTimeout(autoriserNom, 3000);
+  } else { autoriserNom(); }
 
   // Si le téléphone reprend la main sur la carte graphique, on repart de zéro au retour
   toile.addEventListener('webglcontextlost', function(e){ e.preventDefault(); });
@@ -321,6 +394,17 @@
     preparer(); nomPret = false; RW = RH = 0; dimensionner(); dessinerNom(); if(calme) dessiner();
   });
 
-  // Accès pour les tests
-  window.__liquide = {toucher:toucher, regler:function(o){ if('t' in o) temps = o.t; if('clair' in o){ clair = clairCible = o.clair; } if('base' in o){ base = baseCible = o.base; } if('qualite' in o){ qualite = o.qualite; adapte = false; dimensionner(); } dessiner(); }};
+  // Changement de thème par le bouton du site, et accès pour les tests
+  window.__liquide = {
+    theme: function(v){ ecoCible = v; if(calme){ eco = v; dessiner(); } },
+    toucher: toucher,
+    regler: function(o){
+      if('t' in o) temps = o.t;
+      if('clair' in o){ clair = clairCible = o.clair; }
+      if('base' in o){ base = baseCible = o.base; }
+      if('eco' in o){ eco = ecoCible = o.eco; }
+      if('qualite' in o){ qualite = o.qualite; adapte = false; dimensionner(); }
+      dessiner();
+    }
+  };
 })();
