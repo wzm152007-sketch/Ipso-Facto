@@ -184,6 +184,8 @@ footer{padding:40px 0 22px;background:var(--noir);box-shadow:inset 0 1px 0 var(-
 .foot a,.foot p{overflow-wrap:anywhere;display:block;color:var(--muted);margin-bottom:8px;transition:color .3s}
 .foot a:hover{color:var(--gold-light)}
 .legal{margin-top:26px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:.8rem;color:rgba(255,255,255,.6)}
+.legal a{color:var(--gold-light);transition:color .3s}
+.legal a:hover{color:#fff}
 .barre{display:none}
 
 @media (max-width:1120px){
