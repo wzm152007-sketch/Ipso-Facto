@@ -66,7 +66,7 @@ gl.drawArrays(gl.TRIANGLES,0,3);
 })(0);
 })();
 const nav=document.getElementById('nav');
-addEventListener('scroll',()=>{nav.classList.toggle('scrolled',scrollY>40);document.body.classList.toggle('apres-hero',scrollY>innerHeight*.55);},{passive:true});
+addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40),{passive:true});
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4)*.08+'s';io.observe(el);});
 const simg=document.getElementById('studio-img');
@@ -112,7 +112,7 @@ const img=document.createElementNS(NS,'feImage');
 const dep=document.createElementNS(NS,'feDisplacementMap');
 [['in','SourceGraphic'],['in2','carte'],['scale',84],['xChannelSelector','R'],['yChannelSelector','G']].forEach(a=>dep.setAttribute(a[0],a[1]));
 f.appendChild(img);f.appendChild(dep);svg.appendChild(f);
-el.style.backdropFilter='url(#'+id+') blur(3px) saturate(120%)';
+el.style.backdropFilter='url(#'+id+') blur(6px) saturate(120%)';
 }
 const els=[].slice.call(document.querySelectorAll('.lentille'));
 const tailles=new Map();
