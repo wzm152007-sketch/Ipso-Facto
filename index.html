@@ -9,11 +9,13 @@
 <meta name="theme-color" content="#060504">
 <link rel="icon" type="image/svg+xml" href="img/favicon.svg?v=2">
 <link rel="preload" as="font" type="font/woff2" href="fonts/spectral-sc-latin-300-normal.woff2" crossorigin>
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="preload" as="image" href="img/bois.webp" media="(min-width:901px)">
+<link rel="preload" as="image" href="img/bois-m.webp" media="(max-width:900px)">
+<link rel="stylesheet" href="style.css?v=3">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
-<canvas id="bgvideo" aria-hidden="true"></canvas>
+<div id="bois" aria-hidden="true"></div>
 <div class="bg-shade" aria-hidden="true"></div>
 <canvas id="liquid" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
@@ -52,10 +54,10 @@
 <p class="reveal">Parce que vos lunettes peuvent coûter moins cher et servir plus longtemps.</p>
 </div>
 <div class="pillars">
-<div class="pillar reveal"><h3 class="big gold">ÉCOnomique</h3><p>Réduisez votre reste à charge en nous apportant vos anciennes montures. Nos opticiens estiment leur valeur et la déduisent de votre facture.</p><small>Conditions de reprise à voir en magasin.</small></div>
-<div class="pillar reveal"><h3 class="big gold">ÉCOlogique</h3><p>Nos artisans lunetiers remettent des montures à neuf. Vous pouvez en choisir une plutôt que d’acheter une paire neuve.</p></div>
-<div class="pillar reveal"><h3 class="big gold">ÉCOptique</h3><p>Nous vendons aussi des montures neuves de grandes marques, à prix serrés.</p></div>
-<div class="pillar reveal"><div class="big gold">5,0</div><p><i class="stars" aria-hidden="true">★★★★★</i><br>38 avis Google.</p></div>
+<div class="pillar verre lentille reveal"><h3 class="big gold">ÉCOnomique</h3><p>Réduisez votre reste à charge en nous apportant vos anciennes montures. Nos opticiens estiment leur valeur et la déduisent de votre facture.</p><small>Conditions de reprise à voir en magasin.</small></div>
+<div class="pillar verre lentille reveal"><h3 class="big gold">ÉCOlogique</h3><p>Nos artisans lunetiers remettent des montures à neuf. Vous pouvez en choisir une plutôt que d’acheter une paire neuve.</p></div>
+<div class="pillar verre lentille reveal"><h3 class="big gold">ÉCOptique</h3><p>Nous vendons aussi des montures neuves de grandes marques, à prix serrés.</p></div>
+<div class="pillar verre lentille reveal"><div class="big gold">5,0</div><p><i class="stars" aria-hidden="true">★★★★★</i><br>38 avis Google.</p></div>
 </div>
 </div>
 </section>
@@ -69,21 +71,21 @@
 <p class="reveal">Nous présentons le magasin dans une courte vidéo. <a class="lien" href="https://youtube.com/shorts/BqK9tPUe1UU" target="_blank" rel="noopener">Voir la vidéo sur YouTube</a></p>
 </div>
 <div class="gallery">
-<figure class="g g1 reveal"><img src="img/miroir.jpg" width="1100" height="1375" alt="Miroir ovale doré au-dessus d’une console noire au plateau en bois, avec des lunettes posées dessus." loading="lazy" decoding="async"><figcaption>Le miroir et la console</figcaption></figure>
-<figure class="g g2 reveal"><img src="img/mur-bleu.jpg" width="1500" height="1125" alt="Mur bleu garni de cadres dorés contenant des lunettes, au-dessus d’un canapé capitonné noir." loading="lazy" decoding="async"><figcaption>Prenez la pose · @lecopticien</figcaption></figure>
-<figure class="g g3 reveal"><img src="img/tree.jpg" width="900" height="1139" alt="Sapin en lattes de bois décoré de lunettes, dans le magasin." loading="lazy" decoding="async"><figcaption>Le sapin de Noël</figcaption></figure>
-<figure class="g g4 reveal"><img src="img/polish.jpg" width="1062" height="796" alt="Une branche de lunettes polie à la main sur une polisseuse, à l’atelier." loading="lazy" decoding="async"><figcaption>À l’atelier</figcaption></figure>
-<figure class="g g5 reveal"><img src="img/enfant.jpg" width="940" height="705" alt="Mur d’étagères en bois garni de montures pour enfants, sous une enseigne Enfant." loading="lazy" decoding="async"><figcaption>Le mur enfant</figcaption></figure>
-<figure class="g g6 reveal"><img src="img/shelves.jpg" width="1062" height="796" alt="Mur d’étagères en bois garni de montures et de solaires." loading="lazy" decoding="async"><figcaption>Montures et solaires</figcaption></figure>
-<figure class="g g7 reveal"><img src="img/front.jpg" width="650" height="415" alt="Façade en briques du magasin avec l’enseigne L’Écopticien." loading="lazy" decoding="async"><figcaption>La façade, au 28 avenue de la Fontenelle</figcaption></figure>
+<figure class="g g1 verre reveal"><div class="photo"><img src="img/miroir.jpg" width="1100" height="1375" alt="Miroir ovale doré au-dessus d’une console noire au plateau en bois, avec des lunettes posées dessus." loading="lazy" decoding="async"></div><figcaption>Le miroir et la console</figcaption></figure>
+<figure class="g g2 verre reveal"><div class="photo"><img src="img/mur-bleu.jpg" width="1500" height="1125" alt="Mur bleu garni de cadres dorés contenant des lunettes, au-dessus d’un canapé capitonné noir." loading="lazy" decoding="async"></div><figcaption>Prenez la pose · @lecopticien</figcaption></figure>
+<figure class="g g3 verre reveal"><div class="photo"><img src="img/tree.jpg" width="900" height="1139" alt="Sapin en lattes de bois décoré de lunettes, dans le magasin." loading="lazy" decoding="async"></div><figcaption>Le sapin de Noël</figcaption></figure>
+<figure class="g g4 verre reveal"><div class="photo"><img src="img/polish.jpg" width="1062" height="796" alt="Une branche de lunettes polie à la main sur une polisseuse, à l’atelier." loading="lazy" decoding="async"></div><figcaption>À l’atelier</figcaption></figure>
+<figure class="g g5 verre reveal"><div class="photo"><img src="img/enfant.jpg" width="940" height="705" alt="Mur d’étagères en bois garni de montures pour enfants, sous une enseigne Enfant." loading="lazy" decoding="async"></div><figcaption>Le mur enfant</figcaption></figure>
+<figure class="g g6 verre reveal"><div class="photo"><img src="img/shelves.jpg" width="1062" height="796" alt="Mur d’étagères en bois garni de montures et de solaires." loading="lazy" decoding="async"></div><figcaption>Montures et solaires</figcaption></figure>
+<figure class="g g7 verre reveal"><div class="photo"><img src="img/front.jpg" width="650" height="415" alt="Façade en briques du magasin avec l’enseigne L’Écopticien." loading="lazy" decoding="async"></div><figcaption>La façade, au 28 avenue de la Fontenelle</figcaption></figure>
 </div>
 </div>
 </section>
 <section class="block" id="conseil" style="padding-top:0">
 <div class="wrap jewel">
 <div class="jewel-imgs reveal">
-<img class="a" src="img/fitting.jpg" width="1000" height="1358" alt="L’opticien ajuste de grandes lunettes noires et claires sur le visage d’une cliente." loading="lazy" decoding="async">
-<img class="b" src="img/exam.jpg" width="1000" height="1309" alt="L’opticien règle le réfracteur devant les yeux d’un client assis." loading="lazy" decoding="async">
+<div class="cadre a verre"><div class="photo"><img src="img/fitting.jpg" width="1000" height="1358" alt="L’opticien ajuste de grandes lunettes noires et claires sur le visage d’une cliente." loading="lazy" decoding="async"></div></div>
+<div class="cadre b verre"><div class="photo"><img src="img/exam.jpg" width="1000" height="1309" alt="L’opticien règle le réfracteur devant les yeux d’un client assis." loading="lazy" decoding="async"></div></div>
 </div>
 <div>
 <p class="eyebrow reveal">Le conseil</p>
@@ -101,7 +103,7 @@
 </section>
 <section class="block" id="reprise" style="padding-top:0">
 <div class="wrap studio">
-<div class="studio-img reveal"><img id="studio-img" src="img/frames.jpg" width="1061" height="796" alt="Montures de grandes marques déposées sur un plateau en bois." loading="lazy" decoding="async"></div>
+<div class="studio-img verre reveal"><div class="photo"><img id="studio-img" src="img/frames.jpg" width="1061" height="796" alt="Montures de grandes marques déposées sur un plateau en bois." loading="lazy" decoding="async"></div></div>
 <div>
 <p class="eyebrow reveal">La reprise, en pratique</p>
 <h2 class="reveal">Vos anciennes montures<br><em class="gold">ont encore de la valeur.</em></h2>
@@ -117,7 +119,7 @@
 </section>
 <section class="block" id="estimer" style="padding-top:0">
 <div class="wrap">
-<div class="estimer reveal">
+<div class="estimer verre lentille reveal">
 <div class="estimer-tete">
 <p class="eyebrow">Estimation en ligne</p>
 <h2>Combien valent<br><em class="gold">vos anciennes lunettes&nbsp;?</em></h2>
@@ -174,7 +176,7 @@
 <section class="block" id="venir" style="padding-top:0">
 <div class="wrap">
 <div class="visit reveal">
-<div class="visit-info">
+<div class="visit-info verre lentille">
 <p class="eyebrow">Contact</p>
 <h2>Une question sur vos lunettes&nbsp;?<br><em class="gold">Appelez-nous.</em></h2>
 <a class="numero" href="tel:+33372739543">03 72 73 95 43</a>
@@ -193,7 +195,7 @@
 <a class="btn" href="tel:+33372739543">Appeler</a>
 </div>
 </div>
-<div class="visit-map">
+<div class="visit-map verre">
 <iframe title="Carte : 28 avenue de la Fontenelle, Golbey" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=28%20avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey&amp;z=16&amp;output=embed"></iframe>
 </div>
 </div>
@@ -224,6 +226,6 @@
 <a class="btn solid" href="tel:+33372739543">Appeler</a>
 <a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener">Itinéraire</a>
 </div>
-<script src="app.js?v=1"></script>
+<script src="app.js?v=2"></script>
 </body>
 </html>

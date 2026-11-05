@@ -1,6 +1,7 @@
 var calme=matchMedia('(prefers-reduced-motion: reduce)').matches;
-// Reflets or et bois sur fond noir
+// Reflets de vernis sur le bois, sur ordinateur
 (function(){
+if(!matchMedia('(min-width:901px) and (pointer:fine)').matches)return;
 const c=document.getElementById('liquid');
 const gl=c.getContext('webgl',{antialias:false,premultipliedAlpha:false});
 if(!gl){return;}
@@ -34,10 +35,10 @@ float s1b=pow(max(dot(n,H1),0.),9.);
 float s2=pow(max(dot(n,H2),0.),40.);
 float fold=smoothstep(.0,1.,1.-n.z);
 vec3 col=vec3(.012,.009,.006);
-col+=vec3(.08,.05,.028)*pow(d1,3.);
-col+=vec3(1.,.82,.5)*s1*.34;
-col+=vec3(.6,.4,.22)*s1b*.13;
-col+=vec3(.95,.66,.3)*s2*.16;
+col+=vec3(.05,.032,.018)*pow(d1,3.);
+col+=vec3(1.,.84,.56)*s1*.17;
+col+=vec3(.6,.4,.22)*s1b*.065;
+col+=vec3(.95,.66,.3)*s2*.07;
 col*=1.-fold*.35;
 vec2 q=gl_FragCoord.xy/R;
 col*=.55+.45*pow(16.*q.x*q.y*(1.-q.x)*(1.-q.y),.25);
@@ -54,50 +55,26 @@ addEventListener('pointermove',e=>{tx=e.clientX/innerWidth*2-1;ty=-(e.clientY/in
 function size(){const dpr=Math.min(devicePixelRatio||1,1.5)*.75;c.width=innerWidth*dpr;c.height=innerHeight*dpr;gl.viewport(0,0,c.width,c.height);}
 size();addEventListener('resize',size);
 const t0=performance.now();
-(function loop(){
-mx+=(tx-mx)*.04;my+=(ty-my)*.04;sc+=(scrollY/innerHeight*.9-sc)*.06;
+let prev=0;
+(function loop(now){
+requestAnimationFrame(loop);
+if(now-prev<33)return;prev=now;
+mx+=(tx-mx)*.08;my+=(ty-my)*.08;sc+=(scrollY/innerHeight*.9-sc)*.12;
 gl.uniform2f(uR,c.width,c.height);gl.uniform1f(uT,calme?0:(performance.now()-t0)/1000);
 gl.uniform2f(uM,mx,my);gl.uniform1f(uS,sc);
-gl.drawArrays(gl.TRIANGLES,0,3);requestAnimationFrame(loop);
+gl.drawArrays(gl.TRIANGLES,0,3);
+})(0);
 })();
-})();
-// Fond au défilement : une visite du magasin, de photo en photo
+// Le bois glisse doucement au défilement
 (function(){
-const canvas=document.getElementById('bgvideo'),ctx=canvas.getContext('2d');
-const scenes=[
-{src:'img/fond-bleu.jpg',z:[1.02,1.16],x:[.5,.5],y:[.42,.34]},
-{src:'img/fond-etageres.jpg',z:[1.16,1.02],x:[.34,.56],y:[.5,.5]},
-{src:'img/fond-miroir.jpg',z:[1.02,1.14],x:[.5,.5],y:[.36,.6]},
-{src:'img/fond-enfant.jpg',z:[1.14,1.02],x:[.62,.4],y:[.5,.5]},
-{src:'img/fond-sapin.jpg',z:[1.02,1.12],x:[.5,.5],y:[.3,.62]}
-];
-scenes.forEach((s,i)=>{const im=new Image();im.decoding='async';im.src=s.src;im.onload=()=>{last=-1;};s.im=im;});
-let cur=0,last=-1;
-const lerp=(a,t)=>a[0]+(a[1]-a[0])*t;
-const borne=(v,a,b)=>Math.max(a,Math.min(b,v));
-function peindre(s,t,alpha){
-const im=s.im;if(!im.complete||!im.naturalWidth)return;
-const cw=canvas.width,ch=canvas.height,ir=im.naturalWidth/im.naturalHeight,z=lerp(s.z,t);
-let w,h;
-if(cw/ch>ir){w=cw*z;h=w/ir;}else{h=ch*z;w=h*ir;}
-const x=borne(cw/2-w*lerp(s.x,t),cw-w,0),y=borne(ch/2-h*lerp(s.y,t),ch-h,0);
-ctx.globalAlpha=alpha;ctx.drawImage(im,x,y,w,h);ctx.globalAlpha=1;
-}
-function draw(){
-const n=scenes.length,f=cur*(n-1),i=Math.min(Math.floor(f),n-2),t=f-i;
-const m=borne((t-.3)/.4,0,1),a=m*m*(3-2*m);
-peindre(scenes[i],.5+t/2,1);
-if(a>0)peindre(scenes[i+1],t/2,a);
-}
-function size(){const d=Math.min(devicePixelRatio||1,1.5);canvas.width=innerWidth*d;canvas.height=innerHeight*d;last=-1;}
-function tick(){
+if(calme||matchMedia('(max-width:900px)').matches)return;
+const b=document.getElementById('bois');let c=0,last=-1;
+(function tick(){
 const max=document.documentElement.scrollHeight-innerHeight;
-const p=max>0?borne(scrollY/max,0,1):0;
-cur+=(p-cur)*(calme?1:.12);
-if(Math.abs(cur-last)>.0004){last=cur;draw();}
+c+=((max>0?scrollY/max:0)-c)*.1;
+if(Math.abs(c-last)>.0006){last=c;b.style.transform='translate3d(0,'+(-c*11).toFixed(2)+'vh,0)';}
 requestAnimationFrame(tick);
-}
-addEventListener('resize',size);size();tick();
+})();
 })();
 const nav=document.getElementById('nav');
 addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40),{passive:true});
@@ -105,6 +82,58 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.targ
 document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4)*.08+'s';io.observe(el);});
 const simg=document.getElementById('studio-img');
 if(!calme)addEventListener('scroll',()=>{const r=simg.parentElement.getBoundingClientRect();const p=(r.top+r.height/2-innerHeight/2)/innerHeight;simg.style.transform='translateY('+(-8+p*-8)+'%)';},{passive:true});
+// Verre liquide : les bords des grands cadres dévient le bois qui passe derrière (Chrome et Edge sur ordinateur)
+(function(){
+const ua=navigator.userAgent;
+if(calme||!/Chrome\/\d/.test(ua)||/Mobile|Android/.test(ua)||!matchMedia('(min-width:901px)').matches)return;
+const NS='http://www.w3.org/2000/svg';
+const svg=document.createElementNS(NS,'svg');
+svg.setAttribute('aria-hidden','true');svg.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
+document.body.appendChild(svg);
+function carte(w,h,r,bord){
+const k=.5,W=Math.max(2,Math.round(w*k)),H=Math.max(2,Math.round(h*k));
+const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+const ctx=cv.getContext('2d'),im=ctx.createImageData(W,H),d=im.data;
+for(let j=0;j<H;j++)for(let i=0;i<W;i++){
+const x=(i+.5)/k,y=(j+.5)/k;
+const qx=Math.abs(x-w/2)-(w/2-r),qy=Math.abs(y-h/2)-(h/2-r);
+const ax=Math.max(qx,0),ay=Math.max(qy,0),ext=Math.hypot(ax,ay);
+const dist=ext+Math.min(Math.max(qx,qy),0)-r;
+const t=Math.min(1,Math.max(0,-dist/bord)),force=t>=1?0:Math.pow(1-t,2.4);
+let nx,ny;
+if(ext>0){nx=ax/ext;ny=ay/ext;}else if(qx>qy){nx=1;ny=0;}else{nx=0;ny=1;}
+nx*=x<w/2?-1:1;ny*=y<h/2?-1:1;
+const p=(j*W+i)*4;
+d[p]=128-127*nx*force;d[p+1]=128-127*ny*force;d[p+2]=128;d[p+3]=255;
+}
+ctx.putImageData(im,0,0);
+return cv.toDataURL();
+}
+function poser(el,i){
+const w=el.offsetWidth,h=el.offsetHeight;
+if(!w||!h)return;
+const r=parseFloat(getComputedStyle(el).borderTopLeftRadius)||26;
+const id='lentille'+i;
+let f=document.getElementById(id);if(f)f.remove();
+f=document.createElementNS(NS,'filter');
+f.id=id;
+[['filterUnits','userSpaceOnUse'],['x',0],['y',0],['width',w],['height',h],['color-interpolation-filters','sRGB']].forEach(a=>f.setAttribute(a[0],a[1]));
+const img=document.createElementNS(NS,'feImage');
+[['href',carte(w,h,r,Math.min(46,Math.min(w,h)*.24))],['x',0],['y',0],['width',w],['height',h],['preserveAspectRatio','none'],['result','carte']].forEach(a=>img.setAttribute(a[0],a[1]));
+const dep=document.createElementNS(NS,'feDisplacementMap');
+[['in','SourceGraphic'],['in2','carte'],['scale',84],['xChannelSelector','R'],['yChannelSelector','G']].forEach(a=>dep.setAttribute(a[0],a[1]));
+f.appendChild(img);f.appendChild(dep);svg.appendChild(f);
+el.style.backdropFilter='url(#'+id+') blur(1.5px) saturate(125%) brightness(1.06)';
+}
+const els=[].slice.call(document.querySelectorAll('.lentille'));
+const tailles=new Map();
+const ro=new ResizeObserver(es=>es.forEach(e=>{
+const el=e.target,w=el.offsetWidth,h=el.offsetHeight,cle=w+'x'+h;
+if(tailles.get(el)===cle)return;tailles.set(el,cle);
+clearTimeout(el._lentille);el._lentille=setTimeout(()=>poser(el,els.indexOf(el)),120);
+}));
+els.forEach(el=>ro.observe(el));
+})();
 // Horaires : ouvert ou fermé, à l'heure de Golbey
 (function(){
 const SEMAINE=[[540,720],[840,1140]],SAMEDI=[[540,720],[840,1080]];
