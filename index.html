@@ -6,22 +6,21 @@
 <title>L’Écopticien — Opticien à Golbey</title>
 <meta name="description" content="L’Écopticien est un opticien à Golbey, dans les Vosges. Il vend des lunettes neuves et reconditionnées, et reprend vos anciennes montures.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#060504">
-<link rel="icon" type="image/svg+xml" href="img/favicon.svg?v=2">
-<link rel="preload" as="font" type="font/woff2" href="fonts/spectral-sc-latin-300-normal.woff2" crossorigin>
-<link rel="preload" as="image" href="img/bois-noyer.webp" media="(min-width:901px)">
-<link rel="preload" as="image" href="img/bois-noyer-m.webp" media="(max-width:900px)">
-<link rel="preload" as="image" href="img/gravure-or.webp" media="(min-width:901px)">
-<link rel="preload" as="image" href="img/gravure-or-m.webp" media="(max-width:900px)">
-<link rel="stylesheet" href="style.css?v=10">
+<meta name="theme-color" content="#050505">
+<link rel="icon" type="image/svg+xml" href="img/favicon.svg?v=3">
+<link rel="preload" as="font" type="font/woff2" href="fonts/SpectralSC-Light-latin.woff2" crossorigin>
+<link rel="preload" as="image" href="img/noyer.webp" media="(min-width:901px)">
+<link rel="preload" as="image" href="img/noyer-m.webp" media="(max-width:900px)">
+<link rel="preload" as="image" href="img/gravure-dore.webp" media="(min-width:901px)">
+<link rel="preload" as="image" href="img/gravure-dore-m.webp" media="(max-width:900px)">
+<link rel="stylesheet" href="style.css?v=12">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 <div id="bois" aria-hidden="true"></div>
 <div class="bg-shade" aria-hidden="true"></div>
 <div id="gravure" aria-hidden="true"></div>
-<canvas id="liquid" aria-hidden="true"></canvas>
-<div class="grain" aria-hidden="true"></div>
+<div id="reflets" aria-hidden="true"><i></i><b></b></div>
 <header class="nav" id="nav">
 <a href="#top" class="brand" aria-label="L’Écopticien, retour en haut"><span>L’Écopticien</span></a>
 <ul>
@@ -37,7 +36,7 @@
 <section class="hero">
 <div class="hero-haut">
 <p class="eyebrow reveal">Opticien à Golbey, dans les Vosges</p>
-<h1 class="emblem reveal"><span class="sr">L’Écopticien, optique traditionnelle et reconditionnée</span></h1>
+<h1 class="emblem reveal"><img src="img/logo-blanc.webp" width="1200" height="310" alt="L’Écopticien, optique traditionnelle et reconditionnée"></h1>
 <a class="avis-google verre" href="https://www.google.com/maps/search/?api=1&amp;query=L%27%C3%89copticien%2028%20Avenue%20de%20la%20Fontenelle%2088190%20Golbey" target="_blank" rel="noopener" aria-label="Note Google : 5,0 sur 5, 38 avis">
 <b id="note-chiffre">5,0</b>
 <span class="etoiles" aria-hidden="true">★★★★★<span class="pleines" id="note-etoiles">★★★★★</span></span>
@@ -46,7 +45,7 @@
 </div>
 <div class="hero-milieu" aria-hidden="true"></div>
 <div class="hero-bas">
-<p class="lead reveal">Nous vendons des montures de grandes marques à prix serrés, et des montures remises à neuf par nos artisans lunetiers. <strong>Apportez vos anciennes lunettes et nous déduisons leur valeur de votre facture.</strong></p>
+<p class="lead verre reveal">Nous vendons des montures de grandes marques à prix serrés, et des montures remises à neuf par nos artisans lunetiers. <strong>Apportez vos anciennes lunettes et nous déduisons leur valeur de votre facture.</strong></p>
 <div class="ctas reveal">
 <a href="tel:+33372739543" class="btn solid">03 72 73 95 43</a>
 <a href="https://www.google.com/maps/dir/?api=1&amp;destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener" class="btn">Venir à Golbey</a>
@@ -81,21 +80,21 @@
 <p class="reveal">Nous présentons le magasin dans une courte vidéo. <a class="lien" href="https://youtube.com/shorts/BqK9tPUe1UU" target="_blank" rel="noopener">Voir la vidéo sur YouTube</a></p>
 </div>
 <div class="gallery">
-<figure class="g g1 verre reveal"><div class="photo"><img src="img/miroir.jpg" width="1100" height="1375" alt="Miroir ovale doré au-dessus d’une console noire au plateau en bois, avec des lunettes posées dessus." loading="lazy" decoding="async"></div><figcaption>Le miroir et la console</figcaption></figure>
-<figure class="g g2 verre reveal"><div class="photo"><img src="img/mur-bleu.jpg" width="1500" height="1125" alt="Mur bleu garni de cadres dorés contenant des lunettes, au-dessus d’un canapé capitonné noir." loading="lazy" decoding="async"></div><figcaption>Prenez la pose · @lecopticien</figcaption></figure>
-<figure class="g g3 verre reveal"><div class="photo"><img src="img/tree.jpg" width="900" height="1139" alt="Sapin en lattes de bois décoré de lunettes, dans le magasin." loading="lazy" decoding="async"></div><figcaption>Le sapin de Noël</figcaption></figure>
-<figure class="g g4 verre reveal"><div class="photo"><img src="img/polish.jpg" width="1062" height="796" alt="Une branche de lunettes polie à la main sur une polisseuse, à l’atelier." loading="lazy" decoding="async"></div><figcaption>À l’atelier</figcaption></figure>
-<figure class="g g5 verre reveal"><div class="photo"><img src="img/enfant.jpg" width="940" height="705" alt="Mur d’étagères en bois garni de montures pour enfants, sous une enseigne Enfant." loading="lazy" decoding="async"></div><figcaption>Le mur enfant</figcaption></figure>
-<figure class="g g6 verre reveal"><div class="photo"><img src="img/shelves.jpg" width="1062" height="796" alt="Mur d’étagères en bois garni de montures et de solaires." loading="lazy" decoding="async"></div><figcaption>Montures et solaires</figcaption></figure>
-<figure class="g g7 verre reveal"><div class="photo"><img src="img/front.jpg" width="650" height="415" alt="Façade en briques du magasin avec l’enseigne L’Écopticien." loading="lazy" decoding="async"></div><figcaption>La façade, au 28 avenue de la Fontenelle</figcaption></figure>
+<figure class="g g1 verre reveal"><div class="photo"><img src="img/miroir-640.webp" srcset="img/miroir-360.webp 360w,img/miroir-640.webp 640w,img/miroir-1000.webp 1000w" sizes="(max-width:900px) 92vw,40vw" width="1100" height="1375" alt="Miroir ovale doré au-dessus d’une console noire au plateau en bois, avec des lunettes posées dessus." loading="lazy" decoding="async"></div><figcaption>Le miroir et la console</figcaption></figure>
+<figure class="g g2 verre reveal"><div class="photo"><img src="img/mur-bleu-640.webp" srcset="img/mur-bleu-360.webp 360w,img/mur-bleu-640.webp 640w,img/mur-bleu-1000.webp 1000w" sizes="(max-width:900px) 46vw,33vw" width="1500" height="1125" alt="Mur bleu garni de cadres dorés contenant des lunettes, au-dessus d’un canapé capitonné noir." loading="lazy" decoding="async"></div><figcaption>Prenez la pose · @lecopticien</figcaption></figure>
+<figure class="g g3 verre reveal"><div class="photo"><img src="img/tree-640.webp" srcset="img/tree-360.webp 360w,img/tree-640.webp 640w,img/tree-900.webp 900w" sizes="(max-width:900px) 46vw,25vw" width="900" height="1139" alt="Sapin en lattes de bois décoré de lunettes, dans le magasin." loading="lazy" decoding="async"></div><figcaption>Le sapin de Noël</figcaption></figure>
+<figure class="g g4 verre reveal"><div class="photo"><img src="img/polish-640.webp" srcset="img/polish-360.webp 360w,img/polish-640.webp 640w,img/polish-1000.webp 1000w" sizes="(max-width:900px) 46vw,25vw" width="1062" height="796" alt="Une branche de lunettes polie à la main sur une polisseuse, à l’atelier." loading="lazy" decoding="async"></div><figcaption>À l’atelier</figcaption></figure>
+<figure class="g g5 verre reveal"><div class="photo"><img src="img/enfant-640.webp" srcset="img/enfant-360.webp 360w,img/enfant-640.webp 640w,img/enfant-940.webp 940w" sizes="(max-width:900px) 46vw,33vw" width="940" height="705" alt="Mur d’étagères en bois garni de montures pour enfants, sous une enseigne Enfant." loading="lazy" decoding="async"></div><figcaption>Le mur enfant</figcaption></figure>
+<figure class="g g6 verre reveal"><div class="photo"><img src="img/shelves-640.webp" srcset="img/shelves-360.webp 360w,img/shelves-640.webp 640w,img/shelves-1000.webp 1000w" sizes="(max-width:900px) 92vw,50vw" width="1062" height="796" alt="Mur d’étagères en bois garni de montures et de solaires." loading="lazy" decoding="async"></div><figcaption>Montures et solaires</figcaption></figure>
+<figure class="g g7 verre reveal"><div class="photo"><img src="img/front-640.webp" srcset="img/front-360.webp 360w,img/front-640.webp 640w,img/front-650.webp 650w" sizes="(max-width:900px) 92vw,50vw" width="650" height="415" alt="Façade en briques du magasin avec l’enseigne L’Écopticien." loading="lazy" decoding="async"></div><figcaption>La façade, au 28 avenue de la Fontenelle</figcaption></figure>
 </div>
 </div>
 </section>
 <section class="block" id="conseil" style="padding-top:0">
 <div class="wrap jewel">
 <div class="jewel-imgs reveal">
-<div class="cadre a verre"><div class="photo"><img src="img/fitting.jpg" width="1000" height="1358" alt="L’opticien ajuste de grandes lunettes noires et claires sur le visage d’une cliente." loading="lazy" decoding="async"></div></div>
-<div class="cadre b verre"><div class="photo"><img src="img/exam.jpg" width="1000" height="1309" alt="L’opticien règle le réfracteur devant les yeux d’un client assis." loading="lazy" decoding="async"></div></div>
+<div class="cadre a verre"><div class="photo"><img src="img/fitting-640.webp" srcset="img/fitting-360.webp 360w,img/fitting-640.webp 640w,img/fitting-1000.webp 1000w" sizes="(max-width:900px) 62vw,34vw" width="1000" height="1358" alt="L’opticien ajuste de grandes lunettes noires et claires sur le visage d’une cliente." loading="lazy" decoding="async"></div></div>
+<div class="cadre b verre"><div class="photo"><img src="img/exam-640.webp" srcset="img/exam-360.webp 360w,img/exam-640.webp 640w,img/exam-1000.webp 1000w" sizes="(max-width:900px) 48vw,26vw" width="1000" height="1309" alt="L’opticien règle le réfracteur devant les yeux d’un client assis." loading="lazy" decoding="async"></div></div>
 </div>
 <div class="texte-verre verre lentille">
 <p class="eyebrow reveal">Le conseil</p>
@@ -112,7 +111,7 @@
 </section>
 <section class="block" id="reprise" style="padding-top:0">
 <div class="wrap studio">
-<div class="studio-img verre reveal"><div class="photo"><img id="studio-img" src="img/frames.jpg" width="1061" height="796" alt="Montures de grandes marques déposées sur un plateau en bois." loading="lazy" decoding="async"></div></div>
+<div class="studio-img verre reveal"><div class="photo"><img id="studio-img" src="img/frames-640.webp" srcset="img/frames-360.webp 360w,img/frames-640.webp 640w,img/frames-1000.webp 1000w" sizes="(max-width:900px) 92vw,44vw" width="1061" height="796" alt="Montures de grandes marques déposées sur un plateau en bois." loading="lazy" decoding="async"></div></div>
 <div class="texte-verre verre lentille">
 <p class="eyebrow reveal">La reprise, en pratique</p>
 <h2 class="reveal">Vos anciennes montures<br><em class="gold">ont encore de la valeur.</em></h2>
@@ -148,9 +147,7 @@
 <a class="btn" href="tel:+33372739543">Appeler</a>
 </div>
 </div>
-<div class="visit-map verre">
-<iframe title="Carte : 28 avenue de la Fontenelle, Golbey" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=28%20avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey&amp;z=16&amp;output=embed"></iframe>
-</div>
+<div class="visit-map verre"><button type="button" class="btn" id="voir-carte">Afficher la carte</button></div>
 </div>
 </div>
 </section>
@@ -158,7 +155,7 @@
 <footer>
 <div class="wrap">
 <div class="foot">
-<div><div class="emblem petit" role="img" aria-label="L’Écopticien, optique traditionnelle et reconditionnée"></div></div>
+<div><img class="emblem petit" src="img/logo-blanc.webp" width="1200" height="310" alt="L’Écopticien, optique traditionnelle et reconditionnée" loading="lazy" decoding="async"></div>
 <div>
 <h4>Magasin</h4>
 <p>28 avenue de la Fontenelle<br>88190 Golbey</p>
@@ -179,6 +176,6 @@
 <a class="btn solid" href="tel:+33372739543">Appeler</a>
 <a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener">Itinéraire</a>
 </div>
-<script src="app.js?v=7"></script>
+<script src="app.js?v=9"></script>
 </body>
 </html>
