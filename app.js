@@ -134,222 +134,26 @@ clearTimeout(el._lentille);el._lentille=setTimeout(()=>poser(el,els.indexOf(el))
 }));
 els.forEach(el=>ro.observe(el));
 })();
-// Horaires : ouvert ou fermé, à l'heure de Golbey
+// Note Google : de 0 à 5,0, très vite, dès l'ouverture de la page
 (function(){
-const SEMAINE=[[540,720],[840,1140]],SAMEDI=[[540,720],[840,1080]];
-const H={0:[],1:[[840,1080]],2:SEMAINE,3:SEMAINE,4:SEMAINE,5:SEMAINE,6:SAMEDI};
+if(calme)return;
+const NOTE=5,AVIS=38,DUREE=900;
+const c=document.getElementById('note-chiffre'),e=document.getElementById('note-etoiles'),n=document.getElementById('note-avis');
+c.textContent='0,0';e.style.width='0%';n.textContent='0';
+let t0=null;
+function pas(t){
+if(t0===null)t0=t;
+const p=Math.min(1,(t-t0)/DUREE),k=1-Math.pow(1-p,3);
+c.textContent=(NOTE*k).toFixed(1).replace('.',',');
+e.style.width=(k*100)+'%';
+n.textContent=Math.round(AVIS*k);
+if(p<1)requestAnimationFrame(pas);
+}
+setTimeout(()=>requestAnimationFrame(pas),220);
+})();
+// Le jour d'aujourd'hui dans les horaires, et l'année en bas de page
+(function(){
 const now=new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Paris'}));
-const d=now.getDay(),m=now.getHours()*60+now.getMinutes();
-const open=H[d].some(p=>m>=p[0]&&m<p[1]);
-document.getElementById('open-dot').classList.toggle('on',open);
-document.getElementById('open-txt').textContent=open?'Ouvert maintenant':'Fermé actuellement';
-const li=document.querySelector('#hours li[data-d="'+d+'"]');if(li)li.classList.add('today');
+const li=document.querySelector('#hours li[data-d="'+now.getDay()+'"]');if(li)li.classList.add('today');
 document.getElementById('yr').textContent=now.getFullYear();
 })();
-// Estimation de reprise
-(function(){
-    var form = document.getElementById('f-estimer');
-    var champMarque = document.getElementById('e-marque'), champModele = document.getElementById('e-modele');
-    var depot = document.getElementById('depot'), champPhoto = document.getElementById('e-photo'), apercu = document.getElementById('e-apercu');
-    var envoi = document.getElementById('e-envoi'), msg = document.getElementById('e-msg'), resultat = document.getElementById('e-resultat');
-    var LIBELLE = envoi.textContent;
-    var MESSAGES = {
-      indisponible: 'L’estimation en ligne n’est pas disponible pour le moment. Appelez-nous au 03 72 73 95 43, ou passez en magasin.',
-      non_branche: 'L’analyse par photo n’est pas disponible pour le moment. Choisissez votre marque dans la liste, ou appelez-nous au 03 72 73 95 43.',
-      cle_refusee: 'L’analyse par photo n’est pas disponible pour le moment. Choisissez votre marque dans la liste, ou appelez-nous au 03 72 73 95 43.',
-      quota: 'L’analyse par photo est saturée pour le moment. Réessayez un peu plus tard, ou choisissez votre marque dans la liste.',
-      trop_de_demandes: 'Vous avez envoyé beaucoup de photos d’affilée. Réessayez dans quelques minutes, ou choisissez votre marque dans la liste.',
-      ajouter_photo: 'Cette marque n’est pas dans la liste. Ajoutez une photo pour une première estimation, ou montrez la paire à nos opticiens.',
-      pas_de_lunettes: 'Nous ne voyons pas de lunettes sur cette photo. Essayez avec la paire posée à plat, de face.',
-      plusieurs_paires: 'Nous voyons plusieurs paires. Photographiez-en une seule à la fois.',
-      photo_floue: 'La photo est trop floue ou trop sombre. Essayez à la lumière du jour, la paire posée à plat.',
-      image: 'Cette image ne peut pas être lue. Essayez avec une photo au format JPEG ou PNG.',
-      format: 'Ce format d’image ne s’ouvre pas ici. Essayez avec une photo au format JPEG ou PNG.',
-      vide: 'Choisissez d’abord la marque de vos lunettes.',
-      vide_photo: 'Choisissez une marque, ou ajoutez une photo.',
-      reseau: 'La connexion a échoué. Vérifiez votre réseau et réessayez.'
-    };
-    var MOTIFS = {
-      hors_liste: 'Cette marque n’est pas encore dans notre liste. Montrez la paire à nos opticiens, ils l’estimeront sur place.',
-      connectees: 'Nous ne pouvons pas estimer une paire connectée à distance, car il faut aussi contrôler son électronique. Montrez-la à nos opticiens.'
-    };
-    var ERREUR = 'L’estimation n’a pas abouti. Réessayez dans un instant, ou appelez-nous au 03 72 73 95 43.';
-    var TYPES = {vue:'Lunettes de vue', solaire:'Lunettes de soleil', sport:'Lunettes de sport', lecture:'Lunettes de lecture', enfant:'Lunettes pour enfant', connectees:'Lunettes connectées', autre:'Lunettes', inconnu:'Lunettes'};
-    var MATIERES = {acetate:'acétate', plastique:'plastique', metal:'métal', titane:'titane', bois:'bois', corne:'corne', mixte:'matières mixtes', sans_monture:'sans monture'};
-    var ETATS = {comme_neuf:'Comme neuves', tres_bon:'Très bon état', bon:'Bon état', use:'Usées', abime:'Abîmées', casse:'Cassées'};
-    var FIABILITE = {sure:'Monture reconnue', probable:'Monture probablement reconnue', a_confirmer:'À confirmer en magasin'};
-    var photo = null, urlApercu = null, enCours = false, photoDisponible = false;
-    var modelesDeLaMarque = Object.create(null);
-
-    function dire(texte){
-      msg.textContent = texte || '';
-      msg.hidden = !texte;
-    }
-    function option(parent, valeur, texte){
-      var o = document.createElement('option');
-      o.value = valeur;
-      o.textContent = texte;
-      parent.appendChild(o);
-    }
-    function remplirMarques(liste){
-      function groupe(libelle, marques){
-        var g = document.createElement('optgroup');
-        g.label = libelle;
-        marques.forEach(function(m){ option(g, m.nom, m.nom); });
-        champMarque.appendChild(g);
-      }
-      champMarque.textContent = '';
-      option(champMarque, '', 'Choisir une marque');
-      option(champMarque, 'sans_marque', 'Sans marque ou marque d’opticien');
-      groupe('Marques courantes', liste.filter(function(m){ return m.courante; }));
-      groupe('Toutes les marques', liste);
-      option(champMarque, 'autre_marque', 'Autre marque (pas dans la liste)');
-      liste.forEach(function(m){ modelesDeLaMarque[m.nom] = m.modeles; });
-      champMarque.disabled = false;
-    }
-    function remplirModeles(){
-      var modeles = modelesDeLaMarque[champMarque.value];
-      champModele.textContent = '';
-      if(!modeles){
-        option(champModele, '', champMarque.value ? 'Sans objet pour ce choix' : 'Choisissez d’abord la marque');
-        champModele.disabled = true;
-        return;
-      }
-      option(champModele, '', modeles.length ? 'Je ne sais pas, ou autre modèle' : 'Tous les modèles de cette marque');
-      modeles.forEach(function(m){ option(champModele, m, m); });
-      champModele.disabled = !modeles.length;
-    }
-    champMarque.addEventListener('change', function(){ dire(''); remplirModeles(); });
-    // La photo est réduite et réencodée : envoi léger, et les données de localisation du fichier disparaissent
-    function preparer(fichier){
-      return new Promise(function(ok, ko){
-        var url = URL.createObjectURL(fichier), m = new Image();
-        m.onload = function(){
-          var k = Math.min(1, 1400/Math.max(m.naturalWidth, m.naturalHeight));
-          var c = document.createElement('canvas');
-          c.width = Math.max(1, Math.round(m.naturalWidth*k));
-          c.height = Math.max(1, Math.round(m.naturalHeight*k));
-          c.getContext('2d').drawImage(m, 0, 0, c.width, c.height);
-          ok({url: url, donnees: c.toDataURL('image/jpeg', .86).split(',')[1]});
-        };
-        m.onerror = function(){ URL.revokeObjectURL(url); ko(); };
-        m.src = url;
-      });
-    }
-    function retirerPhoto(){
-      photo = null;
-      if(urlApercu){ URL.revokeObjectURL(urlApercu); urlApercu = null; }
-      apercu.removeAttribute('src');
-      depot.classList.remove('rempli');
-      champPhoto.value = '';
-    }
-    champPhoto.addEventListener('change', function(){
-      var f = champPhoto.files && champPhoto.files[0];
-      dire('');
-      if(!f) return;
-      preparer(f).then(function(p){
-        if(urlApercu) URL.revokeObjectURL(urlApercu);
-        urlApercu = p.url;
-        photo = {mime: 'image/jpeg', data: p.donnees};
-        apercu.src = p.url;
-        depot.classList.add('rempli');
-      }, function(){
-        retirerPhoto();
-        dire(MESSAGES.format);
-      });
-    });
-
-    function ecrire(id, texte){ document.getElementById(id).textContent = texte; }
-    function afficher(r){
-      var q = r.reprise, p = r.paire, euros = function(v){ return v + '\u00a0€'; };
-      if(q.a_voir_en_magasin){
-        ecrire('r-montant', 'À voir en magasin');
-        ecrire('r-suite', MOTIFS[q.motif] || 'Nous ne pouvons pas estimer cette paire à distance. Montrez-la à nos opticiens.');
-      } else if(q.plafond_atteint){
-        ecrire('r-montant', 'À partir de ' + euros(q.min));
-        ecrire('r-suite', 'Nous estimons les paires de cette valeur en magasin, et nous déduisons le montant de votre facture.');
-      } else {
-        ecrire('r-montant', 'Entre ' + euros(q.min) + ' et ' + euros(q.max));
-        ecrire('r-suite', 'déduits de votre facture, après vérification de la monture en magasin.');
-      }
-      // « Ray-Ban Meta » plutôt que « Ray-Ban Ray-Ban Meta »
-      var nom = q.motif === 'hors_liste' ? 'd’une autre marque'
-        : p.marque && p.modele && p.modele.indexOf(p.marque) === 0 ? p.modele
-        : [p.marque, p.modele].filter(Boolean).join(' ');
-      var matiere = MATIERES[p.matiere] ? ', ' + MATIERES[p.matiere] : '';
-      ecrire('r-paire', (TYPES[p.type] || 'Lunettes') + (nom ? ' ' + nom : '') + matiere);
-      ecrire('r-etat', (ETATS[q.etat] || 'Bon état') + (q.etat_a_confirmer ? ', à confirmer' : ''));
-      document.getElementById('r-etat-bloc').hidden = !!q.motif;
-      ecrire('r-fiab', FIABILITE[q.reconnaissance] || '');
-      document.getElementById('r-fiab-bloc').hidden = !FIABILITE[q.reconnaissance];
-      var def = (p.defauts || []).join(', ');
-      document.getElementById('r-def-bloc').hidden = !def;
-      ecrire('r-defauts', def);
-      form.hidden = true;
-      resultat.hidden = false;
-      resultat.scrollIntoView({block: 'center', behavior: calme ? 'auto' : 'smooth'});
-      resultat.focus({preventScroll: true});
-    }
-
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      if(enCours) return;
-      var marque = champMarque.value, modele = champModele.value;
-      var coche = form.querySelector('input[name="etat"]:checked');
-      if(!photo && !marque){ dire(photoDisponible ? MESSAGES.vide_photo : MESSAGES.vide); return; }
-      if(!photo && marque === 'autre_marque' && photoDisponible){ dire(MESSAGES.ajouter_photo); return; }
-      dire('');
-      enCours = true;
-      envoi.disabled = true;
-      envoi.classList.add('charge');
-      envoi.textContent = photo ? 'Analyse en cours…' : 'Calcul en cours…';
-      var arret = window.AbortController ? new AbortController() : null;
-      var minuteur = arret ? setTimeout(function(){ arret.abort(); }, 40000) : 0;
-      fetch('/api/estimer', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({photo: photo, marque: marque, modele: modele, etat: coche ? coche.value : ''}),
-        signal: arret ? arret.signal : undefined
-      }).then(function(r){
-        return r.json().catch(function(){ return {ok: false}; });
-      }).then(function(r){
-        if(r && r.ok && r.reprise && r.paire) afficher(r);
-        else dire(r && MESSAGES[r.code] || ERREUR);
-      }, function(){
-        dire(MESSAGES.reseau);
-      }).then(function(){
-        clearTimeout(minuteur);
-        enCours = false;
-        envoi.disabled = false;
-        envoi.classList.remove('charge');
-        envoi.textContent = LIBELLE;
-      });
-    });
-
-    document.getElementById('e-refaire').addEventListener('click', function(){
-      retirerPhoto();
-      form.reset();
-      remplirModeles();
-      resultat.hidden = true;
-      form.hidden = false;
-      dire('');
-      form.scrollIntoView({block: 'center', behavior: calme ? 'auto' : 'smooth'});
-    });
-
-    // La liste vient du service du site. La photo n'apparaît que si la clé Gemini y est présente.
-    function indisponible(){
-      champMarque.options[0].textContent = 'Liste indisponible';
-      dire(MESSAGES.indisponible);
-    }
-    fetch('/api/estimer').then(function(r){ return r.ok ? r.json() : null; }).then(function(r){
-      if(!r || !Array.isArray(r.marques) || !r.marques.length){ indisponible(); return; }
-      remplirMarques(r.marques);
-      remplirModeles();
-      envoi.disabled = false;
-      photoDisponible = r.branche === true;
-      depot.hidden = !photoDisponible;
-      document.getElementById('e-google').hidden = !photoDisponible;
-      document.getElementById('e-intro-photo').hidden = !photoDisponible;
-      form.classList.toggle('avec-photo', photoDisponible);
-    }, indisponible);
-  })();
