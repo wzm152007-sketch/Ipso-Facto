@@ -65,19 +65,8 @@ gl.uniform2f(uM,mx,my);gl.uniform1f(uS,sc);
 gl.drawArrays(gl.TRIANGLES,0,3);
 })(0);
 })();
-// Le bois glisse doucement au défilement
-(function(){
-if(calme||matchMedia('(max-width:900px)').matches)return;
-const b=document.getElementById('bois');let c=0,last=-1;
-(function tick(){
-const max=document.documentElement.scrollHeight-innerHeight;
-c+=((max>0?scrollY/max:0)-c)*.1;
-if(Math.abs(c-last)>.0006){last=c;b.style.transform='translate3d(0,'+(-c*11).toFixed(2)+'vh,0)';}
-requestAnimationFrame(tick);
-})();
-})();
 const nav=document.getElementById('nav');
-addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40),{passive:true});
+addEventListener('scroll',()=>{nav.classList.toggle('scrolled',scrollY>40);document.body.classList.toggle('apres-hero',scrollY>innerHeight*.55);},{passive:true});
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4)*.08+'s';io.observe(el);});
 const simg=document.getElementById('studio-img');
