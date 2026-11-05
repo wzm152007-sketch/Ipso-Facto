@@ -42,14 +42,17 @@ setTimeout(()=>document.body.classList.remove('charge'),1600);
 }
 setTimeout(()=>requestAnimationFrame(pas),220);
 }
-// La carte Google n'est chargée que si le visiteur la demande
-document.getElementById('voir-carte').addEventListener('click',function(){
-const f=document.createElement('iframe');
-f.title='Carte : 28 avenue de la Fontenelle, Golbey';
-f.referrerPolicy='no-referrer-when-downgrade';
-f.src='https://maps.google.com/maps?q=28%20avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey&z=16&output=embed';
-this.replaceWith(f);
-});
+// Le socle 3D : une image d'abord, la 3D n'est téléchargée que si le visiteur descend jusqu'à elle, et jamais en mode économie de données
+(function(){
+const boite=document.getElementById('scene'),co=navigator.connection;
+if(!boite||!window.WebGLRenderingContext||(co&&(co.saveData||/2g/.test(co.effectiveType||''))))return;
+const vu=new IntersectionObserver(es=>{
+if(!es[0].isIntersecting)return;
+vu.disconnect();
+import('./3d/socle-v1.js').then(m=>m.lancer(boite,calme,'3d/socle-v1.glb',()=>{document.getElementById('scene-aide').hidden=false;})).catch(()=>{});
+},{rootMargin:'0px 0px 40px 0px'});
+vu.observe(boite);
+})();
 // Le jour d'aujourd'hui dans les horaires, et l'année en bas de page
 (function(){
 const now=new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Paris'}));

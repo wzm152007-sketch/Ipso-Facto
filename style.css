@@ -101,6 +101,18 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-light);outline
 .scroll-cue span{width:1px;height:20px;background:linear-gradient(var(--gold),transparent)}
 .hero .eyebrow,.adresse,.scroll-cue{text-shadow:0 1px 3px rgba(0,0,0,.9)}
 
+/* Le socle 3D */
+.socle{display:grid;grid-template-columns:1.45fr .55fr;gap:clamp(16px,3vw,44px);align-items:center}
+.scene{position:relative;aspect-ratio:5/4;min-width:0;cursor:grab;touch-action:pan-y;-webkit-user-select:none;user-select:none}
+.scene.prise{cursor:grabbing}
+.scene::before{content:"";position:absolute;inset:4% 2%;pointer-events:none;background:radial-gradient(closest-side,rgba(0,0,0,.3),rgba(0,0,0,.16) 62%,transparent)}
+.scene img,.scene canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block}
+.scene canvas{opacity:0;transition:opacity .45s}
+.scene.vivante canvas{opacity:1}
+.scene.vivante img{opacity:0;transition:opacity .45s .3s}
+.socle h2{font-size:clamp(2.1rem,3.7vw,3.3rem);line-height:1.05;margin:16px 0 0}
+#scene-aide{margin-top:20px;color:var(--muted)}
+
 /* Sections */
 section.block{padding:clamp(70px,10vw,130px) 0}
 .sec-head{--r:30px;display:grid;grid-template-columns:1.35fr .65fr;gap:40px;align-items:end;padding:clamp(24px,3.4vw,44px) clamp(20px,3.4vw,48px);margin-bottom:clamp(24px,3vw,40px)}
@@ -160,7 +172,7 @@ h2{text-wrap:balance}
 .hours li.today,.hours li.today span:last-child{color:var(--gold-light)}
 .hours li.closed span:last-child{color:rgba(255,255,255,.6)}
 .addr{font-size:1.4rem;line-height:1.25;margin-bottom:26px}
-.visit-map{--r:34px;min-height:420px;display:grid;place-items:center;overflow:hidden}
+.visit-map{--r:34px;min-height:420px;overflow:hidden}
 .visit-map iframe{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);border:0;border-radius:25px;filter:grayscale(1) invert(.92) sepia(.25) contrast(.9) brightness(.85)}
 
 /* Pied de page */
@@ -185,7 +197,7 @@ footer{padding:40px 0 22px;background:var(--noir);box-shadow:inset 0 1px 0 var(-
 .g1{aspect-ratio:1}
 .g1 img{object-position:50% 30%}
 .g7 img{object-position:60% 20%}
-.jewel,.studio,.visit{grid-template-columns:1fr}
+.jewel,.studio,.visit,.socle{grid-template-columns:1fr}
 .foot{grid-template-columns:1fr 1fr}
 .foot>div:first-child{grid-column:1/3}
 .barre{display:flex;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(5,5,5,.9);box-shadow:inset 0 1px 0 var(--line)}

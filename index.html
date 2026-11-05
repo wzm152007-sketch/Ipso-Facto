@@ -13,7 +13,7 @@
 <link rel="preload" as="image" href="img/noyer-m.webp" media="(max-width:900px)">
 <link rel="preload" as="image" href="img/gravure-dore.webp" media="(min-width:901px)">
 <link rel="preload" as="image" href="img/gravure-dore-m.webp" media="(max-width:900px)">
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="style.css?v=13">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
@@ -54,7 +54,19 @@
 </div>
 <div class="scroll-cue">Défiler<span></span></div>
 </section>
-<section class="block" id="eco">
+<section class="block" id="regard">
+<div class="wrap socle">
+<div class="scene" id="scene" role="img" aria-label="Socle sculpté : une tranche de visage antique, blanche, posée sur un pied doré.">
+<img src="img/socle-1000.webp" srcset="img/socle-640.webp 640w,img/socle-1000.webp 1000w" sizes="(max-width:900px) 92vw,58vw" width="1000" height="800" alt="" loading="lazy" decoding="async">
+</div>
+<div class="texte-verre verre lentille">
+<p class="eyebrow reveal">Le regard</p>
+<h2 class="reveal">Vos yeux,<br><em class="gold">d’abord.</em></h2>
+<p class="reveal" id="scene-aide" hidden>Faites tourner cette pièce&nbsp;: glissez dessus, du doigt ou à la souris.</p>
+</div>
+</div>
+</section>
+<section class="block" id="eco" style="padding-top:0">
 <div class="wrap">
 <div class="sec-head verre lentille">
 <div>
@@ -147,7 +159,7 @@
 <a class="btn" href="tel:+33372739543">Appeler</a>
 </div>
 </div>
-<div class="visit-map verre"><button type="button" class="btn" id="voir-carte">Afficher la carte</button></div>
+<div class="visit-map verre"><iframe title="Carte : 28 avenue de la Fontenelle, Golbey" src="https://maps.google.com/maps?q=28%20avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey&amp;z=16&amp;output=embed" referrerpolicy="no-referrer-when-downgrade" loading="lazy"></iframe></div>
 </div>
 </div>
 </section>
@@ -176,6 +188,6 @@
 <a class="btn solid" href="tel:+33372739543">Appeler</a>
 <a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener">Itinéraire</a>
 </div>
-<script src="app.js?v=9"></script>
+<script src="app.js?v=10"></script>
 </body>
 </html>
