@@ -27,7 +27,7 @@ main,footer{position:relative;z-index:3}
 
 /* Fond : bois, nom doré, reflets */
 #bois{position:fixed;left:0;right:0;top:0;height:100lvh;z-index:0;background:#2c190c url(img/noyer.webp) center/cover no-repeat}
-.bg-shade{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 38%,rgba(0,0,0,.74) 100%),rgba(0,0,0,.2)}
+.bg-shade{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 40%,rgba(3,2,1,.6) 100%),rgba(6,3,1,.72)}
 #gravure{position:fixed;z-index:0;left:50%;top:50svh;width:min(90vw,1560px,150vh);aspect-ratio:2400/329;transform:translate(-50%,-50%);background:url(img/gravure-dore.webp) center/contain no-repeat}
 .charge #gravure::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,252,232,.9) 50%,transparent 70%) no-repeat;background-size:34% 100%;-webkit-mask:url(img/gravure-dore.webp) center/contain no-repeat;mask:url(img/gravure-dore.webp) center/contain no-repeat;animation:eclat-or 1.5s ease-in-out both}
 @keyframes eclat-or{from{background-position:-60% 0}to{background-position:165% 0}}
@@ -209,7 +209,7 @@ footer{padding:40px 0 22px;background:var(--noir);box-shadow:inset 0 1px 0 var(-
 .barre{display:flex;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(5,5,5,.9);box-shadow:inset 0 1px 0 var(--line)}
 .barre .btn{flex:1;padding:.85em 1em}
 #bois{background-image:url(img/noyer-m.webp)}
-.bg-shade{background:radial-gradient(ellipse at 50% 45%,transparent 30%,rgba(0,0,0,.7) 100%),rgba(0,0,0,.34)}
+.bg-shade{background:radial-gradient(ellipse at 50% 45%,transparent 36%,rgba(3,2,1,.55) 100%),rgba(6,3,1,.72)}
 .scroll-cue{display:none}
 #gravure{width:95vw;aspect-ratio:1300/182;background-image:url(img/gravure-dore-m.webp)}
 .charge #gravure::after{-webkit-mask-image:url(img/gravure-dore-m.webp);mask-image:url(img/gravure-dore-m.webp)}
