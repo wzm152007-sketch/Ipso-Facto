@@ -17,7 +17,7 @@ dernier=t;bande.style.visibility='visible';
 bande.animate([{transform:'translate3d(-60vmax,0,0) rotate(16deg)'},{transform:'translate3d(calc(100vw + 20vmax),0,0) rotate(16deg)'}],{duration:2400,easing:'cubic-bezier(.45,.05,.55,.95)'}).onfinish=()=>{bande.style.visibility='hidden';};
 }
 const parties=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting))balayer();},{threshold:.2});
-document.querySelectorAll('section.block').forEach(s=>parties.observe(s));
+document.querySelectorAll('section.block:not(#regard)').forEach(s=>parties.observe(s));
 // Un reflet doux suit la souris, seulement quand elle bouge
 if(matchMedia('(pointer:fine)').matches){
 const lampe=document.querySelector('#reflets b');let repos=0;
@@ -42,15 +42,16 @@ setTimeout(()=>document.body.classList.remove('charge'),1600);
 }
 setTimeout(()=>requestAnimationFrame(pas),220);
 }
-// Le socle 3D : une image d'abord, la 3D n'est téléchargée que si le visiteur descend jusqu'à elle, et jamais en mode économie de données
+// Le socle 3D : une image d'abord, la 3D se prépare un écran avant d'arriver sur elle, si le visiteur descend jusque-là, et jamais en mode économie de données
 (function(){
 const boite=document.getElementById('scene'),co=navigator.connection;
 if(!boite||!window.WebGLRenderingContext||(co&&(co.saveData||/2g/.test(co.effectiveType||''))))return;
 const vu=new IntersectionObserver(es=>{
 if(!es[0].isIntersecting)return;
 vu.disconnect();
-import('./3d/socle-v1.js').then(m=>m.lancer(boite,calme,'3d/socle-v1.glb',()=>{document.getElementById('scene-aide').hidden=false;})).catch(()=>{});
-},{rootMargin:'0px 0px 40px 0px'});
+const go=()=>import('./3d/socle-v2.js').then(m=>m.lancer(boite,calme,()=>{document.getElementById('scene-aide').hidden=false;})).catch(()=>{});
+if(window.requestIdleCallback)requestIdleCallback(go,{timeout:800});else setTimeout(go,200);
+},{rootMargin:'100% 0px'});
 vu.observe(boite);
 })();
 // Le jour d'aujourd'hui dans les horaires, et l'année en bas de page

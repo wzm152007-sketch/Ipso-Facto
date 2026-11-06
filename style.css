@@ -107,9 +107,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-light);outline
 .scene.prise{cursor:grabbing}
 .scene::before{content:"";position:absolute;inset:4% 2%;pointer-events:none;background:radial-gradient(closest-side,rgba(0,0,0,.3),rgba(0,0,0,.16) 62%,transparent)}
 .scene img,.scene canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block}
-.scene canvas{opacity:0;transition:opacity .45s}
+.scene canvas{opacity:0}
 .scene.vivante canvas{opacity:1}
-.scene.vivante img{opacity:0;transition:opacity .45s .3s}
+.scene.vivante img{visibility:hidden}
+/* Pas de flou derrière ce panneau : il se recalculerait à chaque image pendant que le socle tourne */
+.socle .texte-verre{--verre-noir:rgba(5,5,5,.8);-webkit-backdrop-filter:none;backdrop-filter:none}
 .socle h2{font-size:clamp(2.1rem,3.7vw,3.3rem);line-height:1.05;margin:16px 0 0}
 #scene-aide{margin-top:20px;color:var(--muted)}
 
