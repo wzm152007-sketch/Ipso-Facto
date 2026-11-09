@@ -151,9 +151,16 @@ h2{text-wrap:balance}
 .avis-resume b{font-size:2.3rem;line-height:1;color:#fff}
 .etoiles-fixes,.avis-etoiles{color:var(--gold);letter-spacing:.08em}
 .etoiles-fixes{font-size:1.3rem}
-.avis-liste{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.avis-liste{overflow:hidden;padding:10px 0 26px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.avis-piste{display:flex;gap:14px;width:max-content}
+.avis-piste .avis-carte{flex:none;width:320px}
+/* Défilement continu : seulement quand la section est à l'écran, en pause au survol ou au toucher */
+.avis-piste.defile{animation:defile-avis var(--duree,40s) linear infinite;animation-play-state:paused}
+.avis-liste.en-vue .avis-piste.defile{animation-play-state:running}
+.avis-liste:hover .avis-piste.defile,.avis-liste:focus-within .avis-piste.defile,.avis-liste:active .avis-piste.defile{animation-play-state:paused}
+@keyframes defile-avis{to{transform:translate3d(calc(-50% - 7px),0,0)}}
 .avis-liste:empty{display:none}
-.avis-carte{--r:26px;display:flex;flex-direction:column;gap:12px;padding:26px 24px 22px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.avis-carte{--r:26px;--verre-noir:rgba(5,5,5,.84);display:flex;flex-direction:column;gap:12px;padding:26px 24px 22px}
 .avis-carte header{display:flex;align-items:center;gap:12px}
 .avis-carte header img,.avis-initiale{flex:none;width:42px;height:42px;border-radius:50%;object-fit:cover;background:#222;display:grid;place-items:center;color:#fff;font-size:1.1rem}
 .avis-auteur{display:block;color:#fff}
@@ -198,6 +205,7 @@ footer{padding:40px 0 22px;background:var(--noir);box-shadow:inset 0 1px 0 var(-
 .sec-head{grid-template-columns:1fr}
 .sec-head>p{justify-self:start}
 .avis-resume{justify-self:start}
+.avis-piste .avis-carte{width:272px}
 .pillars{grid-template-columns:1fr}
 .g1{aspect-ratio:4/3}
 .gallery{grid-template-columns:1fr}
@@ -237,6 +245,10 @@ html{scroll-behavior:auto}
 .js .reveal{opacity:1;transform:none;transition:none}
 .js .g.reveal .photo img,.js .jewel-imgs.reveal .photo img{transform:none;transition:none}
 #reflets{display:none}
+.avis-piste.defile{animation:none}
+.avis-piste .clone{display:none}
+.avis-liste{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-mask-image:none;mask-image:none}
+.avis-piste .avis-carte{scroll-snap-align:start}
 }
 @media (max-height:700px) and (min-width:800px){.emblem{width:min(560px,100%,40vh)}}
 @media (max-width:350px){.hero .eyebrow{font-size:.62rem;letter-spacing:.1em}.avis-google{gap:8px;padding:.2em .8em .24em}.avis-google small{font-size:.84rem}.nav{gap:8px;padding-inline:10px}.nav-tel{font-size:.86rem;padding-inline:.7em}}

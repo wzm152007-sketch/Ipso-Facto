@@ -56,7 +56,7 @@ fetch('/api/avis').then(r=>r.ok?r.json():null).then(d=>{
 if(!d||!d.ok)return;
 if(d.note){document.getElementById('avis-note').textContent=virgule(d.note);const c=document.getElementById('note-chiffre');if(c)c.textContent=virgule(d.note);}
 if(d.total){document.getElementById('avis-total').textContent=d.total;const n=document.getElementById('note-avis');if(n)n.textContent=d.total;}
-const liste=document.getElementById('avis-liste');
+const liste=document.getElementById('avis-liste'),piste=el('div','avis-piste');
 (d.avis||[]).forEach(v=>{
 if(!v.texte)return;
 const carte=el('article','avis-carte verre'),tete=el('header'),qui=el('div');
@@ -69,9 +69,12 @@ const n=Math.max(0,Math.min(5,Math.round(v.note||0)));
 const et=el('div','avis-etoiles','★'.repeat(n)+'☆'.repeat(5-n));et.setAttribute('aria-label','Note : '+n+' sur 5');
 carte.append(tete,et,el('p',null,v.texte));
 if(v.lien){const a=el('a','lien','Lire sur Google');a.href=v.lien;a.target='_blank';a.rel='noopener';carte.append(a);}
-liste.append(carte);
+piste.append(carte);
 });
-if(liste.children.length)document.getElementById('avis-source').hidden=false;
+const n=piste.children.length;if(!n)return;
+// Bandeau qui défile : on double la série pour une boucle sans à-coup ; les copies sont ignorées par les lecteurs d'écran
+if(n>=3){Array.from(piste.children).forEach(c=>{const k=c.cloneNode(true);k.classList.add('clone');k.setAttribute('aria-hidden','true');k.querySelectorAll('a').forEach(a=>a.tabIndex=-1);piste.append(k);});piste.style.setProperty('--duree',(n*8)+'s');piste.classList.add('defile');new IntersectionObserver(es=>liste.classList.toggle('en-vue',es[0].isIntersecting)).observe(liste);}
+liste.append(piste);document.getElementById('avis-source').hidden=false;
 }).catch(()=>{});
 },{rootMargin:'600px 0px'});
 vu.observe(sec);
