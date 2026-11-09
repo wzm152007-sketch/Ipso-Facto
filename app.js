@@ -45,36 +45,47 @@ setTimeout(()=>document.body.classList.remove('charge'),1600);
 }
 setTimeout(()=>requestAnimationFrame(pas),220);
 }
-// Avis Google : lus à l'approche de la section, depuis /api/avis (mis en cache 12 h côté serveur)
+// Avis Google : ceux écrits dans la page défilent tout de suite ; ceux lus via /api/avis (clé Google réglée) s'y ajoutent, sans doublon
 (function(){
-const sec=document.getElementById('avis');if(!sec||!window.fetch)return;
+const sec=document.getElementById('avis'),liste=document.getElementById('avis-liste'),piste=document.getElementById('avis-piste');if(!sec||!piste)return;
 const el=(t,c,txt)=>{const e=document.createElement(t);if(c)e.className=c;if(txt!=null)e.textContent=txt;return e;};
 const virgule=n=>Number(n).toFixed(1).replace('.',',');
+const nom=s=>(s||'').trim().toLowerCase();
+let suivi=null;
+// Bandeau qui défile : la série est doublée pour une boucle sans à-coup ; les copies sont ignorées par les lecteurs d'écran
+function bandeau(){
+piste.querySelectorAll('.clone').forEach(c=>c.remove());
+piste.classList.remove('defile');
+const cartes=Array.from(piste.children),n=cartes.length;if(n<3)return;
+cartes.forEach(c=>{const k=c.cloneNode(true);k.classList.add('clone');k.setAttribute('aria-hidden','true');k.querySelectorAll('a').forEach(a=>a.tabIndex=-1);piste.append(k);});
+piste.style.setProperty('--duree',(n*8)+'s');piste.classList.add('defile');
+if(!suivi){suivi=new IntersectionObserver(es=>liste.classList.toggle('en-vue',es[0].isIntersecting));suivi.observe(liste);}
+}
+bandeau();
+if(!window.fetch)return;
 const vu=new IntersectionObserver(es=>{
 if(!es[0].isIntersecting)return;vu.disconnect();
 fetch('/api/avis').then(r=>r.ok?r.json():null).then(d=>{
 if(!d||!d.ok)return;
 if(d.note){document.getElementById('avis-note').textContent=virgule(d.note);const c=document.getElementById('note-chiffre');if(c)c.textContent=virgule(d.note);}
-if(d.total){document.getElementById('avis-total').textContent=d.total;const n=document.getElementById('note-avis');if(n)n.textContent=d.total;}
-const liste=document.getElementById('avis-liste'),piste=el('div','avis-piste');
+if(d.total){document.getElementById('avis-total').textContent=d.total;const t=document.getElementById('note-avis');if(t)t.textContent=d.total;}
+const deja=new Set(Array.from(piste.querySelectorAll('.avis-carte:not(.clone) .avis-auteur')).map(a=>nom(a.textContent)));
+let ajout=0;
 (d.avis||[]).forEach(v=>{
-if(!v.texte)return;
+if(!v.texte||deja.has(nom(v.auteur)))return;
 const carte=el('article','avis-carte verre'),tete=el('header'),qui=el('div');
 if(v.photo){const i=el('img');i.src=v.photo;i.alt='';i.width=42;i.height=42;i.loading='lazy';i.referrerPolicy='no-referrer';tete.append(i);}
 else tete.append(el('span','avis-initiale',(v.auteur||'?').charAt(0).toUpperCase()));
-const nom=v.profil?el('a','avis-auteur',v.auteur):el('span','avis-auteur',v.auteur);
-if(v.profil){nom.href=v.profil;nom.target='_blank';nom.rel='noopener';}
-qui.append(nom,el('span','avis-quand',v.quand));tete.append(qui);
+const a=v.profil?el('a','avis-auteur',v.auteur):el('span','avis-auteur',v.auteur);
+if(v.profil){a.href=v.profil;a.target='_blank';a.rel='noopener';}
+qui.append(a,el('span','avis-quand',v.quand));tete.append(qui);
 const n=Math.max(0,Math.min(5,Math.round(v.note||0)));
-const et=el('div','avis-etoiles','★'.repeat(n)+'☆'.repeat(5-n));et.setAttribute('aria-label','Note : '+n+' sur 5');
+const et=el('div','avis-etoiles','★'.repeat(n)+'☆'.repeat(5-n));et.setAttribute('role','img');et.setAttribute('aria-label','Note : '+n+' sur 5');
 carte.append(tete,et,el('p',null,v.texte));
-if(v.lien){const a=el('a','lien','Lire sur Google');a.href=v.lien;a.target='_blank';a.rel='noopener';carte.append(a);}
-piste.append(carte);
+if(v.lien){const l=el('a','lien','Lire sur Google');l.href=v.lien;l.target='_blank';l.rel='noopener';carte.append(l);}
+piste.append(carte);ajout++;
 });
-const n=piste.children.length;if(!n)return;
-// Bandeau qui défile : on double la série pour une boucle sans à-coup ; les copies sont ignorées par les lecteurs d'écran
-if(n>=3){Array.from(piste.children).forEach(c=>{const k=c.cloneNode(true);k.classList.add('clone');k.setAttribute('aria-hidden','true');k.querySelectorAll('a').forEach(a=>a.tabIndex=-1);piste.append(k);});piste.style.setProperty('--duree',(n*8)+'s');piste.classList.add('defile');new IntersectionObserver(es=>liste.classList.toggle('en-vue',es[0].isIntersecting)).observe(liste);}
-liste.append(piste);document.getElementById('avis-source').hidden=false;
+if(ajout)bandeau();
 }).catch(()=>{});
 },{rootMargin:'600px 0px'});
 vu.observe(sec);
