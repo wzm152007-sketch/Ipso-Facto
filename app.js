@@ -42,18 +42,6 @@ setTimeout(()=>document.body.classList.remove('charge'),1600);
 }
 setTimeout(()=>requestAnimationFrame(pas),220);
 }
-// Le socle 3D : une image d'abord, la 3D se prépare un écran avant d'arriver sur elle, si le visiteur descend jusque-là, et jamais en mode économie de données
-(function(){
-const boite=document.getElementById('scene'),co=navigator.connection;
-if(!boite||!window.WebGLRenderingContext||(co&&(co.saveData||/2g/.test(co.effectiveType||''))))return;
-const vu=new IntersectionObserver(es=>{
-if(!es[0].isIntersecting)return;
-vu.disconnect();
-const go=()=>import('./3d/socle-v2.js').then(m=>m.lancer(boite,calme,()=>{document.getElementById('scene-aide').hidden=false;})).catch(()=>{});
-if(window.requestIdleCallback)requestIdleCallback(go,{timeout:800});else setTimeout(go,200);
-},{rootMargin:'100% 0px'});
-vu.observe(boite);
-})();
 // Le jour d'aujourd'hui dans les horaires, et l'année en bas de page
 (function(){
 const now=new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Paris'}));

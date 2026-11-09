@@ -28,8 +28,8 @@ main,footer{position:relative;z-index:3}
 /* Fond : bois, nom doré, reflets */
 #bois{position:fixed;left:0;right:0;top:0;height:100lvh;z-index:0;background:#2c190c url(img/noyer.webp) center/cover no-repeat}
 .bg-shade{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 40%,rgba(3,2,1,.6) 100%),rgba(6,3,1,.72)}
-#gravure{position:fixed;z-index:0;left:50%;top:50svh;width:min(90vw,1560px,150vh);aspect-ratio:2400/329;transform:translate(-50%,-50%);background:url(img/gravure-dore.webp) center/contain no-repeat}
-.charge #gravure::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,252,232,.9) 50%,transparent 70%) no-repeat;background-size:34% 100%;-webkit-mask:url(img/gravure-dore.webp) center/contain no-repeat;mask:url(img/gravure-dore.webp) center/contain no-repeat;animation:eclat-or 1.5s ease-in-out both}
+#gravure{position:fixed;z-index:0;left:50%;top:50svh;width:min(90vw,1560px,150vh);aspect-ratio:2400/329;transform:translate(-50%,-50%);background:url(img/gravure-blanc.webp) center/contain no-repeat}
+.charge #gravure::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,252,232,.9) 50%,transparent 70%) no-repeat;background-size:34% 100%;-webkit-mask:url(img/gravure-blanc.webp) center/contain no-repeat;mask:url(img/gravure-blanc.webp) center/contain no-repeat;animation:eclat-or 1.5s ease-in-out both}
 @keyframes eclat-or{from{background-position:-60% 0}to{background-position:165% 0}}
 #reflets{position:fixed;inset:0;z-index:4;overflow:hidden;pointer-events:none;contain:strict}
 #reflets i{position:absolute;top:-30%;bottom:-30%;left:0;width:46vmax;visibility:hidden;background:linear-gradient(90deg,transparent,rgba(255,232,190,.05) 30%,rgba(255,240,210,.16) 50%,rgba(255,232,190,.05) 70%,transparent)}
@@ -53,7 +53,7 @@ main,footer{position:relative;z-index:3}
 /* Boutons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.7em;padding:1em 1.8em;border:1px solid var(--gold);border-radius:999px;font-family:inherit;font-weight:300;font-size:.84rem;letter-spacing:.17em;text-transform:uppercase;color:var(--gold-light);background:var(--noir);cursor:pointer;transition:background .3s,color .3s}
 .btn:hover{background:var(--gold);color:var(--noir)}
-.btn.solid{position:relative;overflow:hidden;background:var(--gold-grad);color:#120d04;border-color:transparent}
+.btn.solid{position:relative;overflow:hidden;background:var(--noir);color:var(--gold-light);border-color:var(--gold)}
 .btn.solid::after{content:"";position:absolute;top:0;bottom:0;left:0;width:28%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent);transform:translateX(-140%) skewX(-18deg);pointer-events:none}
 .btn.solid:hover::after,.charge .hero .btn.solid::after{animation:eclat-btn 1.1s ease-in-out}
 @keyframes eclat-btn{to{transform:translateX(430%) skewX(-18deg)}}
@@ -101,19 +101,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--gold-light);outline
 .scroll-cue span{width:1px;height:20px;background:linear-gradient(var(--gold),transparent)}
 .hero .eyebrow,.adresse,.scroll-cue{text-shadow:0 1px 3px rgba(0,0,0,.9)}
 
-/* Le socle 3D */
-.socle{display:grid;grid-template-columns:1.45fr .55fr;gap:clamp(16px,3vw,44px);align-items:center}
-.scene{position:relative;aspect-ratio:5/4;min-width:0;cursor:grab;touch-action:pan-y;-webkit-user-select:none;user-select:none}
-.scene.prise{cursor:grabbing}
-.scene::before{content:"";position:absolute;inset:4% 2%;pointer-events:none;background:radial-gradient(closest-side,rgba(0,0,0,.3),rgba(0,0,0,.16) 62%,transparent)}
-.scene img,.scene canvas{position:absolute;inset:0;width:100%!important;height:100%!important;display:block}
-.scene canvas{opacity:0}
-.scene.vivante canvas{opacity:1}
-.scene.vivante img{visibility:hidden}
-/* Pas de flou derrière ce panneau : il se recalculerait à chaque image pendant que le socle tourne */
-.socle .texte-verre{--verre-noir:rgba(5,5,5,.8);-webkit-backdrop-filter:none;backdrop-filter:none}
-.socle h2{font-size:clamp(2.1rem,3.7vw,3.3rem);line-height:1.05;margin:16px 0 0}
-#scene-aide{margin-top:20px;color:var(--muted)}
 
 /* Sections */
 section.block{padding:clamp(70px,10vw,130px) 0}
@@ -129,19 +116,12 @@ h2{text-wrap:balance}
 .pillar small{display:block;margin-top:12px;font-size:.84rem;color:var(--muted)}
 
 /* Photos */
-.gallery{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:clamp(220px,27vw,350px);gap:clamp(10px,1.4vw,20px)}
+.gallery{display:block}
 .g{--r:26px}
 .g img{width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
 .g figcaption{position:absolute;left:20px;bottom:20px;max-width:calc(100% - 40px);padding:.42em 1em;border-radius:18px;background:rgba(5,5,5,.74);border:1px solid var(--line);font-size:.76rem;line-height:1.35;letter-spacing:.14em;text-transform:uppercase;color:#fff}
-.g1{grid-column:1/6;grid-row:span 2}
-.g2{grid-column:6/10}
-.g3{grid-column:10/13}
-.g4{grid-column:6/9}
-.g5{grid-column:9/13}
-.g6,.g7{grid-column:span 6}
-.g3 img{object-position:50% 40%}
-.g4 img{object-position:68% 50%}
-.g7 img{object-position:70% 20%}
+.g1{aspect-ratio:16/9}
+.g1 img{object-position:50% 45%}
 .jewel{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(30px,5vw,70px);align-items:center}
 .jewel-imgs{position:relative;aspect-ratio:1/1}
 .cadre{position:absolute;--r:24px}
@@ -197,13 +177,9 @@ footer{padding:40px 0 22px;background:var(--noir);box-shadow:inset 0 1px 0 var(-
 .sec-head{grid-template-columns:1fr}
 .sec-head>p{justify-self:start}
 .pillars{grid-template-columns:1fr}
-.gallery{grid-template-columns:1fr 1fr;grid-auto-rows:auto}
-.g1,.g2,.g3,.g4,.g5,.g6,.g7{grid-column:auto;grid-row:auto;aspect-ratio:4/5}
-.g1,.g6,.g7{grid-column:1/3;aspect-ratio:1.2}
-.g1{aspect-ratio:1}
-.g1 img{object-position:50% 30%}
-.g7 img{object-position:60% 20%}
-.jewel,.studio,.visit,.socle{grid-template-columns:1fr}
+.g1{aspect-ratio:4/3}
+.g1 img{object-position:50% 45%}
+.jewel,.studio,.visit{grid-template-columns:1fr}
 .foot{grid-template-columns:1fr 1fr}
 .foot>div:first-child{grid-column:1/3}
 .barre{display:flex;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(5,5,5,.9);box-shadow:inset 0 1px 0 var(--line)}
@@ -211,8 +187,8 @@ footer{padding:40px 0 22px;background:var(--noir);box-shadow:inset 0 1px 0 var(-
 #bois{background-image:url(img/noyer-m.webp)}
 .bg-shade{background:radial-gradient(ellipse at 50% 45%,transparent 36%,rgba(3,2,1,.55) 100%),rgba(6,3,1,.72)}
 .scroll-cue{display:none}
-#gravure{width:95vw;aspect-ratio:1300/182;background-image:url(img/gravure-dore-m.webp)}
-.charge #gravure::after{-webkit-mask-image:url(img/gravure-dore-m.webp);mask-image:url(img/gravure-dore-m.webp)}
+#gravure{width:95vw;aspect-ratio:1300/182;background-image:url(img/gravure-blanc-m.webp)}
+.charge #gravure::after{-webkit-mask-image:url(img/gravure-blanc-m.webp);mask-image:url(img/gravure-blanc-m.webp)}
 .hero{--pad:64px;--h:calc(95vw/7.143 + 22px)}
 .etoiles{letter-spacing:.05em}
 body{padding-bottom:70px}
