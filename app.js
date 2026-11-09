@@ -7,6 +7,9 @@ const t=e.target;t.classList.add('in');vus.unobserve(t);
 setTimeout(()=>{t.classList.add('fini');t.style.transitionDelay='';},1000);
 }),{threshold:.12,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4)*.06+'s';vus.observe(el);});
+// Le logo du fond reste net en haut de page, puis s'atténue derrière le contenu
+(function(){const h=document.querySelector('.hero'),g=document.getElementById('gravure');if(!h||!g)return;
+new IntersectionObserver(es=>g.classList.toggle('loin',es[0].intersectionRatio<.5),{threshold:[0,.5,1]}).observe(h);})();
 if(!calme){
 // Un reflet traverse le bois à l'arrivée sur chaque partie de la page
 const bande=document.querySelector('#reflets i');let dernier=-9999;
