@@ -45,6 +45,37 @@ setTimeout(()=>document.body.classList.remove('charge'),1600);
 }
 setTimeout(()=>requestAnimationFrame(pas),220);
 }
+// Avis Google : lus à l'approche de la section, depuis /api/avis (mis en cache 12 h côté serveur)
+(function(){
+const sec=document.getElementById('avis');if(!sec||!window.fetch)return;
+const el=(t,c,txt)=>{const e=document.createElement(t);if(c)e.className=c;if(txt!=null)e.textContent=txt;return e;};
+const virgule=n=>Number(n).toFixed(1).replace('.',',');
+const vu=new IntersectionObserver(es=>{
+if(!es[0].isIntersecting)return;vu.disconnect();
+fetch('/api/avis').then(r=>r.ok?r.json():null).then(d=>{
+if(!d||!d.ok)return;
+if(d.note){document.getElementById('avis-note').textContent=virgule(d.note);const c=document.getElementById('note-chiffre');if(c)c.textContent=virgule(d.note);}
+if(d.total){document.getElementById('avis-total').textContent=d.total;const n=document.getElementById('note-avis');if(n)n.textContent=d.total;}
+const liste=document.getElementById('avis-liste');
+(d.avis||[]).forEach(v=>{
+if(!v.texte)return;
+const carte=el('article','avis-carte verre'),tete=el('header'),qui=el('div');
+if(v.photo){const i=el('img');i.src=v.photo;i.alt='';i.width=42;i.height=42;i.loading='lazy';i.referrerPolicy='no-referrer';tete.append(i);}
+else tete.append(el('span','avis-initiale',(v.auteur||'?').charAt(0).toUpperCase()));
+const nom=v.profil?el('a','avis-auteur',v.auteur):el('span','avis-auteur',v.auteur);
+if(v.profil){nom.href=v.profil;nom.target='_blank';nom.rel='noopener';}
+qui.append(nom,el('span','avis-quand',v.quand));tete.append(qui);
+const n=Math.max(0,Math.min(5,Math.round(v.note||0)));
+const et=el('div','avis-etoiles','★'.repeat(n)+'☆'.repeat(5-n));et.setAttribute('aria-label','Note : '+n+' sur 5');
+carte.append(tete,et,el('p',null,v.texte));
+if(v.lien){const a=el('a','lien','Lire sur Google');a.href=v.lien;a.target='_blank';a.rel='noopener';carte.append(a);}
+liste.append(carte);
+});
+if(liste.children.length)document.getElementById('avis-source').hidden=false;
+}).catch(()=>{});
+},{rootMargin:'600px 0px'});
+vu.observe(sec);
+})();
 // Le jour d'aujourd'hui dans les horaires, et l'année en bas de page
 (function(){
 const now=new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Paris'}));

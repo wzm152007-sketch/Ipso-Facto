@@ -25,7 +25,7 @@
 <link rel="preload" as="font" type="font/woff2" href="fonts/SpectralSC-Light-latin.woff2" crossorigin>
 <link rel="preload" as="image" href="img/logo-fond.webp" media="(min-width:901px)">
 <link rel="preload" as="image" href="img/logo-fond-m.webp" media="(max-width:900px)">
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="style.css?v=23">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
@@ -38,6 +38,7 @@
 <li><a href="#magasin">Le magasin</a></li>
 <li><a href="#conseil">Le conseil</a></li>
 <li><a href="#reprise">Reprise</a></li>
+<li><a href="#avis">Avis</a></li>
 <li><a href="#venir">Contact</a></li>
 </ul>
 <a class="nav-tel" href="tel:+33372739543">03 72 73 95 43</a>
@@ -126,6 +127,25 @@
 </div>
 </div>
 </section>
+<section class="block" id="avis" style="padding-top:0">
+<div class="wrap">
+<div class="sec-head verre lentille">
+<div>
+<p class="eyebrow reveal">Avis Google</p>
+<h2 class="reveal" style="margin-top:18px">Ce que disent<br><em class="gold">nos clients.</em></h2>
+</div>
+<div class="avis-resume reveal">
+<p><b id="avis-note">5,0</b> <span class="etoiles-fixes" aria-hidden="true">★★★★★</span><br><span id="avis-total">38</span> avis sur Google</p>
+<div class="ctas gauche">
+<a class="btn solid" href="https://search.google.com/local/writereview?placeid=ChIJaSBjn8wLk0cRKvRRvMujr1I" target="_blank" rel="noopener">Laisser un avis</a>
+<a class="btn" id="avis-tous" href="https://search.google.com/local/reviews?placeid=ChIJaSBjn8wLk0cRKvRRvMujr1I" target="_blank" rel="noopener">Voir tous les avis</a>
+</div>
+</div>
+</div>
+<div class="avis-liste" id="avis-liste" aria-live="polite"></div>
+<p class="mention avis-source" id="avis-source" hidden>Avis publiés sur Google, affichés automatiquement. Source&nbsp;: Google Maps.</p>
+</div>
+</section>
 <section class="block" id="venir" style="padding-top:0">
 <div class="wrap">
 <div class="visit reveal">
@@ -179,6 +199,6 @@
 <a class="btn solid" href="tel:+33372739543">Appeler</a>
 <a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;destination=28%20Avenue%20de%20la%20Fontenelle%2C%2088190%20Golbey" target="_blank" rel="noopener">Itinéraire</a>
 </div>
-<script src="app.js?v=13"></script>
+<script src="app.js?v=14"></script>
 </body>
 </html>
